@@ -1,0 +1,42 @@
+<nav class="menu" [class.menu--collapsed]="isCollapsed">
+  <div class="menu__header">
+    @if (!isCollapsed) {
+      <h2>Pet Manager</h2>
+    }
+    <button class="menu__toggle-btn" (click)="toggleMenu()">
+      <mat-icon>{{ isCollapsed ? "chevron_right" : "chevron_left" }}</mat-icon>
+    </button>
+  </div>
+
+  <ul class="menu__list">
+    @for (item of menuItems; track item.label) {
+      <li class="menu__item">
+        <a
+          (click)="onMenuItemClick(item.route)"
+          class="menu__link"
+          [matTooltip]="isCollapsed ? item.label : ''"
+          matTooltipPosition="right"
+        >
+          <mat-icon class="menu__icon">{{ item.icon }}</mat-icon>
+          @if (!isCollapsed) {
+            <span class="menu__text">{{ item.label }}</span>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="menu__footer">
+    <button
+      (click)="logout()"
+      class="menu__logout-btn"
+      [matTooltip]="isCollapsed ? 'Sair' : ''"
+      matTooltipPosition="right"
+    >
+      <mat-icon class="menu__icon">logout</mat-icon>
+      @if (!isCollapsed) {
+        <span class="menu__text">Sair</span>
+      }
+    </button>
+  </div>
+</nav>

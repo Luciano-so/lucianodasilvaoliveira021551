@@ -3,8 +3,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
-import { LoadingService } from '../../../../shared/components/loading/service/loading.service';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {

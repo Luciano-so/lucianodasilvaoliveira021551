@@ -1,0 +1,21 @@
+.main-content {
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+
+  &.main-content--with-menu {
+    margin-left: 250px;
+  }
+
+  &.main-content--collapsed {
+    margin-left: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    &.main-content--with-menu,
+    &.main-content--collapsed {
+      margin-left: 0;
+    }
+  }
+}

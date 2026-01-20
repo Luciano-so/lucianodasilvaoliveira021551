@@ -15,19 +15,19 @@ $ball-spacing: 10px;
   z-index: 10000;
   background-color: rgba(0, 0, 0, 0.3);
 
-  &>div {
+  & > div {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  .balls {
+  .page-preloading__balls {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: $ball-spacing;
 
-    .ball {
+    .page-preloading__ball {
       width: $ball-size;
       height: $ball-size;
       background-color: $page-color;
@@ -35,45 +35,67 @@ $ball-spacing: 10px;
       animation: bounce 0.6s infinite alternate;
     }
 
-    .ball:nth-child(1) {
+    .page-preloading__ball:nth-child(1) {
       animation-delay: 0s;
     }
 
-    .ball:nth-child(2) {
+    .page-preloading__ball:nth-child(2) {
       animation-delay: 0.2s;
     }
 
-    .ball:nth-child(3) {
+    .page-preloading__ball:nth-child(3) {
       animation-delay: 0.4s;
     }
   }
 
-  .message {
+  .page-preloading__message {
     color: gray(60);
     text-align: center;
     bottom: -50px;
     opacity: 0;
-    transition: opacity 0.3s linear, transform 0.3s linear;
+    transition:
+      opacity 0.3s linear,
+      transform 0.3s linear;
     max-width: 100%;
 
-    .message-text {
+    .page-preloading__message-text {
       font-weight: bold;
       color: $page-color;
     }
   }
 
-  &.loading {
+  &.page-preloading--loading {
     height: 100vh;
     transition: all 0.3s ease-out;
 
-    .message {
+    .page-preloading__message {
       opacity: 1;
       transition: opacity 0.3s linear 0.3s;
     }
 
-    .balls {
+    .page-preloading__balls {
       opacity: 1;
       animation: none;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  $ball-size: 12px;
+  $ball-spacing: 8px;
+
+  .page-preloading {
+    .page-preloading__balls {
+      gap: $ball-spacing;
+
+      .page-preloading__ball {
+        width: $ball-size;
+        height: $ball-size;
+      }
+    }
+
+    .page-preloading__message {
+      font-size: 14px;
     }
   }
 }

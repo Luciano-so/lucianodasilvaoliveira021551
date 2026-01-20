@@ -1,4 +1,4 @@
-.login-container {
+.login__container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -7,7 +7,7 @@
   padding: 20px;
 }
 
-.login-card {
+.login__card {
   background: white;
   padding: 40px;
   border-radius: 12px;
@@ -31,44 +31,12 @@
   }
 }
 
-.form-group {
+.login__form-field {
+  width: 100%;
   margin-bottom: 20px;
-
-  label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
-    font-weight: 500;
-  }
-
-  input {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: border-color 0.3s;
-    box-sizing: border-box;
-
-    &:focus {
-      outline: none;
-      border-color: #667eea;
-    }
-
-    &.error {
-      border-color: #f44336;
-    }
-  }
-
-  .error-message {
-    display: block;
-    color: #f44336;
-    font-size: 12px;
-    margin-top: 5px;
-  }
 }
 
-.error-alert {
+.login__error-alert {
   background: #ffebee;
   color: #c62828;
   padding: 12px;
@@ -78,7 +46,7 @@
   text-align: center;
 }
 
-button {
+.login__button {
   width: 100%;
   padding: 14px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -103,15 +71,66 @@ button {
   }
 }
 
-.hint {
+.login__hint {
   margin-top: 20px;
   text-align: center;
   color: #666;
   font-size: 13px;
 }
 
+@media (max-width: 768px) {
+  .login__container {
+    padding: 15px;
+  }
+
+  .login__card {
+    padding: 30px;
+    max-width: 350px;
+  }
+}
+
 @media (max-width: 480px) {
-  .login-card {
-    padding: 30px 20px;
+  .login__container {
+    padding: 10px;
+  }
+
+  .login__card {
+    padding: 25px 20px;
+    max-width: 100%;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    h2 {
+      font-size: 18px;
+    }
+  }
+
+  .login__form-group {
+    margin-bottom: 15px;
+
+    label {
+      font-size: 14px;
+    }
+
+    .login__input {
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .login__error-message {
+      font-size: 11px;
+    }
+  }
+
+  .login__button {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .login__hint {
+    font-size: 12px;
+    margin-top: 15px;
   }
 }

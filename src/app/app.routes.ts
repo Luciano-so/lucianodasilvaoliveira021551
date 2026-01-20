@@ -18,8 +18,24 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'pets',
+    loadComponent: () =>
+      import('./features/home/pages/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'tutores',
+    loadComponent: () =>
+      import('./features/home/pages/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
-    redirectTo: '/dashboard',
+    redirectTo: '/login',
     pathMatch: 'full',
   },
   {

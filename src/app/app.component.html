@@ -1,2 +1,13 @@
 <app-loading [show]="showPreload"></app-loading>
-<router-outlet />
+
+@if (isAuthenticated) {
+  <app-menu></app-menu>
+}
+
+<main
+  class="main-content"
+  [class.main-content--with-menu]="isAuthenticated"
+  [class.main-content--collapsed]="isCollapsed && isAuthenticated"
+>
+  <router-outlet />
+</main>

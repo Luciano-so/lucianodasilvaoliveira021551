@@ -1,57 +1,46 @@
-<div class="login-container">
-  <div class="login-card">
+<div class="login__container">
+  <div class="login__card">
     <h1>Pet Manager</h1>
     <h2>Login</h2>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="username">Usuário</label>
+      <mat-form-field class="login__form-field">
+        <mat-label>Usuário</mat-label>
         <input
+          matInput
           id="username"
           type="text"
           formControlName="username"
           placeholder="Digite seu usuário"
-          [class.error]="
-            loginForm.get('username')?.invalid &&
-            loginForm.get('username')?.touched
-          "
+          aria-required="true"
+          autocomplete="off"
         />
-        <span
-          class="error-message"
-          *ngIf="
-            loginForm.get('username')?.invalid &&
-            loginForm.get('username')?.touched
-          "
-        >
-          Usuário é obrigatório
-        </span>
-      </div>
+        <mat-error matErrorMessages></mat-error>
+      </mat-form-field>
 
-      <div class="form-group">
-        <label for="password">Senha</label>
+      <mat-form-field class="login__form-field">
+        <mat-label>Senha</mat-label>
         <input
+          matInput
           id="password"
           type="password"
           formControlName="password"
           placeholder="Digite sua senha"
-          [class.error]="
-            loginForm.get('password')?.invalid &&
-            loginForm.get('password')?.touched
-          "
+          aria-required="true"
+          autocomplete="off"
         />
-        <span
-          class="error-message"
-          *ngIf="
-            loginForm.get('password')?.invalid &&
-            loginForm.get('password')?.touched
-          "
-        >
-          Senha é obrigatória
-        </span>
-      </div>
-      <button type="submit" [disabled]="loginForm.invalid">Entrar</button>
+        <mat-error matErrorMessages></mat-error>
+      </mat-form-field>
+
+      <button
+        type="submit"
+        class="login__button"
+        [disabled]="loginForm.invalid"
+      >
+        Entrar
+      </button>
     </form>
 
-    <p class="hint">Use: admin / admin</p>
+    <p class="login__hint">Use: admin / admin</p>
   </div>
 </div>
