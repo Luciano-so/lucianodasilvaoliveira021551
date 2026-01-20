@@ -14,7 +14,7 @@
             alt="Preview da foto"
             class="photo-upload__img"
           />
-          @if (previewUrl) {
+          @if (previewUrl || (isEditMode && currentPhotoUrl)) {
             <button
               mat-icon-button
               type="button"
