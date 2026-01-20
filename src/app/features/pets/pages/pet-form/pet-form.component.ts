@@ -81,6 +81,11 @@ export class PetFormComponent implements OnInit {
   }
 
   private checkEditMode(): void {
+    this.selectedFile = null;
+    this.previewUrl = null;
+    this.currentPhotoUrl = null;
+    this.currentPhotoId = null;
+    this.photoRemoved = false;
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
