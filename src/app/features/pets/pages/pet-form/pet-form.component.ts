@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +12,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
@@ -37,12 +39,13 @@ import { PetsFacade } from '../../facades/pets.facade';
   templateUrl: './pet-form.component.html',
   styleUrls: ['./pet-form.component.scss'],
 })
-export class PetFormComponent implements OnInit {
+export class PetFormComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private petsFacade = inject(PetsFacade);
   private toastService = inject(ToastService);
+  private destroy$ = new Subject<void>();
 
   petForm!: FormGroup;
   isEditMode = false;
@@ -56,6 +59,11 @@ export class PetFormComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.checkEditMode();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private initForm(): void {
@@ -96,19 +104,24 @@ export class PetFormComponent implements OnInit {
 
   private loadPet(id: number): void {
     this.petsFacade.loadPetById(id);
-    this.petsFacade.selectedPet$.subscribe((pet) => {
-      if (pet) {
-        this.petForm.patchValue({
-          nome: pet.nome,
-          raca: pet.raca,
-          idade: pet.idade,
-        });
-        if (pet.foto) {
-          this.currentPhotoUrl = pet.foto.url;
-          this.currentPhotoId = pet.foto.id;
+    this.petsFacade.selectedPet$
+      .pipe(
+        filter((pet) => pet !== null && pet.id === id),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((pet) => {
+        if (pet) {
+          this.petForm.patchValue({
+            nome: pet.nome,
+            raca: pet.raca,
+            idade: pet.idade,
+          });
+          if (pet.foto) {
+            this.currentPhotoUrl = pet.foto.url;
+            this.currentPhotoId = pet.foto.id;
+          }
         }
-      }
-    });
+      });
   }
 
   onSubmit(): void {

@@ -36,9 +36,9 @@ export class PetListComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
-    this.loadPets();
     this.setupSubscriptions();
     this.setupSearch();
+    this.loadPets();
   }
 
   ngOnDestroy(): void {
