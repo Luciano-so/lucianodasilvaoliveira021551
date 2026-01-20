@@ -1,0 +1,41 @@
+<div class="tutor-card" (click)="onCardClick()">
+  <div
+    class="tutor-card__image"
+    [class.tutor-card__image--no-photo]="!hasPhoto()"
+  >
+    @if (hasPhoto()) {
+      <img
+        [src]="tutor.foto!.url"
+        [alt]="tutor.nome"
+        (error)="onImageError()"
+      />
+    }
+    @if (!hasPhoto()) {
+      <div class="tutor-card__placeholder">
+        <mat-icon>person</mat-icon>
+        <span>Sem foto</span>
+      </div>
+    }
+  </div>
+  <div class="tutor-card__content">
+    <div class="tutor-card__header">
+      <h3 class="tutor-card__name">{{ tutor.nome }}</h3>
+    </div>
+
+    <div class="tutor-card__details">
+      @if (tutor.telefone) {
+        <div class="tutor-card__detail">
+          <mat-icon class="tutor-card__detail-icon">phone</mat-icon>
+          <span class="tutor-card__detail-text">{{ tutor.telefone }}</span>
+        </div>
+      }
+
+      @if (tutor.endereco) {
+        <div class="tutor-card__detail">
+          <mat-icon class="tutor-card__detail-icon">location_on</mat-icon>
+          <span class="tutor-card__detail-text">{{ tutor.endereco }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

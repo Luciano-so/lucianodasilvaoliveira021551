@@ -1,0 +1,18 @@
+<app-data-grid
+  title="Tutores"
+  [items]="tutores"
+  [error]="error"
+  [pagination]="pagination"
+  searchPlaceholder="Buscar por nome..."
+  addButtonText="Adicionar Tutor"
+  emptyMessage="Nenhum tutor encontrado"
+  addFirstItemText="Adicionar Primeiro Tutor"
+  (searchChange)="onSearchChange($event)"
+  (pageChange)="onPageChange($event)"
+  (retry)="loadTutores()"
+  (addClick)="onAddTutor()"
+>
+  <ng-template #cardTemplate let-tutor>
+    <app-tutor-card [tutor]="tutor"></app-tutor-card>
+  </ng-template>
+</app-data-grid>

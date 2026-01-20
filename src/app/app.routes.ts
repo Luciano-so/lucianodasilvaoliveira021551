@@ -44,8 +44,24 @@ export const routes: Routes = [
   {
     path: 'tutores',
     loadComponent: () =>
-      import('./features/home/pages/dashboard/dashboard.component').then(
-        (m) => m.DashboardComponent,
+      import('./features/tutores/pages/tutor-list/tutor-list.component').then(
+        (m) => m.TutorListComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'tutores/new',
+    loadComponent: () =>
+      import('./features/tutores/pages/tutor-form/tutor-form.component').then(
+        (m) => m.TutorFormComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'tutores/:id/edit',
+    loadComponent: () =>
+      import('./features/tutores/pages/tutor-form/tutor-form.component').then(
+        (m) => m.TutorFormComponent,
       ),
     canActivate: [authGuard],
   },
