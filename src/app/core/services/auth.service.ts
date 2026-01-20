@@ -2,8 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { LoadingService } from '../../shared/services/loading/loading.service';
 import { AuthResponse, LoginRequest, User } from '../models/auth.model';
+import { ToastService } from './../../shared/components/toast/toast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,8 +25,10 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  private http = inject(HttpClient);
   private router = inject(Router);
+  private http = inject(HttpClient);
+  private loadingService = inject(LoadingService);
+  private toastService = inject(ToastService);
 
   constructor() {
     this.isAuthenticatedSubject.next(this.hasValidToken());
@@ -51,6 +56,45 @@ export class AuthService {
           this.currentUserSubject.next(user);
           this.isAuthenticatedSubject.next(true);
         }),
+      );
+  }
+
+  refreshToken(): Observable<AuthResponse> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      this.logout();
+      this.toastService.onShowError('Sessão expirada. Faça login novamente.');
+      throw new Error('No refresh token available');
+    }
+
+    this.loadingService.show();
+
+    return this.http
+      .put<AuthResponse>(
+        `${environment.apiUrl}/autenticacao/refresh`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        },
+      )
+      .pipe(
+        tap((response) => {
+          this.setTokens(response.access_token, response.refresh_token);
+          const currentUser = this.getCurrentUser();
+          if (currentUser) {
+            const updatedUser: User = {
+              ...currentUser,
+              accessToken: response.access_token,
+              refreshToken: response.refresh_token,
+            };
+            this.setUser(updatedUser);
+            this.currentUserSubject.next(updatedUser);
+          }
+          this.isAuthenticatedSubject.next(true);
+        }),
+        finalize(() => this.loadingService.close()),
       );
   }
 

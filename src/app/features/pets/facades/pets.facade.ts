@@ -69,11 +69,13 @@ export class PetsFacade {
   constructor() {}
 
   loadPets(filters?: PetFilters): void {
+    this.loadingService.show();
     const currentState = this._state$.value;
     const appliedFilters = { ...currentState.filters, ...filters };
 
     this.updateState({ filters: appliedFilters });
-    this.loadingService.show();
+    this.pets$.next([]);
+    this.error$.next(null);
 
     this.petsService
       .getPets(appliedFilters)
@@ -120,6 +122,9 @@ export class PetsFacade {
   }
 
   loadPetById(id: number): void {
+    this.selectedPet$.next(null);
+    this.updateState({ selectedPet: null });
+
     this.loadingService.show();
 
     this.petsService
