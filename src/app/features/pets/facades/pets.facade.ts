@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { concatMap, finalize, tap } from 'rxjs/operators';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
 import {
@@ -144,34 +144,6 @@ export class PetsFacade {
       });
   }
 
-  createPet(pet: CreatePetDto): Observable<Pet> {
-    this.loadingService.show();
-
-    return this.petsService.createPet(pet).pipe(
-      tap((newPet: Pet) => {
-        this.toastService.onShowOk('Pet cadastrado com sucesso!');
-        this.loadPets(this._state$.value.filters);
-      }),
-      finalize(() => {
-        this.loadingService.close();
-      }),
-    );
-  }
-
-  updatePet(id: number, pet: UpdatePetDto): Observable<Pet> {
-    this.loadingService.show();
-
-    return this.petsService.updatePet(id, pet).pipe(
-      tap((updatedPet: Pet) => {
-        this.toastService.onShowOk('Pet atualizado com sucesso!');
-        this.loadPets(this._state$.value.filters);
-      }),
-      finalize(() => {
-        this.loadingService.close();
-      }),
-    );
-  }
-
   deletePet(id: number): void {
     this.loadingService.show();
 
@@ -199,16 +171,82 @@ export class PetsFacade {
 
   uploadPhoto(petId: number, photo: File): Observable<PetPhoto> {
     this.loadingService.show();
+    return this.petsService
+      .uploadPhoto(petId, photo)
+      .pipe(finalize(() => this.loadingService.close()));
+  }
 
-    return this.petsService.uploadPhoto(petId, photo).pipe(
-      tap(() => {
-        this.toastService.onShowOk('Foto enviada com sucesso!');
-        this.loadPetById(petId);
+  deletePhoto(petId: number, photoId: number): Observable<void> {
+    this.loadingService.show();
+    return this.petsService
+      .deletePhoto(petId, photoId)
+      .pipe(finalize(() => this.loadingService.close()));
+  }
+
+  createPetWithPhoto(
+    petData: CreatePetDto,
+    photo?: File | null,
+  ): Observable<void> {
+    this.loadingService.show();
+    return this.petsService.createPet(petData).pipe(
+      concatMap((savedPet) => {
+        if (photo) {
+          return this.petsService
+            .uploadPhoto(savedPet.id, photo)
+            .pipe(concatMap(() => of(undefined)));
+        }
+        return of(undefined);
       }),
-      finalize(() => {
-        this.loadingService.close();
-      }),
+      finalize(() => this.loadingService.close()),
     );
+  }
+
+  updatePetWithPhoto(
+    petId: number,
+    petData: UpdatePetDto,
+    photoOptions: {
+      newPhoto?: File | null;
+      currentPhotoId?: number | null;
+      photoRemoved?: boolean;
+    },
+  ): Observable<void> {
+    this.loadingService.show();
+
+    return this.petsService.updatePet(petId, petData).pipe(
+      concatMap((savedPet) =>
+        this.handlePhotoOperation(savedPet, photoOptions),
+      ),
+      finalize(() => this.loadingService.close()),
+    );
+  }
+
+  private handlePhotoOperation(
+    pet: Pet,
+    options: {
+      newPhoto?: File | null;
+      currentPhotoId?: number | null;
+      photoRemoved?: boolean;
+    },
+  ): Observable<void> {
+    const { newPhoto, currentPhotoId, photoRemoved } = options;
+
+    if (newPhoto && currentPhotoId) {
+      return this.petsService.deletePhoto(pet.id, currentPhotoId).pipe(
+        concatMap(() => this.petsService.uploadPhoto(pet.id, newPhoto)),
+        concatMap(() => of(undefined)),
+      );
+    }
+    if (newPhoto) {
+      return this.petsService
+        .uploadPhoto(pet.id, newPhoto)
+        .pipe(concatMap(() => of(undefined)));
+    }
+    if (photoRemoved && currentPhotoId) {
+      return this.petsService
+        .deletePhoto(pet.id, currentPhotoId)
+        .pipe(concatMap(() => of(undefined)));
+    }
+    return of(undefined);
   }
 
   clearError(): void {

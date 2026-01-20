@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { LoadingService } from '../../shared/services/loading/loading.service';
 import { MenuService } from '../../shared/services/menu.service';
 import { AuthService } from '../services/auth.service';
@@ -37,12 +37,12 @@ export class AppFacade {
 
   initializeState(): void {
     combineLatest([
-      this.authService.isAuthenticated$.pipe(startWith(false)),
-      this.authService.currentUser$.pipe(startWith(null)),
-      this.menuService.menuItems$.pipe(startWith([])),
-      this.menuService.activeMenuItem$.pipe(startWith('')),
-      this.loadingService.isLoading$.pipe(startWith(false)),
-      this.menuService.isCollapsed$.pipe(startWith(false)),
+      this.authService.isAuthenticated$,
+      this.authService.currentUser$,
+      this.menuService.menuItems$,
+      this.menuService.activeMenuItem$,
+      this.loadingService.isLoading$,
+      this.menuService.isCollapsed$,
     ])
       .pipe(
         map(
@@ -95,6 +95,7 @@ export class AppFacade {
   get isCollapsed$(): Observable<boolean> {
     return this._appState$.pipe(map((state) => state.isCollapsed));
   }
+
   // === AUTHENTICATION ===
   login(credentials: { username: string; password: string }): Observable<any> {
     return this.authService.login(credentials);

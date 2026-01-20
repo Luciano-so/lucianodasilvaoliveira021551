@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Pet } from '../../models/pet.model';
 
 @Component({
@@ -14,6 +14,8 @@ import { Pet } from '../../models/pet.model';
 export class PetCardComponent {
   @Input() pet!: Pet;
   imageError = false;
+
+  private router = inject(Router);
 
   hasPhoto(): boolean {
     return !!this.pet?.foto?.url && !this.imageError;
@@ -28,5 +30,9 @@ export class PetCardComponent {
       return '1 ano';
     }
     return `${idade} anos`;
+  }
+
+  onCardClick(): void {
+    this.router.navigate(['/pets', this.pet.id, 'edit']);
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -26,7 +26,7 @@ import { MatErrorMessagesDirective } from '../../../../shared/directives/matErro
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private toastSrv = inject(ToastService);
@@ -52,6 +52,12 @@ export class LoginComponent {
         ],
       ],
     });
+  }
+
+  ngOnInit(): void {
+    if (this.facade.isAuthenticated()) {
+      this.facade.logout();
+    }
   }
 
   onSubmit(): void {

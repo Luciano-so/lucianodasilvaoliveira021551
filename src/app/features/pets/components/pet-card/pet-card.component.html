@@ -1,4 +1,4 @@
-<div class="pet-card">
+<div class="pet-card" (click)="onCardClick()">
   <div class="pet-card__image" [class.pet-card__image--no-photo]="!hasPhoto()">
     @if (hasPhoto()) {
       <img [src]="pet.foto!.url" [alt]="pet.nome" (error)="onImageError()" />

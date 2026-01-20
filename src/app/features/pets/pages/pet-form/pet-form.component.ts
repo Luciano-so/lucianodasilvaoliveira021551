@@ -50,6 +50,8 @@ export class PetFormComponent implements OnInit {
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   currentPhotoUrl: string | null = null;
+  currentPhotoId: number | null = null;
+  photoRemoved: boolean = false;
 
   ngOnInit(): void {
     this.initForm();
@@ -98,59 +100,58 @@ export class PetFormComponent implements OnInit {
         });
         if (pet.foto) {
           this.currentPhotoUrl = pet.foto.url;
+          this.currentPhotoId = pet.foto.id;
         }
       }
     });
   }
 
   onSubmit(): void {
-    if (this.petForm.valid) {
-      const petData = this.petForm.value;
-
-      if (this.isEditMode && this.petId) {
-        this.petsFacade.updatePet(this.petId, petData).subscribe({
-          next: (pet) => this.handlePetSave(pet, 'Pet atualizado com sucesso!'),
-          error: (error) =>
-            this.toastService.onShowError('Erro ao atualizar pet.', error),
-        });
-      } else {
-        this.petsFacade.createPet(petData).subscribe({
-          next: (pet) => this.handlePetSave(pet, 'Pet cadastrado com sucesso!'),
-          error: (error) =>
-            this.toastService.onShowError('Erro ao cadastrar pet.', error),
-        });
-      }
-    } else {
+    if (!this.petForm.valid) {
       this.toastService.onShowError(
         'Por favor, corrija os erros no formulário.',
       );
       this.markFormGroupTouched(this.petForm);
+      return;
     }
-  }
 
-  private handlePetSave(pet: any, successMessage: string): void {
-    if (this.selectedFile && pet.id) {
-      this.handlePhotoUpload(pet.id, successMessage);
+    const petData = this.petForm.value;
+
+    if (this.isEditMode && this.petId) {
+      this.handleUpdate(petData);
     } else {
-      this.toastService.onShowOk(successMessage);
-      this.onBack();
+      this.handleCreate(petData);
     }
   }
 
-  private handlePhotoUpload(petId: number, successMessage: string): void {
-    this.petsFacade.uploadPhoto(petId, this.selectedFile!).subscribe({
+  private handleCreate(petData: any): void {
+    this.petsFacade.createPetWithPhoto(petData, this.selectedFile).subscribe({
       next: () => {
-        this.toastService.onShowOk(successMessage);
+        this.toastService.onShowOk('Pet cadastrado com sucesso!');
         this.onBack();
       },
       error: (error) => {
-        const errorMessage = this.isEditMode
-          ? 'Erro ao fazer upload da foto. Pet foi atualizado.'
-          : 'Pet cadastrado, mas houve erro no upload da foto.';
-        this.toastService.onShowError(errorMessage, error);
-        this.onBack();
+        this.toastService.onShowError('Erro ao cadastrar pet.', error);
       },
     });
+  }
+
+  private handleUpdate(petData: any): void {
+    this.petsFacade
+      .updatePetWithPhoto(this.petId!, petData, {
+        newPhoto: this.selectedFile,
+        currentPhotoId: this.currentPhotoId,
+        photoRemoved: this.photoRemoved,
+      })
+      .subscribe({
+        next: () => {
+          this.toastService.onShowOk('Pet atualizado com sucesso!');
+          this.onBack();
+        },
+        error: (error) => {
+          this.toastService.onShowError('Erro ao atualizar pet.', error);
+        },
+      });
   }
 
   onBack(): void {
@@ -167,6 +168,7 @@ export class PetFormComponent implements OnInit {
   onFileSelected(file: File): void {
     if (file) {
       this.selectedFile = file;
+      this.photoRemoved = false;
 
       const reader = new FileReader();
       reader.onload = (e: any) => {
@@ -179,6 +181,7 @@ export class PetFormComponent implements OnInit {
   removePhoto(): void {
     this.selectedFile = null;
     this.previewUrl = null;
+    this.photoRemoved = true;
     const fileInput = document.querySelector(
       'input[type="file"]',
     ) as HTMLInputElement;

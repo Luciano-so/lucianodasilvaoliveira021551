@@ -60,4 +60,8 @@ export class PetsService {
     formData.append('foto', photo);
     return this.http.post<PetPhoto>(`${this.API_URL}/${petId}/fotos`, formData);
   }
+
+  deletePhoto(petId: number, photoId: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${petId}/fotos/${photoId}`);
+  }
 }

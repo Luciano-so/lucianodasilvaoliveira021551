@@ -16,7 +16,7 @@ export class AuthService {
     this.getUserFromStorage(),
   );
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(
-    this.isAuthenticated(),
+    this.hasValidToken(),
   );
 
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -25,7 +25,13 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  constructor() {}
+  constructor() {
+    this.isAuthenticatedSubject.next(this.hasValidToken());
+  }
+
+  private hasValidToken(): boolean {
+    return !!this.getToken();
+  }
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http
@@ -43,6 +49,7 @@ export class AuthService {
           };
           this.setUser(user);
           this.currentUserSubject.next(user);
+          this.isAuthenticatedSubject.next(true);
         }),
       );
   }
@@ -65,7 +72,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return this.hasValidToken();
   }
 
   private setTokens(accessToken: string, refreshToken: string): void {
