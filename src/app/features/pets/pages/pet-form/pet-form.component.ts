@@ -181,6 +181,7 @@ export class PetFormComponent implements OnInit {
   removePhoto(): void {
     this.selectedFile = null;
     this.previewUrl = null;
+    this.currentPhotoUrl = null;
     this.photoRemoved = true;
     const fileInput = document.querySelector(
       'input[type="file"]',
