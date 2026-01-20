@@ -1,0 +1,22 @@
+<div class="pet-card">
+  <div class="pet-card__image" [class.pet-card__image--no-photo]="!hasPhoto()">
+    @if (hasPhoto()) {
+      <img [src]="pet.foto!.url" [alt]="pet.nome" (error)="onImageError()" />
+    }
+    @if (!hasPhoto()) {
+      <div class="pet-card__placeholder">
+        <mat-icon>pets</mat-icon>
+        <span>Sem foto</span>
+      </div>
+    }
+  </div>
+  <div class="pet-card__content">
+    <h3 class="pet-card__name">{{ pet.nome }}</h3>
+    <div class="pet-card__info">
+      <span class="pet-card__age">{{ getAgeText(pet.idade) }}</span>
+    </div>
+    @if (pet.raca) {
+      <p class="pet-card__breed">{{ pet.raca }}</p>
+    }
+  </div>
+</div>

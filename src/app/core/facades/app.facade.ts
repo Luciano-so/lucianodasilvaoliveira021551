@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { LoadingService } from '../../shared/services/loading/loading.service';
@@ -27,11 +27,11 @@ export class AppFacade {
     isCollapsed: false,
   });
 
-  constructor(
-    private authService: AuthService,
-    private menuService: MenuService,
-    private loadingService: LoadingService,
-  ) {
+  private authService = inject(AuthService);
+  private menuService = inject(MenuService);
+  private loadingService = inject(LoadingService);
+
+  constructor() {
     this.initializeState();
   }
 

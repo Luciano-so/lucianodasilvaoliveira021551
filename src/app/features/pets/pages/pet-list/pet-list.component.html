@@ -1,0 +1,18 @@
+<app-data-grid
+  title="Pets"
+  [items]="pets"
+  [error]="error"
+  [pagination]="pagination"
+  searchPlaceholder="Buscar por nome..."
+  addButtonText="Adicionar Pet"
+  addButtonRoute="/pets/new"
+  emptyMessage="Nenhum pet encontrado"
+  addFirstItemText="Adicionar Primeiro Pet"
+  (searchChange)="onSearchChange($event)"
+  (pageChange)="onPageChange($event)"
+  (retry)="loadPets()"
+>
+  <ng-template #cardTemplate let-pet>
+    <app-pet-card [pet]="pet"></app-pet-card>
+  </ng-template>
+</app-data-grid>

@@ -1,0 +1,129 @@
+<div class="data-grid">
+  <!-- Header -->
+  <div class="data-grid__header">
+    <div class="data-grid__header-left">
+      <h1 class="data-grid__title">{{ title }}</h1>
+      @if (pagination.total > 0) {
+        <p class="data-grid__subtitle">
+          {{ pagination.total }} {{ pagination.total === 1 ? "item" : "itens" }}
+        </p>
+      }
+    </div>
+    <div class="data-grid__actions">
+      <!-- Search -->
+      @if (showSearch) {
+        <mat-form-field
+          appearance="outline"
+          class="data-grid__search"
+          subscriptSizing="dynamic"
+        >
+          <mat-icon matIconPrefix>search</mat-icon>
+          <input
+            matInput
+            placeholder="{{ searchPlaceholder }}"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchInput($event)"
+          />
+          @if (searchTerm) {
+            <button
+              mat-icon-button
+              matIconSuffix
+              (click)="
+                searchTerm = ''; onSearchInput($any({ target: { value: '' } }))
+              "
+              aria-label="Limpar busca"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </mat-form-field>
+      }
+
+      <!-- Add Button -->
+      @if (showAddButton && addButtonRoute) {
+        <button
+          mat-raised-button
+          color="primary"
+          class="data-grid__add-btn"
+          [routerLink]="addButtonRoute"
+        >
+          <mat-icon>add</mat-icon>
+          {{ addButtonText }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Error State -->
+  @if (error) {
+    <div class="data-grid__error">
+      <div class="data-grid__error-container">
+        <mat-icon class="data-grid__error-icon">error_outline</mat-icon>
+        <div class="data-grid__error-content">
+          <h3 class="data-grid__error-title">
+            Não foi possível carregar os dados
+          </h3>
+          <p class="data-grid__error-description">
+            Ocorreu um erro ao buscar as informações
+          </p>
+        </div>
+        <button mat-raised-button color="primary" (click)="onRetry()">
+          <mat-icon>refresh</mat-icon>
+          Tentar novamente
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Grid Content -->
+  @if (!error && items.length > 0) {
+    <div class="data-grid__grid">
+      @for (item of items; track $index) {
+        <ng-container
+          *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"
+        ></ng-container>
+      }
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!error && items.length === 0) {
+    <div class="data-grid__empty">
+      <mat-icon>inbox</mat-icon>
+      <p>{{ emptyMessage }}</p>
+    </div>
+  }
+
+  <!-- Pagination -->
+  @if (pagination.pageCount > 1) {
+    <div class="data-grid__pagination">
+      <button
+        mat-icon-button
+        [disabled]="pagination.page === 0"
+        (click)="onPageChange(pagination.page - 1)"
+        aria-label="Página anterior"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      @for (page of getPaginationArray(); track page) {
+        <button
+          mat-button
+          [class.active]="page === pagination.page"
+          (click)="onPageChange(page)"
+        >
+          {{ getPageDisplay(page) }}
+        </button>
+      }
+
+      <button
+        mat-icon-button
+        [disabled]="pagination.page === pagination.pageCount - 1"
+        (click)="onPageChange(pagination.page + 1)"
+        aria-label="Próxima página"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  }
+</div>

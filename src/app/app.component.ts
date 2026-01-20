@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -20,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isCollapsed = false;
 
   private readonly facade = inject(AppFacade);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit() {
@@ -27,6 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isAuthenticated = state.isAuthenticated;
       this.showPreload = state.isLoading;
       this.isCollapsed = state.isCollapsed;
+      this.cdr.detectChanges();
     });
   }
 

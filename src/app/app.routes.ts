@@ -20,8 +20,8 @@ export const routes: Routes = [
   {
     path: 'pets',
     loadComponent: () =>
-      import('./features/home/pages/dashboard/dashboard.component').then(
-        (m) => m.DashboardComponent,
+      import('./features/pets/pages/pet-list/pet-list.component').then(
+        (m) => m.PetListComponent,
       ),
     canActivate: [authGuard],
   },

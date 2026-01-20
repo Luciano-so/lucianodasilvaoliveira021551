@@ -17,9 +17,9 @@ export class LoadingService {
   state$ = this.stateSubject.asObservable();
   isLoading$ = this.state$.pipe(map((state) => state.show));
 
-  show(message?: string): void {
+  show(): void {
     this.loadingCounter++;
-    this.updateLoadingState(message);
+    this.updateLoadingState();
   }
 
   hide(): void {
@@ -42,8 +42,8 @@ export class LoadingService {
     return this.stateSubject.value.show;
   }
 
-  private updateLoadingState(message?: string): void {
+  private updateLoadingState(): void {
     const show = this.loadingCounter > 0;
-    this.stateSubject.next({ show, message });
+    this.stateSubject.next({ show });
   }
 }
