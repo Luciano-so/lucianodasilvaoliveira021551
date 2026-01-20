@@ -72,19 +72,18 @@ export class PetFormComponent implements OnInit, OnDestroy {
         '',
         [
           Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(30),
+          Validators.minLength(1),
+          Validators.maxLength(100),
         ],
       ],
       raca: [
         '',
         [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(30),
+          Validators.minLength(1),
+          Validators.maxLength(100),
         ],
       ],
-      idade: ['', [Validators.required, Validators.min(0), Validators.max(50)]],
+      idade: ['', [ Validators.min(0), Validators.max(50)]],
     });
   }
 

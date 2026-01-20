@@ -53,59 +53,60 @@
               <mat-error matErrorMessages></mat-error>
             </mat-form-field>
 
-            <div class="tutor-form__fields-row">
-              <mat-form-field appearance="outline" class="tutor-form__field">
-                <mat-label>Email</mat-label>
-                <input
-                  matInput
-                  type="email"
-                  formControlName="email"
-                  placeholder="Digite o email"
-                />
-                <mat-icon matPrefix>email</mat-icon>
-                <mat-error matErrorMessages></mat-error>
-              </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              class="tutor-form__field tutor-form__field--full"
+            >
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                type="email"
+                formControlName="email"
+                placeholder="Digite o email"
+              />
+              <mat-icon matPrefix>email</mat-icon>
+              <mat-error matErrorMessages></mat-error>
+            </mat-form-field>
 
+            <div class="tutor-form__fields-row">
               <mat-form-field appearance="outline" class="tutor-form__field">
                 <mat-label>CPF</mat-label>
                 <input
                   matInput
                   formControlName="cpf"
-                  placeholder="00000000000"
-                  mask="000.000.000-00"
+                  placeholder="000.000.000-00"
+                  appMask="cpf"
                 />
                 <mat-icon matPrefix>badge</mat-icon>
                 <mat-error matErrorMessages></mat-error>
               </mat-form-field>
-            </div>
 
-            <div class="tutor-form__fields-row">
               <mat-form-field appearance="outline" class="tutor-form__field">
                 <mat-label>Telefone</mat-label>
                 <input
                   matInput
                   formControlName="telefone"
                   placeholder="(00) 00000-0000"
-                  mask="(00) 00000-0000"
+                  appMask="telefone"
                 />
                 <mat-icon matPrefix>phone</mat-icon>
                 <mat-error matErrorMessages></mat-error>
               </mat-form-field>
-
-              <mat-form-field
-                appearance="outline"
-                class="tutor-form__field tutor-form__field--full"
-              >
-                <mat-label>Endereço</mat-label>
-                <input
-                  matInput
-                  formControlName="endereco"
-                  placeholder="Digite o endereço completo"
-                />
-                <mat-icon matPrefix>location_on</mat-icon>
-                <mat-error matErrorMessages></mat-error>
-              </mat-form-field>
             </div>
+
+            <mat-form-field
+              appearance="outline"
+              class="tutor-form__field tutor-form__field--full"
+            >
+              <mat-label>Endereço</mat-label>
+              <input
+                matInput
+                formControlName="endereco"
+                placeholder="Digite o endereço completo"
+              />
+              <mat-icon matPrefix>location_on</mat-icon>
+              <mat-error matErrorMessages></mat-error>
+            </mat-form-field>
 
             <div class="tutor-form__actions">
               <button

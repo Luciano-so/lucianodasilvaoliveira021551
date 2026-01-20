@@ -20,6 +20,8 @@ const ERROR_TEMPLATES: ReadonlyArray<ErrorTemplate> = [
   },
   { type: 'max', message: 'O campo deverá conter no máximo {0}.' },
   { type: 'min', message: 'O campo deverá conter no mínimo {0}.' },
+  { type: 'cpf', message: 'CPF informado é inválido.' },
+  { type: 'email', message: 'E-Mail informado é inválido.' },
 ] as const;
 
 const EXTRA_HEIGHT_PER_ERROR = 1.5;

@@ -17,7 +17,9 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
+import { MaskDirective } from '../../../../shared/directives/mask.directive';
 import { MatErrorMessagesDirective } from '../../../../shared/directives/matErrorMessagesDirective';
+import { cpfValidator } from '../../../../shared/validations/cpf.validation';
 import { TutoresFacade } from '../../facades/tutores.facade';
 
 @Component({
@@ -32,6 +34,7 @@ import { TutoresFacade } from '../../facades/tutores.facade';
     MatCardModule,
     MatIconModule,
     MatErrorMessagesDirective,
+    MaskDirective,
     FormHeaderComponent,
     PhotoUploadComponent,
   ],
@@ -71,30 +74,14 @@ export class TutorFormComponent implements OnInit, OnDestroy {
         '',
         [
           Validators.required,
-          Validators.minLength(3),
+          Validators.minLength(1),
           Validators.maxLength(100),
         ],
       ],
-      email: [
-        '',
-        [Validators.required, Validators.email, Validators.maxLength(100)],
-      ],
-      telefone: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^\(\d{2}\)\s?\d{4,5}-\d{4}$/),
-        ],
-      ],
-      endereco: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(5),
-          Validators.maxLength(200),
-        ],
-      ],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+      email: ['', [Validators.email, Validators.maxLength(150)]],
+      telefone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+      endereco: ['', [Validators.maxLength(200)]],
+      cpf: ['', [cpfValidator]],
     });
   }
 
