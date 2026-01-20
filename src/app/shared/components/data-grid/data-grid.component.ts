@@ -59,6 +59,7 @@ export class DataGridComponent<T> {
   @Output() searchChange = new EventEmitter<string>();
   @Output() pageChange = new EventEmitter<number>();
   @Output() retry = new EventEmitter<void>();
+  @Output() addClick = new EventEmitter<void>();
 
   @ContentChild('cardTemplate') cardTemplate!: TemplateRef<any>;
 
@@ -78,6 +79,10 @@ export class DataGridComponent<T> {
 
   onRetry(): void {
     this.retry.emit();
+  }
+
+  onAddClick(): void {
+    this.addClick.emit();
   }
 
   getPaginationArray(): number[] {

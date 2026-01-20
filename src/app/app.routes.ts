@@ -26,6 +26,22 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'pets/new',
+    loadComponent: () =>
+      import('./features/pets/pages/pet-form/pet-form.component').then(
+        (m) => m.PetFormComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'pets/:id/edit',
+    loadComponent: () =>
+      import('./features/pets/pages/pet-form/pet-form.component').then(
+        (m) => m.PetFormComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'tutores',
     loadComponent: () =>
       import('./features/home/pages/dashboard/dashboard.component').then(

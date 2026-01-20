@@ -40,12 +40,12 @@
       }
 
       <!-- Add Button -->
-      @if (showAddButton && addButtonRoute) {
+      @if (showAddButton) {
         <button
           mat-raised-button
           color="primary"
           class="data-grid__add-btn"
-          [routerLink]="addButtonRoute"
+          (click)="onAddClick()"
         >
           <mat-icon>add</mat-icon>
           {{ addButtonText }}

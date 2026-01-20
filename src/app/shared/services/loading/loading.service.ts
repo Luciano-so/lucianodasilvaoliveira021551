@@ -22,10 +22,6 @@ export class LoadingService {
     this.updateLoadingState();
   }
 
-  hide(): void {
-    this.forceHide();
-  }
-
   close(): void {
     if (this.loadingCounter > 0) {
       this.loadingCounter--;

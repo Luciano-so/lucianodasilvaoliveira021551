@@ -11,12 +11,22 @@
     }
   </div>
   <div class="pet-card__content">
-    <h3 class="pet-card__name">{{ pet.nome }}</h3>
-    <div class="pet-card__info">
-      <span class="pet-card__age">{{ getAgeText(pet.idade) }}</span>
+    <div class="pet-card__header">
+      <h3 class="pet-card__name">{{ pet.nome }}</h3>
     </div>
-    @if (pet.raca) {
-      <p class="pet-card__breed">{{ pet.raca }}</p>
-    }
+
+    <div class="pet-card__details">
+      <div class="pet-card__detail">
+        <mat-icon class="pet-card__detail-icon">cake</mat-icon>
+        <span class="pet-card__detail-text">{{ getAgeText(pet.idade) }}</span>
+      </div>
+
+      @if (pet.raca) {
+        <div class="pet-card__detail">
+          <mat-icon class="pet-card__detail-icon">category</mat-icon>
+          <span class="pet-card__detail-text">{{ pet.raca }}</span>
+        </div>
+      }
+    </div>
   </div>
 </div>

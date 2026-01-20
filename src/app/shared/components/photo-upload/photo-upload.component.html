@@ -1,0 +1,64 @@
+<mat-card class="photo-upload__card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>{{ icon }}</mat-icon>
+      {{ title }}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="photo-upload__section">
+      <div class="photo-upload__preview">
+        @if (previewUrl || currentPhotoUrl) {
+          <img
+            [src]="previewUrl || currentPhotoUrl"
+            alt="Preview da foto"
+            class="photo-upload__img"
+          />
+          @if (previewUrl) {
+            <button
+              mat-icon-button
+              type="button"
+              class="photo-upload__remove"
+              (click)="removePhoto()"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        } @else {
+          <div class="photo-upload__placeholder">
+            <mat-icon>pets</mat-icon>
+            <span>Nenhuma foto</span>
+          </div>
+        }
+      </div>
+      <div class="photo-upload__actions">
+        <input
+          type="file"
+          accept="image/*"
+          #fileInput
+          style="display: none"
+          (change)="onFileSelected($event)"
+        />
+        <button
+          mat-raised-button
+          color="accent"
+          type="button"
+          (click)="triggerFileInput(fileInput)"
+        >
+          <mat-icon>{{
+            previewUrl || currentPhotoUrl ? "edit" : "add_photo_alternate"
+          }}</mat-icon>
+          {{
+            previewUrl || currentPhotoUrl ? "Alterar Foto" : "Adicionar Foto"
+          }}
+        </button>
+        @if (!isEditMode && selectedFile) {
+          <p class="photo-upload__info">
+            <mat-icon>info</mat-icon>
+            A foto será enviada após o cadastro
+          </p>
+        }
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

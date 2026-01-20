@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import {
@@ -30,6 +31,7 @@ export class PetListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private searchSubject$ = new Subject<string>();
   private petsFacade = inject(PetsFacade);
+  private router = inject(Router);
 
   constructor() {}
 
@@ -70,6 +72,10 @@ export class PetListComponent implements OnInit, OnDestroy {
 
   loadPets(): void {
     this.petsFacade.loadPets();
+  }
+
+  onAddPet(): void {
+    this.router.navigate(['/pets/new']);
   }
 
   onSearchChange(searchTerm: string): void {

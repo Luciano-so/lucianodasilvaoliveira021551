@@ -113,10 +113,6 @@ export class AppFacade {
     this.loadingService.show();
   }
 
-  hideLoading(): void {
-    this.loadingService.hide();
-  }
-
   closeLoading(): void {
     this.loadingService.close();
   }

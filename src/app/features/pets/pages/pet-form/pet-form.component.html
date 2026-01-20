@@ -1,0 +1,105 @@
+<div class="pet-form">
+  <div class="pet-form__container">
+    <app-form-header
+      [title]="isEditMode ? 'Editar Pet' : 'Novo Pet'"
+      [subtitle]="
+        isEditMode
+          ? 'Atualize as informações do seu pet'
+          : 'Adicione um novo pet ao sistema'
+      "
+      [icon]="'pets'"
+      [showBackButton]="true"
+      (backClick)="onBack()"
+    >
+    </app-form-header>
+
+    <form [formGroup]="petForm" (ngSubmit)="onSubmit()" class="pet-form__form">
+      <app-photo-upload
+        [title]="'Foto do Pet'"
+        [icon]="'photo_camera'"
+        [previewUrl]="previewUrl"
+        [currentPhotoUrl]="currentPhotoUrl"
+        [isEditMode]="isEditMode"
+        [selectedFile]="selectedFile"
+        (fileSelected)="onFileSelected($event)"
+        (photoRemoved)="removePhoto()"
+      >
+      </app-photo-upload>
+
+      <mat-card class="pet-form__card pet-form__info-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>info</mat-icon>
+            Informações do Pet
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="pet-form__fields">
+            <mat-form-field
+              appearance="outline"
+              class="pet-form__field pet-form__field--full"
+            >
+              <mat-label>Nome do Pet</mat-label>
+              <input
+                matInput
+                formControlName="nome"
+                placeholder="Digite o nome do pet"
+              />
+              <mat-icon matPrefix>pets</mat-icon>
+              <mat-error matErrorMessages></mat-error>
+            </mat-form-field>
+
+            <div class="pet-form__fields-row">
+              <mat-form-field appearance="outline" class="pet-form__field">
+                <mat-label>Raça</mat-label>
+                <input
+                  matInput
+                  formControlName="raca"
+                  placeholder="Digite a raça"
+                />
+                <mat-icon matPrefix>category</mat-icon>
+                <mat-error matErrorMessages></mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="pet-form__field">
+                <mat-label>Idade</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="idade"
+                  placeholder="0"
+                />
+                <mat-icon matPrefix>calendar_today</mat-icon>
+                <span matSuffix class="pet-form__field-suffix">anos</span>
+                <mat-error matErrorMessages></mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="pet-form__actions">
+              <button
+                mat-raised-button
+                color="accent"
+                type="button"
+                class="pet-form__cancel-btn"
+                (click)="onBack()"
+              >
+                <mat-icon>close</mat-icon>
+                Cancelar
+              </button>
+              <button
+                mat-raised-button
+                color="accent"
+                type="submit"
+                class="pet-form__submit-btn"
+                [disabled]="petForm.invalid"
+              >
+                <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
+                {{ isEditMode ? "Salvar" : "Cadastrar" }}
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </div>
+</div>

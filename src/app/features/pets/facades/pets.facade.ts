@@ -1,9 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
-import { Pet, PetFilters, PetListResponse } from '../models/pet.model';
+import {
+  CreatePetDto,
+  Pet,
+  PetFilters,
+  PetListResponse,
+  PetPhoto,
+  UpdatePetDto,
+} from '../models/pet.model';
 import { PetsService } from '../services/pets.service';
 
 export interface PetsState {
@@ -90,7 +97,7 @@ export class PetsFacade {
           });
         }),
         finalize(() => {
-          this.loadingService.hide();
+          this.loadingService.close();
         }),
       )
       .subscribe({
@@ -111,6 +118,99 @@ export class PetsFacade {
   goToPage(page: number): void {
     this.loadPets({ ...this._state$.value.filters, page });
   }
+
+  loadPetById(id: number): void {
+    this.loadingService.show();
+
+    this.petsService
+      .getPetById(id)
+      .pipe(
+        tap((pet: Pet) => {
+          this.updateState({ selectedPet: pet });
+          this.selectedPet$.next(pet);
+        }),
+        finalize(() => {
+          this.loadingService.close();
+        }),
+      )
+      .subscribe({
+        error: (error) => {
+          const errorMessage = error?.message || 'Erro ao carregar pet';
+          this.toastService.onShowError(
+            'Erro ao carregar pet. Tente novamente.',
+          );
+          this.error$.next(errorMessage);
+        },
+      });
+  }
+
+  createPet(pet: CreatePetDto): Observable<Pet> {
+    this.loadingService.show();
+
+    return this.petsService.createPet(pet).pipe(
+      tap((newPet: Pet) => {
+        this.toastService.onShowOk('Pet cadastrado com sucesso!');
+        this.loadPets(this._state$.value.filters);
+      }),
+      finalize(() => {
+        this.loadingService.close();
+      }),
+    );
+  }
+
+  updatePet(id: number, pet: UpdatePetDto): Observable<Pet> {
+    this.loadingService.show();
+
+    return this.petsService.updatePet(id, pet).pipe(
+      tap((updatedPet: Pet) => {
+        this.toastService.onShowOk('Pet atualizado com sucesso!');
+        this.loadPets(this._state$.value.filters);
+      }),
+      finalize(() => {
+        this.loadingService.close();
+      }),
+    );
+  }
+
+  deletePet(id: number): void {
+    this.loadingService.show();
+
+    this.petsService
+      .deletePet(id)
+      .pipe(
+        tap(() => {
+          this.toastService.onShowOk('Pet removido com sucesso!');
+          this.loadPets(this._state$.value.filters);
+        }),
+        finalize(() => {
+          this.loadingService.close();
+        }),
+      )
+      .subscribe({
+        error: (error) => {
+          const errorMessage = error?.message || 'Erro ao remover pet';
+          this.toastService.onShowError(
+            'Erro ao remover pet. Tente novamente.',
+          );
+          this.error$.next(errorMessage);
+        },
+      });
+  }
+
+  uploadPhoto(petId: number, photo: File): Observable<PetPhoto> {
+    this.loadingService.show();
+
+    return this.petsService.uploadPhoto(petId, photo).pipe(
+      tap(() => {
+        this.toastService.onShowOk('Foto enviada com sucesso!');
+        this.loadPetById(petId);
+      }),
+      finalize(() => {
+        this.loadingService.close();
+      }),
+    );
+  }
+
   clearError(): void {
     this.error$.next(null);
   }

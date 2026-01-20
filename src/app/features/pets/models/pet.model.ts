@@ -13,6 +13,18 @@ export interface Pet {
   foto?: PetPhoto;
 }
 
+export interface CreatePetDto {
+  nome: string;
+  raca: string;
+  idade: number;
+}
+
+export interface UpdatePetDto {
+  nome: string;
+  raca: string;
+  idade: number;
+}
+
 export interface PetListResponse {
   page: number;
   size: number;

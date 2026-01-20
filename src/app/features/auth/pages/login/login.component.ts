@@ -68,7 +68,7 @@ export class LoginComponent {
         this.facade.closeLoading();
       },
       error: (_) => {
-        this.facade.hideLoading();
+        this.facade.closeLoading();
         this.toastSrv.onShowError(
           'Erro ao fazer login. Verifique suas credenciais.',
         );
