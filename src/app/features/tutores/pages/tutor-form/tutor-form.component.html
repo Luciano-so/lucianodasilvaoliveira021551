@@ -134,5 +134,25 @@
         </mat-card-content>
       </mat-card>
     </form>
+
+    @if (isEditMode && tutorId) {
+      <app-pet-link [tutorId]="tutorId"></app-pet-link>
+    } @else {
+      <mat-card class="tutor-form__pet-notice">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>pets</mat-icon>
+            Vinculação de Pets
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            A opção de vincular pets ao tutor será liberada após a criação e
+            salvamento do registro. Isso garante que o tutor esteja devidamente
+            cadastrado antes de associar animais.
+          </p>
+        </mat-card-content>
+      </mat-card>
+    }
   </div>
 </div>

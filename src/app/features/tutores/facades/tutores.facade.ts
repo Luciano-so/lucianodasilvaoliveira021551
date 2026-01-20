@@ -223,6 +223,28 @@ export class TutoresFacade {
     );
   }
 
+  linkPet(tutorId: number, petId: number): Observable<void> {
+    this.loadingService.show();
+    return this.tutoresService.linkPet(tutorId, petId).pipe(
+      tap(() => {
+        this.toastService.onShowOk('Pet vinculado com sucesso!');
+        this.loadTutorById(tutorId);
+      }),
+      finalize(() => this.loadingService.close()),
+    );
+  }
+
+  unlinkPet(tutorId: number, petId: number): Observable<void> {
+    this.loadingService.show();
+    return this.tutoresService.unlinkPet(tutorId, petId).pipe(
+      tap(() => {
+        this.toastService.onShowOk('Vínculo removido com sucesso!');
+        this.loadTutorById(tutorId);
+      }),
+      finalize(() => this.loadingService.close()),
+    );
+  }
+
   private handlePhotoOperation(
     tutor: Tutor,
     options: {

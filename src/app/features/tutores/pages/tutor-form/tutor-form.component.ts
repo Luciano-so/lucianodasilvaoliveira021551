@@ -20,6 +20,7 @@ import { ToastService } from '../../../../shared/components/toast/toast.service'
 import { MaskDirective } from '../../../../shared/directives/mask.directive';
 import { MatErrorMessagesDirective } from '../../../../shared/directives/matErrorMessagesDirective';
 import { cpfValidator } from '../../../../shared/validations/cpf.validation';
+import { PetLinkComponent } from '../../components/pet-link/pet-link.component';
 import { TutoresFacade } from '../../facades/tutores.facade';
 
 @Component({
@@ -37,6 +38,7 @@ import { TutoresFacade } from '../../facades/tutores.facade';
     MaskDirective,
     FormHeaderComponent,
     PhotoUploadComponent,
+    PetLinkComponent,
   ],
   templateUrl: './tutor-form.component.html',
   styleUrls: ['./tutor-form.component.scss'],

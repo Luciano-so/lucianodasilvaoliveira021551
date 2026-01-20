@@ -1,0 +1,77 @@
+<mat-card class="pet-link">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>pets</mat-icon>
+      Pets Vinculados
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (linkedPets.length > 0) {
+      <div class="pet-link__list">
+        @for (pet of linkedPets; track pet.id) {
+          <div class="pet-link__item">
+            <div class="pet-link__item-info">
+              @if (pet.foto?.url && !failedImages.has(pet.id)) {
+                <img
+                  [src]="pet.foto!.url"
+                  [alt]="pet.nome"
+                  class="pet-link__item-photo"
+                  (error)="onImageError(pet.id)"
+                />
+              } @else {
+                <div
+                  class="pet-link__item-photo pet-link__item-photo--placeholder"
+                >
+                  <mat-icon>pets</mat-icon>
+                </div>
+              }
+              <div class="pet-link__item-details">
+                <span class="pet-link__item-name">{{ pet.nome }}</span>
+                <span class="pet-link__item-race">{{ pet.raca }}</span>
+              </div>
+            </div>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="onUnlinkPet(pet.id)"
+              class="pet-link__item-remove"
+              type="button"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="pet-link__empty">
+        <mat-icon>pets</mat-icon>
+        <p>Nenhum pet vinculado</p>
+      </div>
+    }
+
+    <div class="pet-link__add">
+      <mat-form-field appearance="outline" class="pet-link__add-field">
+        <mat-label>Vincular novo pet</mat-label>
+        <mat-select [formControl]="selectedPetControl">
+          @for (pet of availablePets; track pet.id) {
+            <mat-option [value]="pet.id"
+              >{{ pet.nome }} - {{ pet.raca }}</mat-option
+            >
+          }
+        </mat-select>
+        <mat-icon matPrefix>add</mat-icon>
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="onLinkPet()"
+        [disabled]="!selectedPetControl.value"
+        type="button"
+        class="pet-link__add-btn"
+      >
+        <mat-icon>link</mat-icon>
+        Vincular
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

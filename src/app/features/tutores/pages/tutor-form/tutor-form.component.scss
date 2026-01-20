@@ -14,6 +14,7 @@
     grid-template-columns: 350px 1fr;
     gap: 1.5rem;
     align-items: stretch;
+    margin-bottom: 2rem;
 
     app-photo-upload {
       height: 100%;
@@ -23,6 +24,10 @@
         min-height: 450px;
       }
     }
+  }
+
+  app-pet-link {
+    margin-top: 2rem;
   }
 
   &__card {
@@ -55,7 +60,7 @@
           font-size: 24px;
           width: 24px;
           height: 24px;
-          color: #1976d2;
+          color: #667eea;
         }
       }
 
@@ -64,6 +69,45 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+      }
+    }
+  }
+
+  &__pet-notice {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+
+    ::ng-deep {
+      .mat-mdc-card-header {
+        padding: 1.5rem 1.5rem 0;
+        margin-bottom: 1rem;
+      }
+
+      .mat-mdc-card-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1a1a1a;
+
+        mat-icon {
+          color: #667eea;
+        }
+      }
+
+      .mat-mdc-card-content {
+        padding: 0 1.5rem 1.5rem;
+
+        p {
+          color: #1a1a1a;
+          font-size: 1rem;
+          line-height: 1.5;
+          margin: 0;
+        }
       }
     }
   }
