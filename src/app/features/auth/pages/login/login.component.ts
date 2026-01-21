@@ -24,7 +24,7 @@ import { MatErrorMessagesDirective } from '../../../../shared/directives/matErro
     MatErrorMessagesDirective,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);

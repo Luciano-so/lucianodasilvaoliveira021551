@@ -13,7 +13,7 @@ import { MenuItem } from '../../models/shared.model';
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule, MatTooltipModule],
   templateUrl: './menu.component.html',
-  styleUrl: './menu.component.scss',
+  styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit, OnDestroy {
   private router = inject(Router);

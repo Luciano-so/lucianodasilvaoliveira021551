@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-photo-upload',
   imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule],
   templateUrl: './photo-upload.component.html',
-  styleUrl: './photo-upload.component.scss',
+  styleUrls: ['./photo-upload.component.scss'],
 })
 export class PhotoUploadComponent {
   @Input() title: string = 'Foto';

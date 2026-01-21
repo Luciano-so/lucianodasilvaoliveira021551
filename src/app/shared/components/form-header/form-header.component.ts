@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-form-header',
   imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './form-header.component.html',
-  styleUrl: './form-header.component.scss',
+  styleUrls: ['./form-header.component.scss'],
 })
 export class FormHeaderComponent {
   @Input() title: string = '';

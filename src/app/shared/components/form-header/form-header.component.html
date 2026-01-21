@@ -1,12 +1,13 @@
 <div class="form-header">
-  <button
-    *ngIf="showBackButton"
-    mat-icon-button
-    (click)="onBackClick()"
-    class="form-header__back-btn"
-  >
-    <mat-icon>arrow_back</mat-icon>
-  </button>
+  @if (showBackButton) {
+    <button
+      mat-icon-button
+      (click)="onBackClick()"
+      class="form-header__back-btn"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  }
   <div class="form-header__content">
     <div class="form-header__main">
       <mat-icon class="form-header__icon">{{ icon }}</mat-icon>

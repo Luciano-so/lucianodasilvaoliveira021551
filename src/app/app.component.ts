@@ -18,7 +18,7 @@ import { MenuComponent } from './shared/components/menu/menu.component';
   standalone: true,
   imports: [RouterOutlet, CommonModule, LoadingComponent, MenuComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
   showPreload = false;
