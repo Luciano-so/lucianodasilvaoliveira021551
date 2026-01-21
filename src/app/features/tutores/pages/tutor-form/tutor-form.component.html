@@ -108,28 +108,12 @@
               <mat-error matErrorMessages></mat-error>
             </mat-form-field>
 
-            <div class="tutor-form__actions">
-              <button
-                mat-raised-button
-                color="accent"
-                type="button"
-                class="tutor-form__cancel-btn"
-                (click)="onBack()"
-              >
-                <mat-icon>close</mat-icon>
-                Cancelar
-              </button>
-              <button
-                mat-raised-button
-                color="accent"
-                type="submit"
-                class="tutor-form__submit-btn"
-                [disabled]="tutorForm.invalid"
-              >
-                <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
-                {{ isEditMode ? "Salvar" : "Cadastrar" }}
-              </button>
-            </div>
+            <app-form-actions
+              [isEditMode]="isEditMode"
+              [formInvalid]="tutorForm.invalid"
+              (cancel)="onBack()"
+              (delete)="onDelete()"
+            ></app-form-actions>
           </div>
         </mat-card-content>
       </mat-card>

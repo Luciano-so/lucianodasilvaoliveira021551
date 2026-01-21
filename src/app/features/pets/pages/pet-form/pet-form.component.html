@@ -75,28 +75,11 @@
               </mat-form-field>
             </div>
 
-            <div class="pet-form__actions">
-              <button
-                mat-raised-button
-                color="accent"
-                type="button"
-                class="pet-form__cancel-btn"
-                (click)="onBack()"
-              >
-                <mat-icon>close</mat-icon>
-                Cancelar
-              </button>
-              <button
-                mat-raised-button
-                color="accent"
-                type="submit"
-                class="pet-form__submit-btn"
-                [disabled]="petForm.invalid"
-              >
-                <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
-                {{ isEditMode ? "Salvar" : "Cadastrar" }}
-              </button>
-            </div>
+            <app-form-actions
+              [isEditMode]="isEditMode"
+              [formInvalid]="petForm.invalid"
+              (cancel)="onBack()"
+            ></app-form-actions>
           </div>
         </mat-card-content>
       </mat-card>

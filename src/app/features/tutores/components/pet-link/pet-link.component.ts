@@ -6,8 +6,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ConfirmDialogService } from '../../../../shared/services/confirm-dialog/confirm-dialog.service';
 import { PetsFacade } from '../../../pets/facades/pets.facade';
 import { Pet } from '../../../pets/models/pet.model';
 import { TutoresFacade } from '../../facades/tutores.facade';
@@ -23,6 +25,7 @@ import { TutoresFacade } from '../../facades/tutores.facade';
     MatSelectModule,
     MatFormFieldModule,
     ReactiveFormsModule,
+    MatTooltipModule,
   ],
   templateUrl: './pet-link.component.html',
   styleUrls: ['./pet-link.component.scss'],
@@ -38,6 +41,7 @@ export class PetLinkComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private tutoresFacade = inject(TutoresFacade);
   private petsFacade = inject(PetsFacade);
+  private confirmService = inject(ConfirmDialogService);
 
   ngOnInit(): void {
     this.loadData();
@@ -80,7 +84,16 @@ export class PetLinkComponent implements OnInit, OnDestroy {
   }
 
   onUnlinkPet(petId: number): void {
-    this.tutoresFacade.unlinkPet(this.tutorId, petId).subscribe();
+    const pet = this.linkedPets.find((p) => p.id === petId);
+    this.confirmService
+      .openConfirm({
+        message: `Tem certeza que deseja desvincular o pet "${pet?.nome}" do tutor?`,
+      })
+      .subscribe((result) => {
+        if (result) {
+          this.tutoresFacade.unlinkPet(this.tutorId, petId).subscribe();
+        }
+      });
   }
 
   onImageError(petId: number): void {

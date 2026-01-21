@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { FormActionsComponent } from '../../../../shared/components/form-actions/form-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
@@ -33,6 +34,7 @@ import { PetsFacade } from '../../facades/pets.facade';
     MatIconModule,
     MatErrorMessagesDirective,
     FormHeaderComponent,
+    FormActionsComponent,
     PhotoUploadComponent,
   ],
 
@@ -76,14 +78,8 @@ export class PetFormComponent implements OnInit, OnDestroy {
           Validators.maxLength(100),
         ],
       ],
-      raca: [
-        '',
-        [
-          Validators.minLength(1),
-          Validators.maxLength(100),
-        ],
-      ],
-      idade: ['', [ Validators.min(0), Validators.max(50)]],
+      raca: ['', [Validators.minLength(1), Validators.maxLength(100)]],
+      idade: ['', [Validators.min(0), Validators.max(50)]],
     });
   }
 

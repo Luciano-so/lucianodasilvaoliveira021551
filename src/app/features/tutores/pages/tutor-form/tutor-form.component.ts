@@ -12,13 +12,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { forkJoin, of, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { FormActionsComponent } from '../../../../shared/components/form-actions/form-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { MaskDirective } from '../../../../shared/directives/mask.directive';
 import { MatErrorMessagesDirective } from '../../../../shared/directives/matErrorMessagesDirective';
+import { ConfirmDialogService } from '../../../../shared/services/confirm-dialog/confirm-dialog.service';
 import { cpfValidator } from '../../../../shared/validations/cpf.validation';
 import { PetLinkComponent } from '../../components/pet-link/pet-link.component';
 import { TutoresFacade } from '../../facades/tutores.facade';
@@ -39,6 +41,7 @@ import { TutoresFacade } from '../../facades/tutores.facade';
     FormHeaderComponent,
     PhotoUploadComponent,
     PetLinkComponent,
+    FormActionsComponent,
   ],
   templateUrl: './tutor-form.component.html',
   styleUrls: ['./tutor-form.component.scss'],
@@ -50,6 +53,7 @@ export class TutorFormComponent implements OnInit, OnDestroy {
   private tutoresFacade = inject(TutoresFacade);
   private toastService = inject(ToastService);
   private destroy$ = new Subject<void>();
+  private confirmService = inject(ConfirmDialogService);
 
   tutorForm!: FormGroup;
   isEditMode = false;
@@ -177,6 +181,46 @@ export class TutorFormComponent implements OnInit, OnDestroy {
 
   onBack(): void {
     this.router.navigate(['/tutores']);
+  }
+
+  onDelete(): void {
+    if (!this.tutorId) return;
+
+    this.confirmService
+      .openConfirm({
+        message:
+          'Tem certeza que deseja excluir este tutor? Todos os pets vinculados serão desvinculados automaticamente.',
+      })
+      .subscribe((result) => {
+        if (result) {
+          this.tutoresFacade.selectedTutor$
+            .pipe(
+              filter((tutor) => tutor !== null && tutor.id === this.tutorId),
+              switchMap((tutor) => {
+                if (tutor?.pets && tutor.pets.length > 0) {
+                  const unlinkOperations = tutor.pets.map((pet) =>
+                    this.tutoresFacade.unlinkPet(this.tutorId!, pet.id),
+                  );
+                  return forkJoin(unlinkOperations).pipe(
+                    switchMap(() => of(this.tutorId!)),
+                  );
+                }
+                return of(this.tutorId!);
+              }),
+              takeUntil(this.destroy$),
+            )
+            .subscribe({
+              next: (tutorId) => {
+                this.tutoresFacade.deleteTutor(tutorId);
+                this.toastService.onShowOk('Tutor excluído com sucesso!');
+                this.onBack();
+              },
+              error: (error) => {
+                this.toastService.onShowError('Erro ao excluir tutor.', error);
+              },
+            });
+        }
+      });
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {

@@ -36,6 +36,7 @@
               (click)="onUnlinkPet(pet.id)"
               class="pet-link__item-remove"
               type="button"
+              matTooltip="Desvincular pet"
             >
               <mat-icon>delete</mat-icon>
             </button>
@@ -68,6 +69,7 @@
         [disabled]="!selectedPetControl.value"
         type="button"
         class="pet-link__add-btn"
+        matTooltip="Vincular pet selecionado ao tutor"
       >
         <mat-icon>link</mat-icon>
         Vincular

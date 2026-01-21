@@ -1,0 +1,35 @@
+<div class="form-actions">
+  @if (isEditMode) {
+    <button
+      mat-raised-button
+      type="button"
+      class="form-actions__delete-btn"
+      (click)="onDelete()"
+      matTooltip="Excluir registro permanentemente"
+    >
+      <mat-icon>delete</mat-icon>
+      Excluir
+    </button>
+  }
+  <button
+    mat-raised-button
+    type="button"
+    class="form-actions__cancel-btn"
+    (click)="onCancel()"
+    matTooltip="Cancelar e voltar"
+  >
+    <mat-icon>close</mat-icon>
+    Cancelar
+  </button>
+  <button
+    mat-raised-button
+    type="submit"
+    class="form-actions__submit-btn"
+    [disabled]="formInvalid"
+    (click)="onSubmit()"
+    [matTooltip]="isEditMode ? 'Salvar alterações' : 'Cadastrar novo registro'"
+  >
+    <mat-icon>{{ isEditMode ? "save" : "add" }}</mat-icon>
+    {{ isEditMode ? "Salvar" : "Cadastrar" }}
+  </button>
+</div>
