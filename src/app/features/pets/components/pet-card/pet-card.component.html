@@ -1,15 +1,9 @@
 <div class="pet-card" (click)="onCardClick()">
-  <div class="pet-card__image" [class.pet-card__image--no-photo]="!hasPhoto()">
-    @if (hasPhoto()) {
-      <img [src]="pet.foto!.url" [alt]="pet.nome" (error)="onImageError()" />
-    }
-    @if (!hasPhoto()) {
-      <div class="pet-card__placeholder">
-        <mat-icon>pets</mat-icon>
-        <span>Sem foto</span>
-      </div>
-    }
-  </div>
+  <app-card-image
+    [photoUrl]="pet.foto?.url"
+    [alt]="pet.nome"
+    [icon]="'pets'"
+  ></app-card-image>
   <div class="pet-card__content">
     <div class="pet-card__header">
       <h3 class="pet-card__name">{{ pet.nome }}</h3>

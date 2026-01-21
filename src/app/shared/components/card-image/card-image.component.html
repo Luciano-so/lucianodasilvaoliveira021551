@@ -1,0 +1,11 @@
+<div class="card-image" [ngClass]="!hasPhoto() ? 'card-image--no-photo' : ''">
+  @if (hasPhoto()) {
+    <img [src]="photoUrl!" [alt]="alt" (error)="onImageError()" />
+  }
+  @if (!hasPhoto()) {
+    <div class="card-image__placeholder">
+      <mat-icon>{{ icon }}</mat-icon>
+      <span>Sem foto</span>
+    </div>
+  }
+</div>
