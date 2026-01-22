@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { concatMap, finalize, tap } from 'rxjs/operators';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { TutoresService } from '../../tutores/services/tutores.service';
 import {
   CreatePetDto,
   Pet,
@@ -45,11 +46,9 @@ export class PetsFacade {
   });
 
   public state$ = this._state$.asObservable();
-
-  // Selectors
   public pets$ = new BehaviorSubject<Pet[]>([]);
-  public selectedPet$ = new BehaviorSubject<Pet | null>(null);
   public error$ = new BehaviorSubject<string | null>(null);
+  public selectedPet$ = new BehaviorSubject<Pet | null>(null);
   public pagination$ = new BehaviorSubject<{
     total: number;
     page: number;
@@ -63,8 +62,9 @@ export class PetsFacade {
   });
 
   private petsService = inject(PetsService);
-  private loadingService = inject(LoadingService);
   private toastService = inject(ToastService);
+  private tutoresService = inject(TutoresService);
+  private loadingService = inject(LoadingService);
 
   constructor() {}
 
@@ -186,6 +186,10 @@ export class PetsFacade {
     return this.petsService
       .deletePhoto(petId, photoId)
       .pipe(finalize(() => this.loadingService.close()));
+  }
+
+  unlinkTutor(tutorId: number, petId: number): Observable<void> {
+    return this.tutoresService.unlinkPet(tutorId, petId);
   }
 
   createPetWithPhoto(

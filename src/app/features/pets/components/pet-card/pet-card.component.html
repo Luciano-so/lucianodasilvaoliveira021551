@@ -10,10 +10,12 @@
     </div>
 
     <div class="pet-card__details">
-      <div class="pet-card__detail">
-        <mat-icon class="pet-card__detail-icon">cake</mat-icon>
-        <span class="pet-card__detail-text">{{ getAgeText(pet.idade) }}</span>
-      </div>
+      @if (pet.idade !== null && pet.idade !== undefined) {
+        <div class="pet-card__detail">
+          <mat-icon class="pet-card__detail-icon">cake</mat-icon>
+          <span class="pet-card__detail-text">{{ getAgeText(pet.idade) }}</span>
+        </div>
+      }
 
       @if (pet.raca) {
         <div class="pet-card__detail">

@@ -12,14 +12,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { forkJoin, of, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { FormActionsComponent } from '../../../../shared/components/form-actions/form-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
 import { RelationSectionComponent } from '../../../../shared/components/relation-section/relation-section.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { MatErrorMessagesDirective } from '../../../../shared/directives/matErrorMessagesDirective';
+import { ConfirmDialogService } from '../../../../shared/services/confirm-dialog/confirm-dialog.service';
 import { TutorLinkComponent } from '../../components/tutor-link/tutor-link.component';
 import { PetsFacade } from '../../facades/pets.facade';
 
@@ -46,21 +47,23 @@ import { PetsFacade } from '../../facades/pets.facade';
   styleUrls: ['./pet-form.component.scss'],
 })
 export class PetFormComponent implements OnInit, OnDestroy {
-  private fb = inject(FormBuilder);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
+  private destroy$ = new Subject<void>();
   private route = inject(ActivatedRoute);
   private petsFacade = inject(PetsFacade);
   private toastService = inject(ToastService);
-  private destroy$ = new Subject<void>();
+  private confirmDialogService = inject(ConfirmDialogService);
 
-  petForm!: FormGroup;
-  isEditMode = false;
   petId?: number;
+  isEditMode = false;
+  petForm!: FormGroup;
+  photoRemoved: boolean = false;
+  linkedTutorIds: number[] = [];
   selectedFile: File | null = null;
   previewUrl: string | null = null;
-  currentPhotoUrl: string | null = null;
   currentPhotoId: number | null = null;
-  photoRemoved: boolean = false;
+  currentPhotoUrl: string | null = null;
 
   ngOnInit(): void {
     this.initForm();
@@ -88,11 +91,11 @@ export class PetFormComponent implements OnInit, OnDestroy {
   }
 
   private checkEditMode(): void {
-    this.selectedFile = null;
     this.previewUrl = null;
-    this.currentPhotoUrl = null;
-    this.currentPhotoId = null;
+    this.selectedFile = null;
     this.photoRemoved = false;
+    this.currentPhotoId = null;
+    this.currentPhotoUrl = null;
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
@@ -119,6 +122,7 @@ export class PetFormComponent implements OnInit, OnDestroy {
             this.currentPhotoUrl = pet.foto.url;
             this.currentPhotoId = pet.foto.id;
           }
+          this.linkedTutorIds = pet.tutores?.map((t) => t.id) || [];
         }
       });
   }
@@ -196,15 +200,56 @@ export class PetFormComponent implements OnInit, OnDestroy {
   }
 
   removePhoto(): void {
-    this.selectedFile = null;
     this.previewUrl = null;
-    this.currentPhotoUrl = null;
+    this.selectedFile = null;
     this.photoRemoved = true;
+    this.currentPhotoUrl = null;
     const fileInput = document.querySelector(
       'input[type="file"]',
     ) as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
+  }
+
+  onDelete(): void {
+    if (!this.petId) return;
+
+    const petName = this.petForm.get('nome')?.value || 'este pet';
+    const hasTutors = this.linkedTutorIds.length > 0;
+    let message = `Tem certeza que deseja excluir "${petName}"?`;
+    if (hasTutors) {
+      message += `\n Este pet está vinculado a ${this.linkedTutorIds.length} tutor(es) e será desvinculado automaticamente.`;
+    }
+
+    this.confirmDialogService
+      .openConfirm({
+        title: 'Confirmar Exclusão',
+        message: message,
+      })
+      .pipe(
+        filter((confirmed): confirmed is boolean => confirmed === true),
+        switchMap(() => {
+          if (hasTutors) {
+            return forkJoin(
+              this.linkedTutorIds.map((tutorId) =>
+                this.petsFacade.unlinkTutor(tutorId, this.petId!),
+              ),
+            ).pipe(switchMap(() => of(true)));
+          }
+          return of(true);
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: () => {
+          this.petsFacade.deletePet(this.petId!);
+          this.toastService.onShowOk('Pet excluído com sucesso!');
+          this.onBack();
+        },
+        error: (error: any) => {
+          this.toastService.onShowError('Erro ao excluir pet.', error);
+        },
+      });
   }
 }

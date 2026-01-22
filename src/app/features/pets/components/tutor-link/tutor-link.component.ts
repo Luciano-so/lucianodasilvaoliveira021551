@@ -41,11 +41,10 @@ export class TutorLinkComponent implements OnInit, OnDestroy {
   }
 
   private loadData(): void {
-    this.petsFacade.loadPetById(this.petId);
     this.petsFacade.selectedPet$
       .pipe(takeUntil(this.destroy$))
       .subscribe((pet) => {
-        if (pet?.tutores) {
+        if (pet && pet.id === this.petId && pet.tutores) {
           this.linkedTutors = pet.tutores;
         }
       });

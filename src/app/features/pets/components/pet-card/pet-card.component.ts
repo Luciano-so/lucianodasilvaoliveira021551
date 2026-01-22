@@ -17,7 +17,10 @@ export class PetCardComponent {
 
   private router = inject(Router);
 
-  getAgeText(idade: number): string {
+  getAgeText(idade: number | null | undefined): string {
+    if (idade === null || idade === undefined) {
+      return '';
+    }
     if (idade === 1) {
       return '1 ano';
     }
