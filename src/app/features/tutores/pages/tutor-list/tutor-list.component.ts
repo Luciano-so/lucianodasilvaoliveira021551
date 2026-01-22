@@ -34,7 +34,6 @@ export class TutorListComponent implements OnInit, OnDestroy {
   private searchSubject$ = new Subject<string>();
 
   ngOnInit(): void {
-    console.log('TutorListComponent: ngOnInit chamado');
     this.setupSubscriptions();
     this.setupSearch();
     this.loadTutores();
