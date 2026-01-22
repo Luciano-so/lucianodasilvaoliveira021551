@@ -137,12 +137,26 @@ export class PetFormComponent implements OnInit, OnDestroy {
     }
 
     const petData = this.petForm.value;
+    const message = this.isEditMode
+      ? `Deseja salvar as alterações feitas em <strong>"${petData.nome}</strong>"?`
+      : `Deseja cadastrar o pet <strong>"${petData.nome}</strong>"?`;
 
-    if (this.isEditMode && this.petId) {
-      this.handleUpdate(petData);
-    } else {
-      this.handleCreate(petData);
-    }
+    this.confirmDialogService
+      .openConfirm({
+        title: this.isEditMode ? 'Confirmar Alterações' : 'Confirmar Cadastro',
+        message: message,
+      })
+      .pipe(
+        filter((confirmed): confirmed is boolean => confirmed === true),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        if (this.isEditMode && this.petId) {
+          this.handleUpdate(petData);
+        } else {
+          this.handleCreate(petData);
+        }
+      });
   }
 
   private handleCreate(petData: any): void {
@@ -217,9 +231,9 @@ export class PetFormComponent implements OnInit, OnDestroy {
 
     const petName = this.petForm.get('nome')?.value || 'este pet';
     const hasTutors = this.linkedTutorIds.length > 0;
-    let message = `Tem certeza que deseja excluir "${petName}"?`;
+    let message = `Tem certeza que deseja excluir <strong>"${petName}"</strong>?`;
     if (hasTutors) {
-      message += `\n Este pet está vinculado a ${this.linkedTutorIds.length} tutor(es) e será desvinculado automaticamente.`;
+      message += `\n Este pet está vinculado a <strong>${this.linkedTutorIds.length}</strong> tutor(es) e será desvinculado automaticamente.`;
     }
 
     this.confirmDialogService

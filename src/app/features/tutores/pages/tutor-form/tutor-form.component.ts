@@ -141,12 +141,26 @@ export class TutorFormComponent implements OnInit, OnDestroy {
     }
 
     const tutorData = this.tutorForm.value;
+    const message = this.isEditMode
+      ? `Deseja salvar as alterações feitas em <strong>"${tutorData.nome}</strong>"?`
+      : `Deseja cadastrar o tutor <strong>"${tutorData.nome}</strong>"?`;
 
-    if (this.isEditMode && this.tutorId) {
-      this.handleUpdate(tutorData);
-    } else {
-      this.handleCreate(tutorData);
-    }
+    this.confirmService
+      .openConfirm({
+        title: this.isEditMode ? 'Confirmar Alterações' : 'Confirmar Cadastro',
+        message: message,
+      })
+      .pipe(
+        filter((confirmed): confirmed is boolean => confirmed === true),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        if (this.isEditMode && this.tutorId) {
+          this.handleUpdate(tutorData);
+        } else {
+          this.handleCreate(tutorData);
+        }
+      });
   }
 
   private handleCreate(tutorData: any): void {
