@@ -117,6 +117,16 @@ export class PetsFacade {
     this.loadPets({ ...this._state$.value.filters, nome, page: 0 });
   }
 
+  clearFilters(): void {
+    this.updateState({
+      filters: {
+        page: 0,
+        size: 10,
+      },
+    });
+    this.loadPets({ page: 0, size: 10 });
+  }
+
   goToPage(page: number): void {
     this.loadPets({ ...this._state$.value.filters, page });
   }
@@ -157,7 +167,6 @@ export class PetsFacade {
       .pipe(
         tap(() => {
           this.toastService.onShowOk('Pet removido com sucesso!');
-          this.loadPets(this._state$.value.filters);
         }),
         finalize(() => {
           this.loadingService.close();

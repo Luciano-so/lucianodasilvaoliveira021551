@@ -115,6 +115,16 @@ export class TutoresFacade {
     this.loadTutores({ ...this._state$.value.filters, nome, page: 0 });
   }
 
+  clearFilters(): void {
+    this.updateState({
+      filters: {
+        page: 0,
+        size: 10,
+      },
+    });
+    this.loadTutores({ page: 0, size: 10 });
+  }
+
   goToPage(page: number): void {
     this.loadTutores({ ...this._state$.value.filters, page });
   }
@@ -155,7 +165,6 @@ export class TutoresFacade {
       .pipe(
         tap(() => {
           this.toastService.onShowOk('Tutor removido com sucesso!');
-          this.loadTutores(this._state$.value.filters);
         }),
         finalize(() => {
           this.loadingService.close();

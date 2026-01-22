@@ -42,6 +42,7 @@ export class PetListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.petsFacade.clearFilters();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -79,7 +80,11 @@ export class PetListComponent implements OnInit, OnDestroy {
   }
 
   onSearchChange(searchTerm: string): void {
-    this.searchSubject$.next(searchTerm);
+    if (!searchTerm || searchTerm.trim() === '') {
+      this.petsFacade.clearFilters();
+    } else {
+      this.searchSubject$.next(searchTerm);
+    }
   }
 
   onPageChange(page: number): void {

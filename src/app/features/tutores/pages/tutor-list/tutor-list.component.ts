@@ -40,6 +40,7 @@ export class TutorListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.tutoresFacade.clearFilters();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -81,7 +82,11 @@ export class TutorListComponent implements OnInit, OnDestroy {
   }
 
   onSearchChange(searchTerm: string): void {
-    this.searchSubject$.next(searchTerm);
+    if (!searchTerm || searchTerm.trim() === '') {
+      this.tutoresFacade.clearFilters();
+    } else {
+      this.searchSubject$.next(searchTerm);
+    }
   }
 
   onPageChange(page: number): void {

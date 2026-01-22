@@ -5,8 +5,11 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class PhoneFormatPipe implements PipeTransform {
-  transform(value: string | number | null | undefined): string {
-    if (!value) return '';
+  transform(
+    value: string | number | null | undefined,
+    showEmptyText: boolean = false,
+  ): string {
+    if (!value) return showEmptyText ? 'Não informado' : '';
 
     const phoneStr = value.toString().replace(/\D/g, '');
 
