@@ -124,7 +124,6 @@ export class PetsFacade {
         size: 10,
       },
     });
-    this.loadPets({ page: 0, size: 10 });
   }
 
   goToPage(page: number): void {

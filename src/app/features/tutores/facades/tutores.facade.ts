@@ -46,10 +46,9 @@ export class TutoresFacade {
 
   public state$ = this._state$.asObservable();
 
-  // Selectors
   public tutores$ = new BehaviorSubject<Tutor[]>([]);
-  public selectedTutor$ = new BehaviorSubject<Tutor | null>(null);
   public error$ = new BehaviorSubject<string | null>(null);
+  public selectedTutor$ = new BehaviorSubject<Tutor | null>(null);
   public pagination$ = new BehaviorSubject<{
     total: number;
     page: number;
@@ -122,7 +121,6 @@ export class TutoresFacade {
         size: 10,
       },
     });
-    this.loadTutores({ page: 0, size: 10 });
   }
 
   goToPage(page: number): void {
