@@ -1,0 +1,12 @@
+@if (photoUrl && !hasError) {
+  <img
+    [src]="photoUrl"
+    [alt]="alt"
+    class="entity-photo"
+    (error)="onImageError()"
+  />
+} @else {
+  <div class="entity-photo entity-photo--placeholder">
+    <mat-icon>{{ icon }}</mat-icon>
+  </div>
+}

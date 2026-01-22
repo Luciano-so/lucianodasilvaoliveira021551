@@ -11,20 +11,12 @@
         @for (pet of linkedPets; track pet.id) {
           <div class="pet-link__item">
             <div class="pet-link__item-info">
-              @if (pet.foto?.url && !failedImages.has(pet.id)) {
-                <img
-                  [src]="pet.foto!.url"
-                  [alt]="pet.nome"
-                  class="pet-link__item-photo"
-                  (error)="onImageError(pet.id)"
-                />
-              } @else {
-                <div
-                  class="pet-link__item-photo pet-link__item-photo--placeholder"
-                >
-                  <mat-icon>pets</mat-icon>
-                </div>
-              }
+              <app-entity-photo
+                [photoUrl]="pet.foto?.url"
+                [alt]="pet.nome"
+                [icon]="'pets'"
+                [entityId]="pet.id"
+              ></app-entity-photo>
               <div class="pet-link__item-details">
                 <span class="pet-link__item-name">{{ pet.nome }}</span>
                 <span class="pet-link__item-race">{{ pet.raca }}</span>

@@ -66,17 +66,11 @@
     flex: 1;
   }
 
-  &__fields-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
   &__field {
     width: 100%;
 
     &--full {
-      grid-column: 1 / -1;
+      width: 100%;
     }
 
     ::ng-deep {
@@ -189,16 +183,55 @@
       grid-template-columns: 1fr;
     }
 
-    &__fields-row {
-      grid-template-columns: 1fr;
-    }
-
     &__actions {
       flex-direction: column-reverse;
 
       button {
         width: 100%;
       }
+    }
+  }
+
+  app-tutor-link {
+    margin-top: 2rem;
+  }
+}
+
+.pet-form__tutor-notice {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-top: 2rem;
+
+  ::ng-deep {
+    .mat-mdc-card-header {
+      padding: 1.5rem 1.5rem 0;
+      margin-bottom: 1rem;
+    }
+
+    .mat-mdc-card-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
+
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        color: #1976d2;
+      }
+    }
+
+    .mat-mdc-card-content {
+      padding: 0 1.5rem 1.5rem;
+      color: #666;
+      line-height: 1.5;
     }
   }
 }

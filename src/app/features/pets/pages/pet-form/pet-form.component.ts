@@ -17,8 +17,10 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { FormActionsComponent } from '../../../../shared/components/form-actions/form-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
+import { RelationSectionComponent } from '../../../../shared/components/relation-section/relation-section.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { MatErrorMessagesDirective } from '../../../../shared/directives/matErrorMessagesDirective';
+import { TutorLinkComponent } from '../../components/tutor-link/tutor-link.component';
 import { PetsFacade } from '../../facades/pets.facade';
 
 @Component({
@@ -36,6 +38,8 @@ import { PetsFacade } from '../../facades/pets.facade';
     FormHeaderComponent,
     FormActionsComponent,
     PhotoUploadComponent,
+    TutorLinkComponent,
+    RelationSectionComponent,
   ],
 
   templateUrl: './pet-form.component.html',

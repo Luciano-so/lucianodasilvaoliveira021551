@@ -1,4 +1,4 @@
-<div class="form-actions">
+<div class="form-actions" [class.form-actions--no-delete]="!isEditMode">
   @if (isEditMode) {
     <button
       mat-raised-button

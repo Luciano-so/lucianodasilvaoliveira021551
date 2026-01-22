@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { EntityPhotoComponent } from '../../../../shared/components/entity-photo/entity-photo.component';
 import { ConfirmDialogService } from '../../../../shared/services/confirm-dialog/confirm-dialog.service';
 import { PetsFacade } from '../../../pets/facades/pets.facade';
 import { Pet } from '../../../pets/models/pet.model';
@@ -26,6 +27,7 @@ import { TutoresFacade } from '../../facades/tutores.facade';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatTooltipModule,
+    EntityPhotoComponent,
   ],
   templateUrl: './pet-link.component.html',
   styleUrls: ['./pet-link.component.scss'],
@@ -36,7 +38,6 @@ export class PetLinkComponent implements OnInit, OnDestroy {
   linkedPets: Pet[] = [];
   availablePets: Pet[] = [];
   selectedPetControl = new FormControl<number | null>(null);
-  failedImages = new Set<number>();
 
   private destroy$ = new Subject<void>();
   private tutoresFacade = inject(TutoresFacade);
@@ -94,9 +95,5 @@ export class PetLinkComponent implements OnInit, OnDestroy {
           this.tutoresFacade.unlinkPet(this.tutorId, petId).subscribe();
         }
       });
-  }
-
-  onImageError(petId: number): void {
-    this.failedImages.add(petId);
   }
 }

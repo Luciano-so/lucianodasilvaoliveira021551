@@ -1,0 +1,15 @@
+@if (isEditMode && entityId && linkTemplate) {
+  <ng-container *ngTemplateOutlet="linkTemplate"></ng-container>
+} @else {
+  <mat-card class="relation-section__notice">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>{{ noticeIcon }}</mat-icon>
+        {{ noticeTitle }}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ noticeText }}</p>
+    </mat-card-content>
+  </mat-card>
+}

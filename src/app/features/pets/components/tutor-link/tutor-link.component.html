@@ -1,0 +1,48 @@
+<mat-card class="tutor-link">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>people</mat-icon>
+      Tutores Vinculados
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (linkedTutors.length > 0) {
+      <div class="tutor-link__list">
+        @for (tutor of linkedTutors; track tutor.id) {
+          <div class="tutor-link__item">
+            <div class="tutor-link__item-info">
+              <app-entity-photo
+                [photoUrl]="tutor.foto?.url"
+                [alt]="tutor.nome"
+                [icon]="'person'"
+                [entityId]="tutor.id"
+              ></app-entity-photo>
+              <div class="tutor-link__item-details">
+                <span class="tutor-link__item-name">{{ tutor.nome }}</span>
+                <div class="tutor-link__item-info">
+                  <mat-icon class="tutor-link__item-icon">phone</mat-icon>
+                  <span class="tutor-link__item-phone">{{
+                    tutor.telefone | phoneFormat
+                  }}</span>
+                </div>
+                @if (tutor.email) {
+                  <div class="tutor-link__item-info">
+                    <mat-icon class="tutor-link__item-icon">email</mat-icon>
+                    <span class="tutor-link__item-email">{{
+                      tutor.email
+                    }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="tutor-link__empty">
+        <mat-icon>people</mat-icon>
+        <p>Nenhum tutor vinculado</p>
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

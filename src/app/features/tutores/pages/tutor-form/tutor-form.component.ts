@@ -17,6 +17,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { FormActionsComponent } from '../../../../shared/components/form-actions/form-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
+import { RelationSectionComponent } from '../../../../shared/components/relation-section/relation-section.component';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { MaskDirective } from '../../../../shared/directives/mask.directive';
 import { MatErrorMessagesDirective } from '../../../../shared/directives/matErrorMessagesDirective';
@@ -42,6 +43,7 @@ import { TutoresFacade } from '../../facades/tutores.facade';
     PhotoUploadComponent,
     PetLinkComponent,
     FormActionsComponent,
+    RelationSectionComponent,
   ],
   templateUrl: './tutor-form.component.html',
   styleUrls: ['./tutor-form.component.scss'],

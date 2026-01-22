@@ -49,31 +49,35 @@
               <mat-error matErrorMessages></mat-error>
             </mat-form-field>
 
-            <div class="pet-form__fields-row">
-              <mat-form-field appearance="outline" class="pet-form__field">
-                <mat-label>Raça</mat-label>
-                <input
-                  matInput
-                  formControlName="raca"
-                  placeholder="Digite a raça"
-                />
-                <mat-icon matPrefix>category</mat-icon>
-                <mat-error matErrorMessages></mat-error>
-              </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              class="pet-form__field pet-form__field--full"
+            >
+              <mat-label>Raça</mat-label>
+              <input
+                matInput
+                formControlName="raca"
+                placeholder="Digite a raça"
+              />
+              <mat-icon matPrefix>category</mat-icon>
+              <mat-error matErrorMessages></mat-error>
+            </mat-form-field>
 
-              <mat-form-field appearance="outline" class="pet-form__field">
-                <mat-label>Idade</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  formControlName="idade"
-                  placeholder="0"
-                />
-                <mat-icon matPrefix>calendar_today</mat-icon>
-                <span matSuffix class="pet-form__field-suffix">anos</span>
-                <mat-error matErrorMessages></mat-error>
-              </mat-form-field>
-            </div>
+            <mat-form-field
+              appearance="outline"
+              class="pet-form__field pet-form__field--full"
+            >
+              <mat-label>Idade</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="idade"
+                placeholder="0"
+              />
+              <mat-icon matPrefix>calendar_today</mat-icon>
+              <span matSuffix class="pet-form__field-suffix">anos</span>
+              <mat-error matErrorMessages></mat-error>
+            </mat-form-field>
 
             <app-form-actions
               [isEditMode]="isEditMode"
@@ -84,5 +88,20 @@
         </mat-card-content>
       </mat-card>
     </form>
+
+    <app-relation-section
+      [isEditMode]="isEditMode"
+      [entityId]="petId"
+      [linkTemplate]="tutorLinkTemplate"
+      [noticeIcon]="'people'"
+      [noticeTitle]="'Vinculação de Tutores'"
+      [noticeText]="
+        'A opção de visualizar tutores vinculados ao pet será liberada após a criação e salvamento do registro. Isso garante que o pet esteja devidamente cadastrado antes de visualizar associações.'
+      "
+    ></app-relation-section>
+
+    <ng-template #tutorLinkTemplate>
+      <app-tutor-link [petId]="petId!"></app-tutor-link>
+    </ng-template>
   </div>
 </div>
