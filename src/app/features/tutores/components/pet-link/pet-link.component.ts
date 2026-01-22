@@ -34,14 +34,15 @@ import { TutoresFacade } from '../../facades/tutores.facade';
 })
 export class PetLinkComponent implements OnInit, OnDestroy {
   @Input() tutorId!: number;
+  @Input() readOnly = false;
 
   linkedPets: Pet[] = [];
   availablePets: Pet[] = [];
   selectedPetControl = new FormControl<number | null>(null);
 
   private destroy$ = new Subject<void>();
-  private tutoresFacade = inject(TutoresFacade);
   private petsFacade = inject(PetsFacade);
+  private tutoresFacade = inject(TutoresFacade);
   private confirmService = inject(ConfirmDialogService);
 
   ngOnInit(): void {

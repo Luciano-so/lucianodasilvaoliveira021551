@@ -22,4 +22,11 @@ export const TUTORES_ROUTES: Routes = [
         (m) => m.TutorFormComponent,
       ),
   },
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./pages/tutor-detail/tutor-detail.component').then(
+        (m) => m.TutorDetailComponent,
+      ),
+  },
 ];

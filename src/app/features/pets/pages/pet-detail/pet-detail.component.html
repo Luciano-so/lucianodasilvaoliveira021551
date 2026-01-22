@@ -1,0 +1,79 @@
+<div class="pet-detail">
+  <div class="pet-detail__container">
+    <app-form-header
+      [title]="pet?.nome || 'Detalhes do Pet'"
+      [subtitle]="'Visualize as informações completas do pet'"
+      [icon]="'pets'"
+      [showBackButton]="true"
+      (backClick)="onBack()"
+    >
+    </app-form-header>
+
+    @if (pet) {
+      <div class="pet-detail__content">
+        <div class="pet-detail__photo-card">
+          <app-card-image
+            [photoUrl]="pet.foto?.url"
+            [alt]="pet.nome"
+            [icon]="'pets'"
+          />
+        </div>
+        <mat-card class="pet-detail__card pet-detail__info-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>info</mat-icon>
+              Informações do Pet
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="pet-detail__fields">
+              <div class="pet-detail__field">
+                <mat-icon class="pet-detail__field-icon">pets</mat-icon>
+                <div class="pet-detail__field-content">
+                  <label class="pet-detail__field-label">Nome do Pet</label>
+                  <div class="pet-detail__field-value">{{ pet.nome }}</div>
+                </div>
+              </div>
+
+              <div class="pet-detail__field">
+                <mat-icon class="pet-detail__field-icon">category</mat-icon>
+                <div class="pet-detail__field-content">
+                  <label class="pet-detail__field-label">Raça</label>
+                  <div class="pet-detail__field-value">
+                    {{ pet.raca || "Não informada" }}
+                  </div>
+                </div>
+              </div>
+              <div class="pet-detail__field">
+                <mat-icon class="pet-detail__field-icon"
+                  >calendar_today</mat-icon
+                >
+                <div class="pet-detail__field-content">
+                  <label class="pet-detail__field-label">Idade</label>
+                  <div class="pet-detail__field-value">
+                    {{ pet.idade | ageFormat: true }}
+                  </div>
+                </div>
+              </div>
+
+              <app-detail-actions
+                (back)="onBack()"
+                (edit)="onEdit()"
+              ></app-detail-actions>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <app-relation-section
+        [isEditMode]="true"
+        [entityId]="petId"
+        [linkTemplate]="tutorLinkTemplate"
+      ></app-relation-section>
+
+      <ng-template #tutorLinkTemplate>
+        <app-tutor-link [petId]="petId" [readOnly]="true"></app-tutor-link>
+      </ng-template>
+    }
+  </div>
+</div>

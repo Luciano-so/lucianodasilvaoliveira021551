@@ -10,9 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./card-image.component.scss'],
 })
 export class CardImageComponent {
-  @Input() photoUrl: string | null | undefined = null;
   @Input() alt: string = '';
   @Input() icon: string = 'person';
+  @Input() photoUrl: string | null | undefined = null;
 
   hasError = false;
 

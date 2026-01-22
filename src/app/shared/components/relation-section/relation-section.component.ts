@@ -11,10 +11,10 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./relation-section.component.scss'],
 })
 export class RelationSectionComponent {
+  @Input() noticeText = '';
+  @Input() noticeIcon = '';
+  @Input() noticeTitle = '';
   @Input() isEditMode = false;
   @Input() entityId: number | undefined;
   @Input() linkTemplate: TemplateRef<any> | undefined;
-  @Input() noticeIcon = '';
-  @Input() noticeTitle = '';
-  @Input() noticeText = '';
 }

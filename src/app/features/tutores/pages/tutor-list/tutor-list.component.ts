@@ -28,12 +28,13 @@ export class TutorListComponent implements OnInit, OnDestroy {
     pageCount: 0,
   };
 
-  private destroy$ = new Subject<void>();
-  private searchSubject$ = new Subject<string>();
-  private tutoresFacade = inject(TutoresFacade);
   private router = inject(Router);
+  private destroy$ = new Subject<void>();
+  private tutoresFacade = inject(TutoresFacade);
+  private searchSubject$ = new Subject<string>();
 
   ngOnInit(): void {
+    console.log('TutorListComponent: ngOnInit chamado');
     this.setupSubscriptions();
     this.setupSearch();
     this.loadTutores();

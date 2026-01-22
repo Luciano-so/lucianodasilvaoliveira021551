@@ -27,10 +27,11 @@ import { MatErrorMessagesDirective } from '../../../../shared/directives/matErro
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  private fb = inject(FormBuilder);
   private router = inject(Router);
-  private toastSrv = inject(ToastService);
+  private fb = inject(FormBuilder);
   private facade = inject(AppFacade);
+  private toastSrv = inject(ToastService);
+
   loginForm: FormGroup;
 
   constructor() {

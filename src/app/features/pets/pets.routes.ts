@@ -22,4 +22,11 @@ export const PETS_ROUTES: Routes = [
         (m) => m.PetFormComponent,
       ),
   },
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./pages/pet-detail/pet-detail.component').then(
+        (m) => m.PetDetailComponent,
+      ),
+  },
 ];

@@ -48,18 +48,18 @@ export class DataGridComponent<T> {
     total: 0,
     pageCount: 0,
   };
-  @Input() searchPlaceholder = 'Buscar...';
-  @Input() addButtonText = 'Adicionar';
+  @Input() showSearch = true;
   @Input() addButtonRoute = '';
+  @Input() showAddButton = true;
+  @Input() addButtonText = 'Adicionar';
+  @Input() searchPlaceholder = 'Buscar...';
   @Input() emptyMessage = 'Nenhum item encontrado';
   @Input() addFirstItemText = 'Adicionar Primeiro Item';
-  @Input() showAddButton = true;
-  @Input() showSearch = true;
 
-  @Output() searchChange = new EventEmitter<string>();
-  @Output() pageChange = new EventEmitter<number>();
   @Output() retry = new EventEmitter<void>();
   @Output() addClick = new EventEmitter<void>();
+  @Output() pageChange = new EventEmitter<number>();
+  @Output() searchChange = new EventEmitter<string>();
 
   @ContentChild('cardTemplate') cardTemplate!: TemplateRef<any>;
 

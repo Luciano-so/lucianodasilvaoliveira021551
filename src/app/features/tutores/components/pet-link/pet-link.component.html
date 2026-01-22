@@ -22,16 +22,18 @@
                 <span class="pet-link__item-race">{{ pet.raca }}</span>
               </div>
             </div>
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="onUnlinkPet(pet.id)"
-              class="pet-link__item-remove"
-              type="button"
-              matTooltip="Desvincular pet"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
+            @if (!readOnly) {
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="onUnlinkPet(pet.id)"
+                class="pet-link__item-remove"
+                type="button"
+                matTooltip="Desvincular pet"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
           </div>
         }
       </div>
@@ -42,30 +44,32 @@
       </div>
     }
 
-    <div class="pet-link__add">
-      <mat-form-field appearance="outline" class="pet-link__add-field">
-        <mat-label>Vincular novo pet</mat-label>
-        <mat-select [formControl]="selectedPetControl">
-          @for (pet of availablePets; track pet.id) {
-            <mat-option [value]="pet.id"
-              >{{ pet.nome }} - {{ pet.raca }}</mat-option
-            >
-          }
-        </mat-select>
-        <mat-icon matPrefix>add</mat-icon>
-      </mat-form-field>
-      <button
-        mat-raised-button
-        color="accent"
-        (click)="onLinkPet()"
-        [disabled]="!selectedPetControl.value"
-        type="button"
-        class="pet-link__add-btn"
-        matTooltip="Vincular pet selecionado ao tutor"
-      >
-        <mat-icon>link</mat-icon>
-        Vincular
-      </button>
-    </div>
+    @if (!readOnly) {
+      <div class="pet-link__add">
+        <mat-form-field appearance="outline" class="pet-link__add-field">
+          <mat-label>Vincular novo pet</mat-label>
+          <mat-select [formControl]="selectedPetControl">
+            @for (pet of availablePets; track pet.id) {
+              <mat-option [value]="pet.id"
+                >{{ pet.nome }} - {{ pet.raca }}</mat-option
+              >
+            }
+          </mat-select>
+          <mat-icon matPrefix>add</mat-icon>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="onLinkPet()"
+          [disabled]="!selectedPetControl.value"
+          type="button"
+          class="pet-link__add-btn"
+          matTooltip="Vincular pet selecionado ao tutor"
+        >
+          <mat-icon>link</mat-icon>
+          Vincular
+        </button>
+      </div>
+    }
   </mat-card-content>
 </mat-card>

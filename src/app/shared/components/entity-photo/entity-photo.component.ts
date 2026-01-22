@@ -10,10 +10,10 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./entity-photo.component.scss'],
 })
 export class EntityPhotoComponent {
-  @Input() photoUrl: string | null | undefined | undefined = null;
   @Input() alt: string = '';
-  @Input() icon: string = 'person';
   @Input() entityId: number = 0;
+  @Input() icon: string = 'person';
+  @Input() photoUrl: string | null | undefined | undefined = null;
 
   hasError = false;
 

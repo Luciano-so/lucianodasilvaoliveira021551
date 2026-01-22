@@ -1,0 +1,103 @@
+<div class="tutor-detail">
+  <div class="tutor-detail__container">
+    <app-form-header
+      [title]="tutor?.nome || 'Detalhes do Tutor'"
+      [subtitle]="'Visualize as informações completas do tutor'"
+      [icon]="'person'"
+      [showBackButton]="true"
+      (backClick)="onBack()"
+    >
+    </app-form-header>
+
+    @if (tutor) {
+      <div class="tutor-detail__content">
+        <div class="tutor-detail__photo-card">
+          <app-card-image
+            [photoUrl]="tutor.foto?.url"
+            [alt]="tutor.nome"
+            [icon]="'person'"
+          />
+        </div>
+
+        <mat-card class="tutor-detail__card tutor-detail__info-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>info</mat-icon>
+              Informações do Tutor
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="tutor-detail__fields">
+              <div class="tutor-detail__field">
+                <mat-icon class="tutor-detail__field-icon">person</mat-icon>
+                <div class="tutor-detail__field-content">
+                  <label class="tutor-detail__field-label">Nome Completo</label>
+                  <div class="tutor-detail__field-value">{{ tutor.nome }}</div>
+                </div>
+              </div>
+
+              <div class="tutor-detail__field">
+                <mat-icon class="tutor-detail__field-icon">email</mat-icon>
+                <div class="tutor-detail__field-content">
+                  <label class="tutor-detail__field-label">E-mail</label>
+                  <div class="tutor-detail__field-value">
+                    {{ tutor.email ? tutor.email : "Não informado" }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="tutor-detail__fields-row">
+                <div class="tutor-detail__field">
+                  <mat-icon class="tutor-detail__field-icon">badge</mat-icon>
+                  <div class="tutor-detail__field-content">
+                    <label class="tutor-detail__field-label">CPF</label>
+                    <div class="tutor-detail__field-value">
+                      {{ tutor.cpf ? tutor.cpf : "Não informado" }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tutor-detail__field">
+                  <mat-icon class="tutor-detail__field-icon">phone</mat-icon>
+                  <div class="tutor-detail__field-content">
+                    <label class="tutor-detail__field-label">Telefone</label>
+                    <div class="tutor-detail__field-value">
+                      {{ tutor.telefone | phoneFormat: true }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tutor-detail__field">
+                <mat-icon class="tutor-detail__field-icon"
+                  >location_on</mat-icon
+                >
+                <div class="tutor-detail__field-content">
+                  <label class="tutor-detail__field-label">Endereço</label>
+                  <div class="tutor-detail__field-value">
+                    {{ tutor.endereco ? tutor.endereco : "Não informado" }}
+                  </div>
+                </div>
+              </div>
+
+              <app-detail-actions
+                (back)="onBack()"
+                (edit)="onEdit()"
+              ></app-detail-actions>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <app-relation-section
+        [isEditMode]="true"
+        [entityId]="tutorId"
+        [linkTemplate]="petLinkTemplate"
+      ></app-relation-section>
+
+      <ng-template #petLinkTemplate>
+        <app-pet-link [tutorId]="tutorId" [readOnly]="true"></app-pet-link>
+      </ng-template>
+    }
+  </div>
+</div>

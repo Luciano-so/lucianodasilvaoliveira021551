@@ -61,9 +61,9 @@ export class TutoresFacade {
     pageCount: 0,
   });
 
+  private toastService = inject(ToastService);
   private tutoresService = inject(TutoresService);
   private loadingService = inject(LoadingService);
-  private toastService = inject(ToastService);
 
   loadTutores(filters?: TutorFilters): void {
     this.loadingService.show();
@@ -128,10 +128,10 @@ export class TutoresFacade {
   }
 
   loadTutorById(id: number): void {
+    this.loadingService.show();
+
     this.selectedTutor$.next(null);
     this.updateState({ selectedTutor: null });
-
-    this.loadingService.show();
 
     this.tutoresService
       .getTutorById(id)

@@ -49,22 +49,22 @@ import { TutoresFacade } from '../../facades/tutores.facade';
   styleUrls: ['./tutor-form.component.scss'],
 })
 export class TutorFormComponent implements OnInit, OnDestroy {
-  private fb = inject(FormBuilder);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
-  private tutoresFacade = inject(TutoresFacade);
-  private toastService = inject(ToastService);
   private destroy$ = new Subject<void>();
+  private toastService = inject(ToastService);
+  private tutoresFacade = inject(TutoresFacade);
   private confirmService = inject(ConfirmDialogService);
 
-  tutorForm!: FormGroup;
-  isEditMode = false;
   tutorId?: number;
+  isEditMode = false;
+  tutorForm!: FormGroup;
+  photoRemoved: boolean = false;
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   currentPhotoUrl: string | null = null;
   currentPhotoId: number | null = null;
-  photoRemoved: boolean = false;
 
   ngOnInit(): void {
     this.initForm();
@@ -94,11 +94,11 @@ export class TutorFormComponent implements OnInit, OnDestroy {
   }
 
   private checkEditMode(): void {
-    this.selectedFile = null;
     this.previewUrl = null;
-    this.currentPhotoUrl = null;
-    this.currentPhotoId = null;
+    this.selectedFile = null;
     this.photoRemoved = false;
+    this.currentPhotoId = null;
+    this.currentPhotoUrl = null;
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;

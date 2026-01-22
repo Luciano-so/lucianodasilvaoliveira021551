@@ -57,7 +57,6 @@ describe('AppFacade', () => {
   });
 
   it('should combine state from all services', (done) => {
-    // Set up test data
     (authServiceSpy.isAuthenticated$ as BehaviorSubject<boolean>).next(true);
     (authServiceSpy.currentUser$ as BehaviorSubject<any>).next({
       username: 'admin',

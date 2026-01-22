@@ -18,6 +18,6 @@ export class TutorCardComponent {
   private router = inject(Router);
 
   onCardClick(): void {
-    this.router.navigate(['/tutores', this.tutor.id, 'edit']);
+    this.router.navigate(['/tutores', this.tutor.id]);
   }
 }

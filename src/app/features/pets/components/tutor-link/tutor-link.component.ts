@@ -25,6 +25,7 @@ import { PetsFacade } from '../../facades/pets.facade';
 })
 export class TutorLinkComponent implements OnInit, OnDestroy {
   @Input() petId!: number;
+  @Input() readOnly = false;
 
   linkedTutors: Tutor[] = [];
 

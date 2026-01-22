@@ -12,11 +12,11 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class PhotoUploadComponent {
   @Input() title: string = 'Foto';
+  @Input() isEditMode: boolean = false;
   @Input() icon: string = 'photo_camera';
   @Input() previewUrl: string | null = null;
-  @Input() currentPhotoUrl: string | null = null;
-  @Input() isEditMode: boolean = false;
   @Input() selectedFile: File | null = null;
+  @Input() currentPhotoUrl: string | null = null;
 
   @Output() fileSelected = new EventEmitter<File>();
   @Output() photoRemoved = new EventEmitter<void>();

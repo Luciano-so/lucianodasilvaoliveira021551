@@ -20,18 +20,17 @@ export class MenuComponent implements OnInit, OnDestroy {
   private facade = inject(AppFacade);
   private destroy$ = new Subject<void>();
 
-  menuItems: MenuItem[] = [];
-
-  isAuthenticated = false;
   activeMenuItem = '';
   isCollapsed = false;
+  isAuthenticated = false;
+  menuItems: MenuItem[] = [];
 
   ngOnInit(): void {
     this.facade.appState$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
-      this.isAuthenticated = state.isAuthenticated;
-      this.activeMenuItem = state.activeMenuItem;
       this.menuItems = state.menuItems;
       this.isCollapsed = state.isCollapsed;
+      this.activeMenuItem = state.activeMenuItem;
+      this.isAuthenticated = state.isAuthenticated;
     });
   }
 

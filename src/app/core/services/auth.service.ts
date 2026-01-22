@@ -12,9 +12,9 @@ import { ToastService } from './../../shared/components/toast/toast.service';
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly USER_KEY = 'auth_user';
   private readonly TOKEN_KEY = 'auth_token';
   private readonly REFRESH_TOKEN_KEY = 'auth_refresh_token';
-  private readonly USER_KEY = 'auth_user';
   private currentUserSubject = new BehaviorSubject<User | null>(
     this.getUserFromStorage(),
   );
@@ -27,8 +27,8 @@ export class AuthService {
 
   private router = inject(Router);
   private http = inject(HttpClient);
-  private loadingService = inject(LoadingService);
   private toastService = inject(ToastService);
+  private loadingService = inject(LoadingService);
 
   constructor() {
     this.isAuthenticatedSubject.next(this.hasValidToken());
@@ -99,9 +99,9 @@ export class AuthService {
   }
 
   logout(): void {
+    localStorage.removeItem(this.USER_KEY);
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/login']);
