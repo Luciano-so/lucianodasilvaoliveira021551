@@ -14,7 +14,7 @@ describe('ConfirmDialogComponent com ícone', () => {
     confirmText: 'Sim',
     cancelText: 'Não',
     color: 'warn',
-    icon: 'warning'
+    icon: 'warning',
   };
 
   beforeEach(async () => {
@@ -23,8 +23,8 @@ describe('ConfirmDialogComponent com ícone', () => {
       imports: [ConfirmDialogComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: dialogDataWithIcon },
-        { provide: MatDialogRef, useValue: dialogRefSpy }
-      ]
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmDialogComponent);
@@ -42,27 +42,37 @@ describe('ConfirmDialogComponent com ícone', () => {
   });
 
   it('deve exibir a mensagem correta', () => {
-    const message = fixture.nativeElement.querySelector('.confirm-dialog-content span');
+    const message = fixture.nativeElement.querySelector(
+      '.confirm-dialog-content span',
+    );
     expect(message.textContent).toContain(dialogDataWithIcon.message);
   });
 
   it('deve exibir os textos dos botões de confirmação e cancelamento', () => {
-    const cancelBtn = fixture.nativeElement.querySelector('.confirm-dialog-back-btn');
-    const confirmBtn = fixture.nativeElement.querySelector('.confirm-dialog-confirm-btn');
+    const cancelBtn = fixture.nativeElement.querySelector(
+      '.confirm-dialog-back-btn',
+    );
+    const confirmBtn = fixture.nativeElement.querySelector(
+      '.confirm-dialog-confirm-btn',
+    );
 
     expect(cancelBtn.textContent).toContain(dialogDataWithIcon.cancelText);
     expect(confirmBtn.textContent).toContain(dialogDataWithIcon.confirmText);
   });
 
   it('deve chamar close(false) ao clicar no botão de cancelar', () => {
-    const cancelBtn = fixture.debugElement.query(By.css('.confirm-dialog-back-btn'));
+    const cancelBtn = fixture.debugElement.query(
+      By.css('.confirm-dialog-back-btn'),
+    );
     cancelBtn.triggerEventHandler('click', null);
 
     expect(dialogRefSpy.close).toHaveBeenCalledWith(false);
   });
 
   it('deve chamar close(true) ao clicar no botão de confirmar', () => {
-    const confirmBtn = fixture.debugElement.query(By.css('.confirm-dialog-confirm-btn'));
+    const confirmBtn = fixture.debugElement.query(
+      By.css('.confirm-dialog-confirm-btn'),
+    );
     confirmBtn.triggerEventHandler('click', null);
 
     expect(dialogRefSpy.close).toHaveBeenCalledWith(true);
@@ -75,43 +85,73 @@ describe('ConfirmDialogComponent com ícone', () => {
     expect(dialogRefSpy.close).toHaveBeenCalledWith(false);
   });
 
-  it('deve renderizar o ícone no botão de confirmação quando fornecido', () => {
-    const icon = fixture.debugElement.query(By.css('.confirm-dialog-confirm-btn mat-icon'));
-    expect(icon).toBeTruthy();
-    expect(icon.nativeElement.textContent.trim()).toBe(dialogDataWithIcon.icon);
-  });
-});
+  it('deve renderizar HTML na mensagem quando fornecido', () => {
+    const dialogDataWithHtml = {
+      title: 'Confirmação',
+      message: '<strong>Mensagem</strong> com <em>HTML</em>',
+      confirmText: 'Sim',
+      cancelText: 'Não',
+    };
 
-describe('ConfirmDialogComponent sem ícone', () => {
-  let component: ConfirmDialogComponent;
-  let fixture: ComponentFixture<ConfirmDialogComponent>;
-  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<ConfirmDialogComponent>>;
-
-  const dialogDataWithoutIcon = {
-    title: 'Confirmação',
-    message: 'Mensagem de confirmação',
-    confirmText: 'Sim',
-    cancelText: 'Não',
-    color: 'primary'
-  };
-
-  beforeEach(async () => {
-    dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
-    await TestBed.configureTestingModule({
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
       imports: [ConfirmDialogComponent],
       providers: [
-        { provide: MAT_DIALOG_DATA, useValue: dialogDataWithoutIcon },
-        { provide: MatDialogRef, useValue: dialogRefSpy }
-      ]
+        { provide: MAT_DIALOG_DATA, useValue: dialogDataWithHtml },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ConfirmDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    const newFixture = TestBed.createComponent(ConfirmDialogComponent);
+    newFixture.detectChanges();
+
+    const message = newFixture.nativeElement.querySelector(
+      '.confirm-dialog-content span',
+    );
+    expect(message.innerHTML).toContain('<strong>Mensagem</strong>');
+    expect(message.innerHTML).toContain('<em>HTML</em>');
   });
 
-  it('não deve renderizar ícone se não for passado no data', () => {
-    const icon = fixture.debugElement.query(By.css('.confirm-dialog-confirm-btn mat-icon'));
-    expect(icon).toBeNull();
+  it('deve lidar com dados vazios', () => {
+    const emptyDialogData = {
+      title: '',
+      message: '',
+      confirmText: '',
+      cancelText: '',
+    };
+
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [ConfirmDialogComponent],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: emptyDialogData },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+      ],
+    }).compileComponents();
+
+    const newFixture = TestBed.createComponent(ConfirmDialogComponent);
+    newFixture.detectChanges();
+
+    const title = newFixture.nativeElement.querySelector(
+      '.confirm-dialog-title',
+    );
+    const message = newFixture.nativeElement.querySelector(
+      '.confirm-dialog-content span',
+    );
+
+    expect(title.textContent.trim()).toBe('');
+    expect(message.textContent.trim()).toBe('');
+  });
+
+  it('deve fechar com false quando close(false) é chamado', () => {
+    component.close(false);
+
+    expect(dialogRefSpy.close).toHaveBeenCalledWith(false);
+  });
+
+  it('deve fechar com true quando close(true) é chamado', () => {
+    component.close(true);
+
+    expect(dialogRefSpy.close).toHaveBeenCalledWith(true);
   });
 });

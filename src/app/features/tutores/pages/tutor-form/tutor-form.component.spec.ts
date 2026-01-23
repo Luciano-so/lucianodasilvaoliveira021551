@@ -341,7 +341,7 @@ describe('TutorFormComponent', () => {
 
     component.onDelete();
 
-    expect(tutoresFacadeSpy.unlinkPet).toHaveBeenCalledTimes(0); // Since pets is empty in mock
+    expect(tutoresFacadeSpy.unlinkPet).toHaveBeenCalledTimes(0);
     expect(tutoresFacadeSpy.deleteTutor).toHaveBeenCalledWith(1);
   });
 

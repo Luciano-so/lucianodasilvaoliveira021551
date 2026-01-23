@@ -42,6 +42,12 @@ describe('TutoresFacade', () => {
       'getTutores',
       'getTutorById',
       'deleteTutor',
+      'createTutor',
+      'updateTutor',
+      'uploadPhoto',
+      'deletePhoto',
+      'linkPet',
+      'unlinkPet',
     ]);
     const toastServiceSpy = jasmine.createSpyObj('ToastService', [
       'onShowError',
@@ -254,6 +260,344 @@ describe('TutoresFacade', () => {
 
     facade.error$.subscribe((error) => {
       expect(error).toBeNull();
+    });
+  });
+
+  describe('createTutorWithPhoto', () => {
+    const mockTutorData = {
+      nome: 'João Silva',
+      email: 'joao@email.com',
+      telefone: '11999999999',
+      endereco: 'Rua A, 123',
+      cpf: '12345678901',
+    };
+
+    const mockSavedTutor = {
+      id: 1,
+      ...mockTutorData,
+      cpf: 12345678901,
+    };
+
+    it('should create tutor without photo', (done) => {
+      mockTutoresService.createTutor.and.returnValue(of(mockSavedTutor));
+
+      facade.createTutorWithPhoto(mockTutorData).subscribe({
+        next: () => {
+          expect(mockTutoresService.createTutor).toHaveBeenCalledWith(
+            mockTutorData,
+          );
+          expect(mockTutoresService.uploadPhoto).not.toHaveBeenCalled();
+          expect(mockLoadingService.show).toHaveBeenCalled();
+        },
+        complete: () => {
+          setTimeout(() => {
+            expect(mockLoadingService.close).toHaveBeenCalled();
+            done();
+          }, 0);
+        },
+      });
+    });
+
+    it('should create tutor with photo', (done) => {
+      const mockPhoto = new File([''], 'photo.jpg');
+      mockTutoresService.createTutor.and.returnValue(of(mockSavedTutor));
+      mockTutoresService.uploadPhoto.and.returnValue(
+        of({
+          id: 1,
+          nome: 'photo.jpg',
+          contentType: 'image/jpeg',
+          url: 'photo.jpg',
+        }),
+      );
+
+      facade.createTutorWithPhoto(mockTutorData, mockPhoto).subscribe({
+        next: () => {
+          expect(mockTutoresService.createTutor).toHaveBeenCalledWith(
+            mockTutorData,
+          );
+          expect(mockTutoresService.uploadPhoto).toHaveBeenCalledWith(
+            1,
+            mockPhoto,
+          );
+          expect(mockLoadingService.show).toHaveBeenCalled();
+        },
+        complete: () => {
+          setTimeout(() => {
+            expect(mockLoadingService.close).toHaveBeenCalled();
+            done();
+          }, 0);
+        },
+      });
+    });
+
+    it('should handle create tutor error', (done) => {
+      const error = { message: 'Erro ao criar tutor' };
+      mockTutoresService.createTutor.and.returnValue(throwError(error));
+
+      facade.createTutorWithPhoto(mockTutorData).subscribe({
+        error: (err) => {
+          expect(mockLoadingService.show).toHaveBeenCalled();
+          done();
+        },
+      });
+    });
+  });
+
+  describe('updateTutorWithPhoto', () => {
+    const mockTutorData = {
+      nome: 'João Silva Atualizado',
+      email: 'joao@email.com',
+      telefone: '11999999999',
+      endereco: 'Rua A, 123',
+      cpf: '12345678901',
+    };
+
+    const mockUpdatedTutor = {
+      id: 1,
+      ...mockTutorData,
+      cpf: 12345678901,
+    };
+
+    it('should update tutor without photo changes', (done) => {
+      mockTutoresService.updateTutor.and.returnValue(of(mockUpdatedTutor));
+
+      facade.updateTutorWithPhoto(1, mockTutorData, {}).subscribe({
+        next: () => {
+          expect(mockTutoresService.updateTutor).toHaveBeenCalledWith(
+            1,
+            mockTutorData,
+          );
+          expect(mockTutoresService.uploadPhoto).not.toHaveBeenCalled();
+          expect(mockTutoresService.deletePhoto).not.toHaveBeenCalled();
+          expect(mockLoadingService.show).toHaveBeenCalled();
+        },
+        complete: () => {
+          setTimeout(() => {
+            expect(mockLoadingService.close).toHaveBeenCalled();
+            done();
+          }, 0);
+        },
+      });
+    });
+
+    it('should update tutor with new photo', (done) => {
+      const mockPhoto = new File([''], 'new-photo.jpg');
+      mockTutoresService.updateTutor.and.returnValue(of(mockUpdatedTutor));
+      mockTutoresService.uploadPhoto.and.returnValue(
+        of({
+          id: 2,
+          nome: 'new-photo.jpg',
+          contentType: 'image/jpeg',
+          url: 'new-photo.jpg',
+        }),
+      );
+
+      facade
+        .updateTutorWithPhoto(1, mockTutorData, { newPhoto: mockPhoto })
+        .subscribe({
+          next: () => {
+            expect(mockTutoresService.updateTutor).toHaveBeenCalledWith(
+              1,
+              mockTutorData,
+            );
+            expect(mockTutoresService.uploadPhoto).toHaveBeenCalledWith(
+              1,
+              mockPhoto,
+            );
+            expect(mockLoadingService.show).toHaveBeenCalled();
+          },
+          complete: () => {
+            setTimeout(() => {
+              expect(mockLoadingService.close).toHaveBeenCalled();
+              done();
+            }, 0);
+          },
+        });
+    });
+
+    it('should update tutor replacing existing photo', (done) => {
+      const mockPhoto = new File([''], 'new-photo.jpg');
+      mockTutoresService.updateTutor.and.returnValue(of(mockUpdatedTutor));
+      mockTutoresService.deletePhoto.and.returnValue(of(void 0));
+      mockTutoresService.uploadPhoto.and.returnValue(
+        of({
+          id: 2,
+          nome: 'new-photo.jpg',
+          contentType: 'image/jpeg',
+          url: 'new-photo.jpg',
+        }),
+      );
+
+      facade
+        .updateTutorWithPhoto(1, mockTutorData, {
+          newPhoto: mockPhoto,
+          currentPhotoId: 1,
+        })
+        .subscribe({
+          next: () => {
+            expect(mockTutoresService.deletePhoto).toHaveBeenCalledWith(1, 1);
+            expect(mockTutoresService.uploadPhoto).toHaveBeenCalledWith(
+              1,
+              mockPhoto,
+            );
+            expect(mockLoadingService.show).toHaveBeenCalled();
+          },
+          complete: () => {
+            setTimeout(() => {
+              expect(mockLoadingService.close).toHaveBeenCalled();
+              done();
+            }, 0);
+          },
+        });
+    });
+
+    it('should update tutor removing photo', (done) => {
+      mockTutoresService.updateTutor.and.returnValue(of(mockUpdatedTutor));
+      mockTutoresService.deletePhoto.and.returnValue(of(void 0));
+
+      facade
+        .updateTutorWithPhoto(1, mockTutorData, {
+          photoRemoved: true,
+          currentPhotoId: 1,
+        })
+        .subscribe({
+          next: () => {
+            expect(mockTutoresService.deletePhoto).toHaveBeenCalledWith(1, 1);
+            expect(mockTutoresService.uploadPhoto).not.toHaveBeenCalled();
+            expect(mockLoadingService.show).toHaveBeenCalled();
+          },
+          complete: () => {
+            setTimeout(() => {
+              expect(mockLoadingService.close).toHaveBeenCalled();
+              done();
+            }, 0);
+          },
+        });
+    });
+  });
+
+  describe('linkPet', () => {
+    it('should link pet successfully', (done) => {
+      mockTutoresService.linkPet.and.returnValue(of(void 0));
+      mockTutoresService.getTutorById.and.returnValue(
+        of(mockTutorListResponse.content[0]),
+      );
+
+      facade.linkPet(1, 10).subscribe({
+        next: () => {
+          expect(mockTutoresService.linkPet).toHaveBeenCalledWith(1, 10);
+          expect(mockToastService.onShowOk).toHaveBeenCalledWith(
+            'Pet vinculado com sucesso!',
+          );
+          expect(mockTutoresService.getTutorById).toHaveBeenCalledWith(1);
+          expect(mockLoadingService.show).toHaveBeenCalled();
+        },
+        complete: () => {
+          setTimeout(() => {
+            expect(mockLoadingService.close).toHaveBeenCalled();
+            done();
+          }, 0);
+        },
+      });
+    });
+
+    it('should handle link pet error', (done) => {
+      const error = { message: 'Erro ao vincular pet' };
+      mockTutoresService.linkPet.and.returnValue(throwError(error));
+
+      facade.linkPet(1, 10).subscribe({
+        error: (err) => {
+          expect(mockLoadingService.show).toHaveBeenCalled();
+          done();
+        },
+      });
+    });
+  });
+
+  describe('unlinkPet', () => {
+    it('should unlink pet successfully', (done) => {
+      mockTutoresService.unlinkPet.and.returnValue(of(void 0));
+      mockTutoresService.getTutorById.and.returnValue(
+        of(mockTutorListResponse.content[0]),
+      );
+
+      facade.unlinkPet(1, 10).subscribe({
+        next: () => {
+          expect(mockTutoresService.unlinkPet).toHaveBeenCalledWith(1, 10);
+          expect(mockToastService.onShowOk).toHaveBeenCalledWith(
+            'Vínculo removido com sucesso!',
+          );
+          expect(mockTutoresService.getTutorById).toHaveBeenCalledWith(1);
+          expect(mockLoadingService.show).toHaveBeenCalled();
+        },
+        complete: () => {
+          setTimeout(() => {
+            expect(mockLoadingService.close).toHaveBeenCalled();
+            done();
+          }, 0);
+        },
+      });
+    });
+
+    it('should handle unlink pet error', (done) => {
+      const error = { message: 'Erro ao remover vínculo' };
+      mockTutoresService.unlinkPet.and.returnValue(throwError(error));
+
+      facade.unlinkPet(1, 10).subscribe({
+        error: (err) => {
+          expect(mockLoadingService.show).toHaveBeenCalled();
+          done();
+        },
+      });
+    });
+  });
+
+  describe('uploadPhoto', () => {
+    it('should upload photo successfully', (done) => {
+      const mockPhoto = new File([''], 'photo.jpg');
+      const mockPhotoResponse = {
+        id: 1,
+        nome: 'photo.jpg',
+        contentType: 'image/jpeg',
+        url: 'photo.jpg',
+      };
+      mockTutoresService.uploadPhoto.and.returnValue(of(mockPhotoResponse));
+
+      facade.uploadPhoto(1, mockPhoto).subscribe({
+        next: (result) => {
+          expect(result).toEqual(mockPhotoResponse);
+          expect(mockTutoresService.uploadPhoto).toHaveBeenCalledWith(
+            1,
+            mockPhoto,
+          );
+          expect(mockLoadingService.show).toHaveBeenCalled();
+        },
+        complete: () => {
+          setTimeout(() => {
+            expect(mockLoadingService.close).toHaveBeenCalled();
+            done();
+          }, 0);
+        },
+      });
+    });
+  });
+
+  describe('deletePhoto', () => {
+    it('should delete photo successfully', (done) => {
+      mockTutoresService.deletePhoto.and.returnValue(of(void 0));
+
+      facade.deletePhoto(1, 10).subscribe({
+        next: () => {
+          expect(mockTutoresService.deletePhoto).toHaveBeenCalledWith(1, 10);
+          expect(mockLoadingService.show).toHaveBeenCalled();
+        },
+        complete: () => {
+          setTimeout(() => {
+            expect(mockLoadingService.close).toHaveBeenCalled();
+            done();
+          }, 0);
+        },
+      });
     });
   });
 });

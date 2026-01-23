@@ -1,6 +1,6 @@
 <div class="confirm-dialog-modal">
   <div class="confirm-dialog-header">
-    <span class="confirm-dialog-title">Confirmação</span>
+    <span class="confirm-dialog-title">{{ data.title || "" }}</span>
     <button mat-icon-button class="close-button" (click)="close(false)">
       <mat-icon>close</mat-icon>
     </button>
@@ -17,7 +17,7 @@
       matTooltip="Cancelar e voltar"
     >
       <mat-icon>close</mat-icon>
-      Voltar
+      {{ data.cancelText || "Voltar" }}
     </button>
     <button
       mat-raised-button
@@ -27,7 +27,7 @@
       matTooltip="Confirmar ação"
     >
       <mat-icon>check</mat-icon>
-      Confirmar
+      {{ data.confirmText || "Confirmar" }}
     </button>
   </div>
 </div>
