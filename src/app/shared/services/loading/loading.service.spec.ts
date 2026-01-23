@@ -11,7 +11,7 @@ describe('LoadingService', () => {
 
   it('should start with false state', (done) => {
     service.state$.subscribe((state) => {
-      expect(state).toBeFalse();
+      expect(state.show).toBeFalse();
       done();
     });
   });
@@ -19,7 +19,7 @@ describe('LoadingService', () => {
   it('should show loading after calling show()', (done) => {
     service.show();
     service.state$.subscribe((state) => {
-      expect(state).toBeTrue();
+      expect(state.show).toBeTrue();
       done();
     });
   });
@@ -28,7 +28,7 @@ describe('LoadingService', () => {
     service.show();
     service.close();
     service.state$.subscribe((state) => {
-      expect(state).toBeFalse();
+      expect(state.show).toBeFalse();
       done();
     });
   });
@@ -36,7 +36,7 @@ describe('LoadingService', () => {
   it('should keep loading visible if close() is called before show()', (done) => {
     service.close();
     service.state$.subscribe((state) => {
-      expect(state).toBeFalse();
+      expect(state.show).toBeFalse();
       done();
     });
   });
@@ -46,7 +46,7 @@ describe('LoadingService', () => {
     service.show();
     service.forceHide();
     service.state$.subscribe((state) => {
-      expect(state).toBeFalse();
+      expect(state.show).toBeFalse();
       done();
     });
   });

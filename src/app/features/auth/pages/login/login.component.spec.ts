@@ -2,47 +2,47 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AppFacade } from '../../../../core/facades/app.facade';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
-import { LoadingService } from '../../../../shared/services/loading/loading.service';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
-  let authService: jasmine.SpyObj<AuthService>;
+  let appFacade: jasmine.SpyObj<AppFacade>;
   let router: jasmine.SpyObj<Router>;
-  let loadingService: jasmine.SpyObj<LoadingService>;
   let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(async () => {
-    const authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    const loadingServiceSpy = jasmine.createSpyObj('LoadingService', [
-      'show',
-      'close',
-      'hide',
+    const appFacadeSpy = jasmine.createSpyObj('AppFacade', [
+      'login',
+      'logout',
+      'isAuthenticated',
+      'showLoading',
+      'closeLoading',
     ]);
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const toastServiceSpy = jasmine.createSpyObj('ToastService', [
       'onShowError',
+      'onShowOk',
     ]);
 
     await TestBed.configureTestingModule({
       imports: [LoginComponent, ReactiveFormsModule],
       providers: [
-        { provide: AuthService, useValue: authServiceSpy },
+        { provide: AppFacade, useValue: appFacadeSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: LoadingService, useValue: loadingServiceSpy },
         { provide: ToastService, useValue: toastServiceSpy },
       ],
     }).compileComponents();
 
-    authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
+    appFacade = TestBed.inject(AppFacade) as jasmine.SpyObj<AppFacade>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    loadingService = TestBed.inject(
-      LoadingService,
-    ) as jasmine.SpyObj<LoadingService>;
     toastService = TestBed.inject(ToastService) as jasmine.SpyObj<ToastService>;
+
+    // Configure the default return value for isAuthenticated
+    appFacade.isAuthenticated.and.returnValue(false);
+
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -72,8 +72,8 @@ describe('LoginComponent', () => {
     expect(password?.valid).toBeTruthy();
   });
 
-  it('should call authService.login on valid form submit', () => {
-    authService.login.and.returnValue(
+  it('should call appFacade.login on valid form submit', () => {
+    appFacade.login.and.returnValue(
       of({
         access_token: 'fake-access-token',
         refresh_token: 'fake-refresh-token',
@@ -89,15 +89,15 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(loadingService.show).toHaveBeenCalled();
-    expect(authService.login).toHaveBeenCalledWith({
+    expect(appFacade.showLoading).toHaveBeenCalled();
+    expect(appFacade.login).toHaveBeenCalledWith({
       username: 'admin',
       password: 'admin',
     });
   });
 
   it('should navigate to home on successful login', () => {
-    authService.login.and.returnValue(
+    appFacade.login.and.returnValue(
       of({
         access_token: 'fake-access-token',
         refresh_token: 'fake-refresh-token',
@@ -113,14 +113,14 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(loadingService.show).toHaveBeenCalled();
-    expect(loadingService.close).toHaveBeenCalled();
+    expect(appFacade.showLoading).toHaveBeenCalled();
+    expect(appFacade.closeLoading).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should show error message on failed login', () => {
     const errorResponse = { error: { message: 'Invalid credentials' } };
-    authService.login.and.returnValue(throwError(() => errorResponse));
+    appFacade.login.and.returnValue(throwError(() => errorResponse));
 
     component.loginForm.setValue({
       username: 'admin',
@@ -129,8 +129,8 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(loadingService.show).toHaveBeenCalled();
-    expect(loadingService.hide).toHaveBeenCalled();
+    expect(appFacade.showLoading).toHaveBeenCalled();
+    expect(appFacade.closeLoading).toHaveBeenCalled();
     expect(toastService.onShowError).toHaveBeenCalledWith(
       'Erro ao fazer login. Verifique suas credenciais.',
     );
