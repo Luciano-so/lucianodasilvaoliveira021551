@@ -40,7 +40,6 @@ describe('LoginComponent', () => {
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     toastService = TestBed.inject(ToastService) as jasmine.SpyObj<ToastService>;
 
-    // Configure the default return value for isAuthenticated
     appFacade.isAuthenticated.and.returnValue(false);
 
     fixture = TestBed.createComponent(LoginComponent);

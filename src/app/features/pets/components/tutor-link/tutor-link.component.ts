@@ -47,6 +47,8 @@ export class TutorLinkComponent implements OnInit, OnDestroy {
       .subscribe((pet) => {
         if (pet && pet.id === this.petId && pet.tutores) {
           this.linkedTutors = pet.tutores;
+        } else {
+          this.linkedTutors = [];
         }
       });
   }
