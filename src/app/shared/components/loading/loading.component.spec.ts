@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
+import { LoadingState } from '../../models/shared.model';
 import { LoadingService } from '../../services/loading/loading.service';
 import { LoadingComponent } from './loading.component';
 describe('LoadingComponent', () => {
   let component: LoadingComponent;
   let fixture: ComponentFixture<LoadingComponent>;
   let mockLoadingService: jasmine.SpyObj<LoadingService>;
-  let loadingState$: BehaviorSubject<boolean>;
+  let loadingState$: BehaviorSubject<LoadingState>;
 
   beforeEach(async () => {
-    loadingState$ = new BehaviorSubject<boolean>(false);
+    loadingState$ = new BehaviorSubject<LoadingState>({ show: false });
 
     mockLoadingService = jasmine.createSpyObj(
       'LoadingService',
@@ -35,7 +36,7 @@ describe('LoadingComponent', () => {
   });
 
   it('should display loading when show is true', () => {
-    loadingState$.next(true);
+    loadingState$.next({ show: true });
     fixture.detectChanges();
 
     const loaderElement = fixture.debugElement.query(
@@ -45,7 +46,7 @@ describe('LoadingComponent', () => {
   });
 
   it('should not display loading when show is false', () => {
-    loadingState$.next(false);
+    loadingState$.next({ show: false });
     fixture.detectChanges();
 
     const loaderElement = fixture.debugElement.query(
