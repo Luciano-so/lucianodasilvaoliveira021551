@@ -121,7 +121,6 @@ describe('PetLinkComponent', () => {
   it('should load linked pets on init', () => {
     component.ngOnInit();
     expect(component.linkedPets).toEqual(mockTutor.pets!);
-    expect(petsFacadeSpy.loadPets).toHaveBeenCalledWith({ page: 0, size: 100 });
   });
 
   it('should load available pets excluding linked ones', () => {

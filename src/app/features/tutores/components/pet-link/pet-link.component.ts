@@ -63,8 +63,6 @@ export class PetLinkComponent implements OnInit, OnDestroy {
           this.loadAvailablePets();
         }
       });
-
-    this.petsFacade.loadPets({ page: 0, size: 100 });
   }
 
   private loadAvailablePets(): void {
