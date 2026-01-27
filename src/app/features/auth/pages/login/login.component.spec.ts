@@ -88,7 +88,6 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(appFacade.showLoading).toHaveBeenCalled();
     expect(appFacade.login).toHaveBeenCalledWith({
       username: 'admin',
       password: 'admin',
@@ -112,8 +111,6 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(appFacade.showLoading).toHaveBeenCalled();
-    expect(appFacade.closeLoading).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
@@ -128,8 +125,6 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(appFacade.showLoading).toHaveBeenCalled();
-    expect(appFacade.closeLoading).toHaveBeenCalled();
     expect(toastService.onShowError).toHaveBeenCalledWith(
       'Erro ao fazer login. Verifique suas credenciais.',
     );

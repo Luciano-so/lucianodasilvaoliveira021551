@@ -8,7 +8,4 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent {
-  subtitle =
-    'Gerencie seus pets e tutores com eficiência e carinho.\nTenha tudo sob controle em um só lugar.';
-}
+export class DashboardComponent {}

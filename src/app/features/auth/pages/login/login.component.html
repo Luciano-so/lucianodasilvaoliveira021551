@@ -1,46 +1,104 @@
 <div class="login__container">
-  <div class="login__card">
-    <h1>Pet Manager</h1>
-    <h2>Login</h2>
+  <div class="login__wrapper">
+    <div class="login__branding">
+      <div class="login__brand-content">
+        <div class="login__logo">
+          <mat-icon class="login__logo-icon">account_balance</mat-icon>
+        </div>
+        <div class="login__government-info">
+          <h3 class="login__government-name">Estado de Mato Grosso</h3>
+          <div class="login__divider"></div>
+        </div>
+        <h1 class="login__brand-title">Registro Público de Pets</h1>
+        <p class="login__brand-subtitle">
+          Sistema oficial para cadastro e gestão de pets e tutores
+        </p>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <mat-form-field class="login__form-field">
-        <mat-label>Usuário</mat-label>
-        <input
-          matInput
-          id="username"
-          type="text"
-          formControlName="username"
-          placeholder="Digite seu usuário"
-          aria-required="true"
-          autocomplete="off"
-        />
-        <mat-error matErrorMessages></mat-error>
-      </mat-form-field>
+        <div class="login__features">
+          @for (feature of getSystemFeatures(); track feature.icon) {
+            <div class="login__feature">
+              <mat-icon>{{ feature.icon }}</mat-icon>
+              <span>{{ feature.text }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
 
-      <mat-form-field class="login__form-field">
-        <mat-label>Senha</mat-label>
-        <input
-          matInput
-          id="password"
-          type="password"
-          formControlName="password"
-          placeholder="Digite sua senha"
-          aria-required="true"
-          autocomplete="off"
-        />
-        <mat-error matErrorMessages></mat-error>
-      </mat-form-field>
+    <div class="login__form-section">
+      <div class="login__form-card">
+        <div class="login__form-header">
+          <div class="login__form-header-decoration">
+            <div class="login__form-header-line"></div>
+            <div class="login__form-header-dot"></div>
+            <div class="login__form-header-line"></div>
+          </div>
+          <h2 class="login__form-title">Portal Administrativo</h2>
+          <p class="login__form-subtitle">Sistema de Gestão de Pets</p>
+          <div class="login__form-header-accent"></div>
+        </div>
 
-      <button
-        type="submit"
-        class="login__button"
-        [disabled]="loginForm.invalid"
-      >
-        Entrar
-      </button>
-    </form>
+        <form
+          [formGroup]="loginForm"
+          (ngSubmit)="onSubmit()"
+          class="login__form"
+        >
+          <div class="login__input-group">
+            <mat-form-field appearance="outline" class="login__form-field">
+              <mat-label>Usuário</mat-label>
+              <input
+                matInput
+                id="username"
+                type="text"
+                formControlName="username"
+                placeholder="Digite seu usuário"
+                autocomplete="username"
+              />
+              <mat-icon matPrefix>person</mat-icon>
+              <mat-error matErrorMessages></mat-error>
+            </mat-form-field>
+          </div>
 
-    <p class="login__hint">Use: admin / admin</p>
+          <div class="login__input-group">
+            <mat-form-field appearance="outline" class="login__form-field">
+              <mat-label>Senha</mat-label>
+              <input
+                matInput
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Digite sua senha"
+                autocomplete="current-password"
+              />
+              <mat-icon matPrefix>lock</mat-icon>
+              <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (click)="showPassword = !showPassword"
+                class="login__password-toggle"
+              >
+                <mat-icon>{{
+                  showPassword ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+              <mat-error matErrorMessages></mat-error>
+            </mat-form-field>
+          </div>
+
+          <button
+            type="submit"
+            class="login__submit-btn"
+            [disabled]="loginForm.invalid"
+          >
+            Entrar
+          </button>
+        </form>
+
+        <div class="login__footer">
+          <p>© 2026 Pet Manager. Todos os direitos reservados.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -19,12 +19,6 @@ describe('DashboardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have correct subtitle', () => {
-    expect(component.subtitle).toContain('Gerencie seus pets e tutores');
-    expect(component.subtitle).toContain('eficiência e carinho');
-    expect(component.subtitle).toContain('sob controle em um só lugar');
-  });
-
   it('should render title in template', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const titleElement = compiled.querySelector('h1');
@@ -38,7 +32,9 @@ describe('DashboardComponent', () => {
     const subtitleElement = compiled.querySelector('p');
 
     expect(subtitleElement).toBeTruthy();
-    expect(subtitleElement?.textContent).toContain('Gerencie seus pets');
+    expect(subtitleElement?.textContent).toContain(
+      'Sistema completo para gestão de pets',
+    );
   });
 
   it('should have dashboard CSS class', () => {
@@ -46,17 +42,11 @@ describe('DashboardComponent', () => {
     expect(compiled.querySelector('.dashboard')).toBeTruthy();
   });
 
-  it('should have hero section', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.dashboard__hero')).toBeTruthy();
-    expect(compiled.querySelector('.dashboard__hero-content')).toBeTruthy();
-  });
-
   it('should display icon in title', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const iconElement = compiled.querySelector('mat-icon');
 
     expect(iconElement).toBeTruthy();
-    expect(iconElement?.textContent).toBe('dashboard');
+    expect(iconElement?.textContent).toBe('pets');
   });
 });

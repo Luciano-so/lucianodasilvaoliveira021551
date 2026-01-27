@@ -6,7 +6,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { AppFacade } from '../../../../core/facades/app.facade';
@@ -21,6 +23,8 @@ import { MatErrorMessagesDirective } from '../../../../shared/directives/matErro
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIconModule,
+    MatButtonModule,
     MatErrorMessagesDirective,
   ],
   templateUrl: './login.component.html',
@@ -33,6 +37,7 @@ export class LoginComponent implements OnInit {
   private toastSrv = inject(ToastService);
 
   loginForm: FormGroup;
+  showPassword = false;
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -66,20 +71,24 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.facade.showLoading();
-
     this.facade.login(this.loginForm.value).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
         this.toastSrv.onShowOk('Login realizado com sucesso!');
-        this.facade.closeLoading();
       },
       error: (_) => {
-        this.facade.closeLoading();
         this.toastSrv.onShowError(
           'Erro ao fazer login. Verifique suas credenciais.',
         );
       },
     });
+  }
+
+  getSystemFeatures(): { icon: string; text: string }[] {
+    return [
+      { icon: 'verified', text: 'Registro oficial de pets' },
+      { icon: 'people', text: 'Cadastro de tutores' },
+      { icon: 'search', text: 'Consulta pública de dados' },
+    ];
   }
 }
