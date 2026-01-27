@@ -1,6 +1,6 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { inject, Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { LoadingService } from '../../shared/services/loading/loading.service';
 import { MenuService } from '../../shared/services/menu.service';
 import { AuthService } from '../services/auth.service';
@@ -17,7 +17,7 @@ export interface AppState {
 @Injectable({
   providedIn: 'root',
 })
-export class AppFacade {
+export class AppFacade implements OnDestroy {
   private _appState$ = new BehaviorSubject<AppState>({
     isAuthenticated: false,
     currentUser: null,
@@ -27,12 +27,18 @@ export class AppFacade {
     isCollapsed: false,
   });
 
+  private destroy$ = new Subject<void>();
   private authService = inject(AuthService);
   private menuService = inject(MenuService);
   private loadingService = inject(LoadingService);
 
   constructor() {
     this.initializeState();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   initializeState(): void {
@@ -62,6 +68,7 @@ export class AppFacade {
             isCollapsed,
           }),
         ),
+        takeUntil(this.destroy$),
       )
       .subscribe((state) => {
         this._appState$.next(state);

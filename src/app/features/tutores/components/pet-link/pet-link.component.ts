@@ -77,11 +77,21 @@ export class PetLinkComponent implements OnInit, OnDestroy {
   onLinkPet(): void {
     const petId = this.selectedPetControl.value;
     if (petId) {
-      this.tutoresFacade.linkPet(this.tutorId, petId).subscribe({
-        next: () => {
-          this.selectedPetControl.reset();
-        },
-      });
+      const pet = this.availablePets.find((p) => p.id === petId);
+      this.confirmService
+        .openConfirm({
+          title: 'Confirmar Vinculação',
+          message: `Tem certeza que deseja vincular o pet <strong>"${pet?.nome}"</strong> a este tutor?`,
+        })
+        .subscribe((result) => {
+          if (result) {
+            this.tutoresFacade.linkPet(this.tutorId, petId).subscribe({
+              next: () => {
+                this.selectedPetControl.reset();
+              },
+            });
+          }
+        });
     }
   }
 
