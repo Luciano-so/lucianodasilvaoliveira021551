@@ -1,203 +1,71 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { concatMap, finalize, tap } from 'rxjs/operators';
-import { ToastService } from '../../../shared/components/toast/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { Observable, of } from 'rxjs';
+import { concatMap, tap } from 'rxjs/operators';
+import { BaseFacade } from '../../../core/facades/base.facade';
 import {
   CreateTutorDto,
   Tutor,
   TutorFilters,
-  TutorListResponse,
   TutorPhoto,
   UpdateTutorDto,
 } from '../models/tutor.model';
 import { TutoresService } from '../services/tutores.service';
 
-export interface TutoresState {
-  tutores: Tutor[];
-  selectedTutor: Tutor | null;
-  filters: TutorFilters;
-  pagination: {
-    total: number;
-    page: number;
-    size: number;
-    pageCount: number;
-  };
-}
-
 @Injectable({
   providedIn: 'root',
 })
-export class TutoresFacade {
-  private _state$ = new BehaviorSubject<TutoresState>({
-    tutores: [],
-    selectedTutor: null,
-    filters: {
-      page: 0,
-      size: 10,
-    },
-    pagination: {
-      total: 0,
-      page: 0,
-      size: 10,
-      pageCount: 0,
-    },
-  });
-
-  public state$ = this._state$.asObservable();
-
-  public tutores$ = new BehaviorSubject<Tutor[]>([]);
-  public error$ = new BehaviorSubject<string | null>(null);
-  public selectedTutor$ = new BehaviorSubject<Tutor | null>(null);
-  public pagination$ = new BehaviorSubject<{
-    total: number;
-    page: number;
-    size: number;
-    pageCount: number;
-  }>({
-    total: 0,
-    page: 0,
-    size: 10,
-    pageCount: 0,
-  });
-
-  private toastService = inject(ToastService);
+export class TutoresFacade extends BaseFacade<Tutor, TutorFilters> {
   private tutoresService = inject(TutoresService);
-  private loadingService = inject(LoadingService);
+
+  constructor() {
+    super();
+    this.initializeState({ page: 0, size: 10 });
+  }
+
+  public get tutores$() {
+    return this.items$;
+  }
+
+  public get selectedTutor$() {
+    return this.selectedItem$;
+  }
+
+  protected getServiceLoadMethod() {
+    return (filters: TutorFilters) => this.tutoresService.getTutores(filters);
+  }
 
   loadTutores(filters?: TutorFilters): void {
-    this.loadingService.show();
-    const currentState = this._state$.value;
-    const appliedFilters = { ...currentState.filters, ...filters };
-
-    this.updateState({ filters: appliedFilters });
-    this.tutores$.next([]);
-    this.error$.next(null);
-
-    this.tutoresService
-      .getTutores(appliedFilters)
-      .pipe(
-        tap((response: TutorListResponse) => {
-          this.updateState({
-            tutores: response.content,
-            pagination: {
-              total: response.total,
-              page: response.page,
-              size: response.size,
-              pageCount: response.pageCount,
-            },
-          });
-          this.tutores$.next(response.content);
-          this.pagination$.next({
-            total: response.total,
-            page: response.page,
-            size: response.size,
-            pageCount: response.pageCount,
-          });
-        }),
-        finalize(() => {
-          this.loadingService.close();
-        }),
-      )
-      .subscribe({
-        error: (error) => {
-          const errorMessage = error?.message || 'Erro ao carregar tutores';
-          this.toastService.onShowError(
-            'Erro ao carregar tutores. Tente novamente.',
-          );
-          this.error$.next(errorMessage);
-        },
-      });
+    this.loadItems(this.getServiceLoadMethod(), filters, 'tutores');
   }
 
   searchTutores(nome: string): void {
-    this.loadTutores({ ...this._state$.value.filters, nome, page: 0 });
-  }
-
-  clearFilters(): void {
-    this.updateState({
-      filters: {
-        page: 0,
-        size: 10,
-      },
-    });
-  }
-
-  goToPage(page: number): void {
-    this.loadTutores({ ...this._state$.value.filters, page });
+    this.search(nome);
   }
 
   loadTutorById(id: number): void {
-    this.loadingService.show();
-
-    this.selectedTutor$.next(null);
-    this.updateState({ selectedTutor: null });
-
-    this.tutoresService
-      .getTutorById(id)
-      .pipe(
-        tap((tutor: Tutor) => {
-          this.updateState({ selectedTutor: tutor });
-          this.selectedTutor$.next(tutor);
-        }),
-        finalize(() => {
-          this.loadingService.close();
-        }),
-      )
-      .subscribe({
-        error: (error) => {
-          const errorMessage = error?.message || 'Erro ao carregar tutor';
-          this.toastService.onShowError(
-            'Erro ao carregar tutor. Tente novamente.',
-          );
-          this.error$.next(errorMessage);
-        },
-      });
+    this.loadItemById(
+      (id) => this.tutoresService.getTutorById(id),
+      id,
+      'tutor',
+    );
   }
 
   deleteTutor(id: number): void {
-    this.loadingService.show();
-
-    this.tutoresService
-      .deleteTutor(id)
-      .pipe(
-        tap(() => {
-          this.toastService.onShowOk('Tutor removido com sucesso!');
-        }),
-        finalize(() => {
-          this.loadingService.close();
-        }),
-      )
-      .subscribe({
-        error: (error) => {
-          const errorMessage = error?.message || 'Erro ao remover tutor';
-          this.toastService.onShowError(
-            'Erro ao remover tutor. Tente novamente.',
-          );
-          this.error$.next(errorMessage);
-        },
-      });
+    this.deleteItem((id) => this.tutoresService.deleteTutor(id), id, 'Tutor');
   }
 
   uploadPhoto(tutorId: number, photo: File): Observable<TutorPhoto> {
-    this.loadingService.show();
-    return this.tutoresService
-      .uploadPhoto(tutorId, photo)
-      .pipe(finalize(() => this.loadingService.close()));
+    return this.tutoresService.uploadPhoto(tutorId, photo);
   }
 
   deletePhoto(tutorId: number, photoId: number): Observable<void> {
-    this.loadingService.show();
-    return this.tutoresService
-      .deletePhoto(tutorId, photoId)
-      .pipe(finalize(() => this.loadingService.close()));
+    return this.tutoresService.deletePhoto(tutorId, photoId);
   }
 
   createTutorWithPhoto(
     tutorData: CreateTutorDto,
     photo?: File | null,
   ): Observable<void> {
-    this.loadingService.show();
     return this.tutoresService.createTutor(tutorData).pipe(
       concatMap((savedTutor) => {
         if (photo) {
@@ -207,7 +75,6 @@ export class TutoresFacade {
         }
         return of(undefined);
       }),
-      finalize(() => this.loadingService.close()),
     );
   }
 
@@ -220,35 +87,30 @@ export class TutoresFacade {
       photoRemoved?: boolean;
     },
   ): Observable<void> {
-    this.loadingService.show();
-
-    return this.tutoresService.updateTutor(tutorId, tutorData).pipe(
-      concatMap((savedTutor) =>
-        this.handlePhotoOperation(savedTutor, photoOptions),
-      ),
-      finalize(() => this.loadingService.close()),
-    );
+    return this.tutoresService
+      .updateTutor(tutorId, tutorData)
+      .pipe(
+        concatMap((savedTutor) =>
+          this.handlePhotoOperation(savedTutor, photoOptions),
+        ),
+      );
   }
 
   linkPet(tutorId: number, petId: number): Observable<void> {
-    this.loadingService.show();
     return this.tutoresService.linkPet(tutorId, petId).pipe(
       tap(() => {
         this.toastService.onShowOk('Pet vinculado com sucesso!');
         this.loadTutorById(tutorId);
       }),
-      finalize(() => this.loadingService.close()),
     );
   }
 
   unlinkPet(tutorId: number, petId: number): Observable<void> {
-    this.loadingService.show();
     return this.tutoresService.unlinkPet(tutorId, petId).pipe(
       tap(() => {
         this.toastService.onShowOk('Vínculo removido com sucesso!');
         this.loadTutorById(tutorId);
       }),
-      finalize(() => this.loadingService.close()),
     );
   }
 
@@ -279,14 +141,5 @@ export class TutoresFacade {
         .pipe(concatMap(() => of(undefined)));
     }
     return of(undefined);
-  }
-
-  clearError(): void {
-    this.error$.next(null);
-  }
-
-  private updateState(partialState: Partial<TutoresState>): void {
-    const currentState = this._state$.value;
-    this._state$.next({ ...currentState, ...partialState });
   }
 }

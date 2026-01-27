@@ -119,9 +119,8 @@ describe('AuthService', () => {
       service.refreshToken().subscribe({
         next: (response) => {
           expect(response).toEqual(mockAuthResponse);
-          expect(loadingServiceSpy.show).toHaveBeenCalled();
+
           setTimeout(() => {
-            expect(loadingServiceSpy.close).toHaveBeenCalled();
             done();
           }, 0);
         },
@@ -164,9 +163,7 @@ describe('AuthService', () => {
       service.refreshToken().subscribe({
         next: () => fail('Should have failed'),
         error: (error) => {
-          expect(loadingServiceSpy.show).toHaveBeenCalled();
           setTimeout(() => {
-            expect(loadingServiceSpy.close).toHaveBeenCalled();
             done();
           }, 0);
         },

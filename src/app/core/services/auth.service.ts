@@ -1,17 +1,14 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { LoadingService } from '../../shared/services/loading/loading.service';
 import { AuthResponse, LoginRequest, User } from '../models/auth.model';
 import { ToastService } from './../../shared/components/toast/toast.service';
+import { HttpBaseService } from './http-base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService extends HttpBaseService {
   private readonly USER_KEY = 'auth_user';
   private readonly TOKEN_KEY = 'auth_token';
   private readonly REFRESH_TOKEN_KEY = 'auth_refresh_token';
@@ -26,11 +23,10 @@ export class AuthService {
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   private router = inject(Router);
-  private http = inject(HttpClient);
   private toastService = inject(ToastService);
-  private loadingService = inject(LoadingService);
 
   constructor() {
+    super();
     this.isAuthenticatedSubject.next(this.hasValidToken());
   }
 
@@ -39,24 +35,19 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(
-        `${environment.apiUrl}/autenticacao/login`,
-        credentials,
-      )
-      .pipe(
-        tap((response) => {
-          this.setTokens(response.access_token, response.refresh_token);
-          const user: User = {
-            username: credentials.username,
-            accessToken: response.access_token,
-            refreshToken: response.refresh_token,
-          };
-          this.setUser(user);
-          this.currentUserSubject.next(user);
-          this.isAuthenticatedSubject.next(true);
-        }),
-      );
+    return this.post<AuthResponse>('/autenticacao/login', credentials).pipe(
+      tap((response) => {
+        this.setTokens(response.access_token, response.refresh_token);
+        const user: User = {
+          username: credentials.username,
+          accessToken: response.access_token,
+          refreshToken: response.refresh_token,
+        };
+        this.setUser(user);
+        this.currentUserSubject.next(user);
+        this.isAuthenticatedSubject.next(true);
+      }),
+    );
   }
 
   refreshToken(): Observable<AuthResponse> {
@@ -67,35 +58,30 @@ export class AuthService {
       throw new Error('No refresh token available');
     }
 
-    this.loadingService.show();
-
-    return this.http
-      .put<AuthResponse>(
-        `${environment.apiUrl}/autenticacao/refresh`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${refreshToken}`,
-          },
+    return this.put<AuthResponse>(
+      '/autenticacao/refresh',
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
         },
-      )
-      .pipe(
-        tap((response) => {
-          this.setTokens(response.access_token, response.refresh_token);
-          const currentUser = this.getCurrentUser();
-          if (currentUser) {
-            const updatedUser: User = {
-              ...currentUser,
-              accessToken: response.access_token,
-              refreshToken: response.refresh_token,
-            };
-            this.setUser(updatedUser);
-            this.currentUserSubject.next(updatedUser);
-          }
-          this.isAuthenticatedSubject.next(true);
-        }),
-        finalize(() => this.loadingService.close()),
-      );
+      },
+    ).pipe(
+      tap((response) => {
+        this.setTokens(response.access_token, response.refresh_token);
+        const currentUser = this.getCurrentUser();
+        if (currentUser) {
+          const updatedUser: User = {
+            ...currentUser,
+            accessToken: response.access_token,
+            refreshToken: response.refresh_token,
+          };
+          this.setUser(updatedUser);
+          this.currentUserSubject.next(updatedUser);
+        }
+        this.isAuthenticatedSubject.next(true);
+      }),
+    );
   }
 
   logout(): void {

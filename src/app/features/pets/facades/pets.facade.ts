@@ -1,199 +1,63 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { concatMap, finalize, tap } from 'rxjs/operators';
-import { ToastService } from '../../../shared/components/toast/toast.service';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { Observable, of } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
+import { BaseFacade } from '../../../core/facades/base.facade';
 import { TutoresService } from '../../tutores/services/tutores.service';
 import {
   CreatePetDto,
   Pet,
   PetFilters,
-  PetListResponse,
   PetPhoto,
   UpdatePetDto,
 } from '../models/pet.model';
 import { PetsService } from '../services/pets.service';
 
-export interface PetsState {
-  pets: Pet[];
-  selectedPet: Pet | null;
-  filters: PetFilters;
-  pagination: {
-    total: number;
-    page: number;
-    size: number;
-    pageCount: number;
-  };
-}
-
 @Injectable({
   providedIn: 'root',
 })
-export class PetsFacade {
-  private _state$ = new BehaviorSubject<PetsState>({
-    pets: [],
-    selectedPet: null,
-    filters: {
-      page: 0,
-      size: 10,
-    },
-    pagination: {
-      total: 0,
-      page: 0,
-      size: 10,
-      pageCount: 0,
-    },
-  });
-
-  public state$ = this._state$.asObservable();
-  public pets$ = new BehaviorSubject<Pet[]>([]);
-  public error$ = new BehaviorSubject<string | null>(null);
-  public selectedPet$ = new BehaviorSubject<Pet | null>(null);
-  public pagination$ = new BehaviorSubject<{
-    total: number;
-    page: number;
-    size: number;
-    pageCount: number;
-  }>({
-    total: 0,
-    page: 0,
-    size: 10,
-    pageCount: 0,
-  });
-
+export class PetsFacade extends BaseFacade<Pet, PetFilters> {
   private petsService = inject(PetsService);
-  private toastService = inject(ToastService);
   private tutoresService = inject(TutoresService);
-  private loadingService = inject(LoadingService);
 
-  constructor() {}
+  constructor() {
+    super();
+    this.initializeState({ page: 0, size: 10 });
+  }
+
+  public get pets$() {
+    return this.items$;
+  }
+
+  public get selectedPet$() {
+    return this.selectedItem$;
+  }
+
+  protected getServiceLoadMethod() {
+    return (filters: PetFilters) => this.petsService.getPets(filters);
+  }
 
   loadPets(filters?: PetFilters): void {
-    this.loadingService.show();
-    const currentState = this._state$.value;
-    const appliedFilters = { ...currentState.filters, ...filters };
-
-    this.updateState({ filters: appliedFilters });
-    this.pets$.next([]);
-    this.error$.next(null);
-
-    this.petsService
-      .getPets(appliedFilters)
-      .pipe(
-        tap((response: PetListResponse) => {
-          this.updateState({
-            pets: response.content,
-            pagination: {
-              total: response.total,
-              page: response.page,
-              size: response.size,
-              pageCount: response.pageCount,
-            },
-          });
-          this.pets$.next(response.content);
-          this.pagination$.next({
-            total: response.total,
-            page: response.page,
-            size: response.size,
-            pageCount: response.pageCount,
-          });
-        }),
-        finalize(() => {
-          this.loadingService.close();
-        }),
-      )
-      .subscribe({
-        error: (error) => {
-          const errorMessage = error?.message || 'Erro ao carregar pets';
-          this.toastService.onShowError(
-            'Erro ao carregar pets. Tente novamente.',
-          );
-          this.error$.next(errorMessage);
-        },
-      });
+    this.loadItems(this.getServiceLoadMethod(), filters, 'pets');
   }
 
   searchPets(nome: string): void {
-    this.loadPets({ ...this._state$.value.filters, nome, page: 0 });
-  }
-
-  clearFilters(): void {
-    this.updateState({
-      filters: {
-        page: 0,
-        size: 10,
-      },
-    });
-  }
-
-  goToPage(page: number): void {
-    this.loadPets({ ...this._state$.value.filters, page });
+    this.search(nome);
   }
 
   loadPetById(id: number): void {
-    this.selectedPet$.next(null);
-    this.updateState({ selectedPet: null });
-
-    this.loadingService.show();
-
-    this.petsService
-      .getPetById(id)
-      .pipe(
-        tap((pet: Pet) => {
-          this.updateState({ selectedPet: pet });
-          this.selectedPet$.next(pet);
-        }),
-        finalize(() => {
-          this.loadingService.close();
-        }),
-      )
-      .subscribe({
-        error: (error) => {
-          const errorMessage = error?.message || 'Erro ao carregar pet';
-          this.toastService.onShowError(
-            'Erro ao carregar pet. Tente novamente.',
-          );
-          this.error$.next(errorMessage);
-        },
-      });
+    this.loadItemById((id) => this.petsService.getPetById(id), id, 'pet');
   }
 
   deletePet(id: number): void {
-    this.loadingService.show();
-
-    this.petsService
-      .deletePet(id)
-      .pipe(
-        tap(() => {
-          this.toastService.onShowOk('Pet removido com sucesso!');
-        }),
-        finalize(() => {
-          this.loadingService.close();
-        }),
-      )
-      .subscribe({
-        error: (error) => {
-          const errorMessage = error?.message || 'Erro ao remover pet';
-          this.toastService.onShowError(
-            'Erro ao remover pet. Tente novamente.',
-          );
-          this.error$.next(errorMessage);
-        },
-      });
+    this.deleteItem((id) => this.petsService.deletePet(id), id, 'Pet');
   }
 
   uploadPhoto(petId: number, photo: File): Observable<PetPhoto> {
-    this.loadingService.show();
-    return this.petsService
-      .uploadPhoto(petId, photo)
-      .pipe(finalize(() => this.loadingService.close()));
+    return this.petsService.uploadPhoto(petId, photo);
   }
 
   deletePhoto(petId: number, photoId: number): Observable<void> {
-    this.loadingService.show();
-    return this.petsService
-      .deletePhoto(petId, photoId)
-      .pipe(finalize(() => this.loadingService.close()));
+    return this.petsService.deletePhoto(petId, photoId);
   }
 
   unlinkTutor(tutorId: number, petId: number): Observable<void> {
@@ -204,7 +68,6 @@ export class PetsFacade {
     petData: CreatePetDto,
     photo?: File | null,
   ): Observable<void> {
-    this.loadingService.show();
     return this.petsService.createPet(petData).pipe(
       concatMap((savedPet) => {
         if (photo) {
@@ -214,7 +77,6 @@ export class PetsFacade {
         }
         return of(undefined);
       }),
-      finalize(() => this.loadingService.close()),
     );
   }
 
@@ -227,14 +89,13 @@ export class PetsFacade {
       photoRemoved?: boolean;
     },
   ): Observable<void> {
-    this.loadingService.show();
-
-    return this.petsService.updatePet(petId, petData).pipe(
-      concatMap((savedPet) =>
-        this.handlePhotoOperation(savedPet, photoOptions),
-      ),
-      finalize(() => this.loadingService.close()),
-    );
+    return this.petsService
+      .updatePet(petId, petData)
+      .pipe(
+        concatMap((savedPet) =>
+          this.handlePhotoOperation(savedPet, photoOptions),
+        ),
+      );
   }
 
   private handlePhotoOperation(
@@ -264,14 +125,5 @@ export class PetsFacade {
         .pipe(concatMap(() => of(undefined)));
     }
     return of(undefined);
-  }
-
-  clearError(): void {
-    this.error$.next(null);
-  }
-
-  private updateState(partialState: Partial<PetsState>): void {
-    const currentState = this._state$.value;
-    this._state$.next({ ...currentState, ...partialState });
   }
 }

@@ -1,7 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { HttpBaseService } from '../../../core/services/http-base.service';
 import {
   CreatePetDto,
   Pet,
@@ -14,9 +14,8 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class PetsService {
-  private readonly API_URL = `${environment.apiUrl}/v1/pets`;
-  private http = inject(HttpClient);
+export class PetsService extends HttpBaseService {
+  private readonly API_URL = '/v1/pets';
 
   getPets(filters?: PetFilters): Observable<PetListResponse> {
     let params = new HttpParams();
@@ -36,32 +35,32 @@ export class PetsService {
       }
     }
 
-    return this.http.get<PetListResponse>(this.API_URL, { params });
+    return this.get<PetListResponse>(this.API_URL, { params });
   }
 
   getPetById(id: number): Observable<Pet> {
-    return this.http.get<Pet>(`${this.API_URL}/${id}`);
+    return this.get<Pet>(`${this.API_URL}/${id}`);
   }
 
   createPet(pet: CreatePetDto): Observable<Pet> {
-    return this.http.post<Pet>(this.API_URL, pet);
+    return this.post<Pet>(this.API_URL, pet);
   }
 
   updatePet(id: number, pet: UpdatePetDto): Observable<Pet> {
-    return this.http.put<Pet>(`${this.API_URL}/${id}`, pet);
+    return this.put<Pet>(`${this.API_URL}/${id}`, pet);
   }
 
   deletePet(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+    return this.delete<void>(`${this.API_URL}/${id}`);
   }
 
   uploadPhoto(petId: number, photo: File): Observable<PetPhoto> {
     const formData = new FormData();
     formData.append('foto', photo);
-    return this.http.post<PetPhoto>(`${this.API_URL}/${petId}/fotos`, formData);
+    return this.post<PetPhoto>(`${this.API_URL}/${petId}/fotos`, formData);
   }
 
   deletePhoto(petId: number, photoId: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${petId}/fotos/${photoId}`);
+    return this.delete<void>(`${this.API_URL}/${petId}/fotos/${photoId}`);
   }
 }
