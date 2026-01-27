@@ -165,9 +165,6 @@ export class PetFormComponent implements OnInit, OnDestroy {
         this.toastService.onShowOk('Pet cadastrado com sucesso!');
         this.onBack();
       },
-      error: (error) => {
-        this.toastService.onShowError('Erro ao cadastrar pet.', error);
-      },
     });
   }
 
@@ -182,9 +179,6 @@ export class PetFormComponent implements OnInit, OnDestroy {
         next: () => {
           this.toastService.onShowOk('Pet atualizado com sucesso!');
           this.onBack();
-        },
-        error: (error) => {
-          this.toastService.onShowError('Erro ao atualizar pet.', error);
         },
       });
   }
@@ -260,9 +254,6 @@ export class PetFormComponent implements OnInit, OnDestroy {
           this.petsFacade.deletePet(this.petId!);
           this.toastService.onShowOk('Pet excluído com sucesso!');
           this.onBack();
-        },
-        error: (error: any) => {
-          this.toastService.onShowError('Erro ao excluir pet.', error);
         },
       });
   }

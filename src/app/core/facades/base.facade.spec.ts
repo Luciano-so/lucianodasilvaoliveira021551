@@ -192,9 +192,6 @@ describe('BaseFacade', () => {
       setTimeout(() => {
         errorFacade.error$.subscribe((error) => {
           expect(error).toBe('Test error');
-          expect(toastServiceSpy.onShowError).toHaveBeenCalledWith(
-            'Erro ao carregar test entities. Tente novamente.',
-          );
           done();
         });
       }, 100);
@@ -241,9 +238,6 @@ describe('BaseFacade', () => {
       setTimeout(() => {
         errorFacade.error$.subscribe((error) => {
           expect(error).toBe('Load error');
-          expect(toastServiceSpy.onShowError).toHaveBeenCalledWith(
-            'Erro ao carregar test entity. Tente novamente.',
-          );
           done();
         });
       }, 100);
@@ -289,9 +283,6 @@ describe('BaseFacade', () => {
       setTimeout(() => {
         errorFacade.error$.subscribe((error) => {
           expect(error).toBe('Delete error');
-          expect(toastServiceSpy.onShowError).toHaveBeenCalledWith(
-            'Erro ao remover test entity. Tente novamente.',
-          );
           done();
         });
       }, 100);

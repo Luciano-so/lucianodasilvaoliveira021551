@@ -84,6 +84,7 @@ export class TutorListComponent implements OnInit, OnDestroy {
   onSearchChange(searchTerm: string): void {
     if (!searchTerm || searchTerm.trim() === '') {
       this.tutoresFacade.clearFilters();
+      this.loadTutores();
     } else {
       this.searchSubject$.next(searchTerm);
     }

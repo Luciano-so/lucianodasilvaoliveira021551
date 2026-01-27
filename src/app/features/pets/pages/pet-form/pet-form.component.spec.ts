@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 import { ConfirmDialogService } from '../../../../shared/services/confirm-dialog/confirm-dialog.service';
 import { PetsFacade } from '../../facades/pets.facade';
@@ -248,36 +248,6 @@ describe('PetFormComponent', () => {
     );
   }));
 
-  it('should handle create error', () => {
-    component.ngOnInit();
-    component.petForm.get('nome')?.setValue('Test Pet');
-
-    confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
-    petsFacadeSpy.createPetWithPhoto.and.returnValue(
-      throwError(new Error('Create failed')),
-    );
-
-    component.onSubmit();
-
-    expect(toastServiceSpy.onShowError).toHaveBeenCalled();
-  });
-
-  it('should handle update error', () => {
-    component.isEditMode = true;
-    component.petId = 1;
-    component.ngOnInit();
-    component.petForm.get('nome')?.setValue('Test Pet');
-
-    confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
-    petsFacadeSpy.updatePetWithPhoto.and.returnValue(
-      throwError(new Error('Update failed')),
-    );
-
-    component.onSubmit();
-
-    expect(toastServiceSpy.onShowError).toHaveBeenCalled();
-  });
-
   it('should navigate back on onBack', () => {
     component.onBack();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/pets']);
@@ -335,22 +305,6 @@ describe('PetFormComponent', () => {
     expect(petsFacadeSpy.unlinkTutor).toHaveBeenCalledTimes(2);
     expect(petsFacadeSpy.deletePet).toHaveBeenCalledWith(1);
   }));
-
-  it('should handle delete error', () => {
-    component.petId = 1;
-    component.ngOnInit();
-    component.petForm.get('nome')?.setValue('Test Pet');
-    component.linkedTutorIds = [1];
-
-    confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
-    petsFacadeSpy.unlinkTutor.and.returnValue(
-      throwError(new Error('Unlink failed')),
-    );
-
-    component.onDelete();
-
-    expect(toastServiceSpy.onShowError).toHaveBeenCalled();
-  });
 
   it('should unsubscribe on destroy', () => {
     spyOn(component['destroy$'], 'next');

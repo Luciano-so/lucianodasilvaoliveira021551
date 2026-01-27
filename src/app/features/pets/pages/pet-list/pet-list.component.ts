@@ -82,6 +82,7 @@ export class PetListComponent implements OnInit, OnDestroy {
   onSearchChange(searchTerm: string): void {
     if (!searchTerm || searchTerm.trim() === '') {
       this.petsFacade.clearFilters();
+      this.loadPets();
     } else {
       this.searchSubject$.next(searchTerm);
     }

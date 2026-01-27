@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { FormActionsComponent } from '../../../../shared/components/form-actions/form-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
@@ -253,36 +253,6 @@ describe('TutorFormComponent', () => {
     );
   });
 
-  it('should handle create error', () => {
-    component.ngOnInit();
-    component.tutorForm.get('nome')?.setValue('João Silva');
-
-    confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
-    tutoresFacadeSpy.createTutorWithPhoto.and.returnValue(
-      throwError(new Error('Create failed')),
-    );
-
-    component.onSubmit();
-
-    expect(toastServiceSpy.onShowError).toHaveBeenCalled();
-  });
-
-  it('should handle update error', () => {
-    component.isEditMode = true;
-    component.tutorId = 1;
-    component.ngOnInit();
-    component.tutorForm.get('nome')?.setValue('João Silva');
-
-    confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
-    tutoresFacadeSpy.updateTutorWithPhoto.and.returnValue(
-      throwError(new Error('Update failed')),
-    );
-
-    component.onSubmit();
-
-    expect(toastServiceSpy.onShowError).toHaveBeenCalled();
-  });
-
   it('should navigate back on onBack', () => {
     component.onBack();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/tutores']);
@@ -343,28 +313,6 @@ describe('TutorFormComponent', () => {
 
     expect(tutoresFacadeSpy.unlinkPet).toHaveBeenCalledTimes(0);
     expect(tutoresFacadeSpy.deleteTutor).toHaveBeenCalledWith(1);
-  });
-
-  it('should handle delete error', () => {
-    component.tutorId = 1;
-    component.ngOnInit();
-    component.tutorForm.get('nome')?.setValue('João Silva');
-    const tutorWithPets = {
-      ...mockTutor,
-      pets: [{ id: 1, nome: 'Rex', raca: 'Labrador', idade: 3 }],
-    };
-    (tutoresFacadeSpy.selectedTutor$ as BehaviorSubject<Tutor | null>).next(
-      tutorWithPets,
-    );
-
-    confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
-    tutoresFacadeSpy.unlinkPet.and.returnValue(
-      throwError(new Error('Unlink failed')),
-    );
-
-    component.onDelete();
-
-    expect(toastServiceSpy.onShowError).toHaveBeenCalled();
   });
 
   it('should unsubscribe on destroy', () => {

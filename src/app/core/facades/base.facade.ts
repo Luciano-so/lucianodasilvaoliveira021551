@@ -86,9 +86,6 @@ export abstract class BaseFacade<
         error: (error) => {
           const errorMessage =
             error?.message || `Erro ao carregar ${entityName}`;
-          this.toastService.onShowError(
-            `Erro ao carregar ${entityName}. Tente novamente.`,
-          );
           this._error$.next(errorMessage);
         },
       });
@@ -107,9 +104,6 @@ export abstract class BaseFacade<
         error: (error) => {
           const errorMessage =
             error?.message || `Erro ao carregar ${entityName}`;
-          this.toastService.onShowError(
-            `Erro ao carregar ${entityName}. Tente novamente.`,
-          );
           this._error$.next(errorMessage);
         },
       });
@@ -130,9 +124,6 @@ export abstract class BaseFacade<
         error: (error) => {
           const errorMessage =
             error?.message || `Erro ao remover ${entityName}`;
-          this.toastService.onShowError(
-            `Erro ao remover ${entityName}. Tente novamente.`,
-          );
           this._error$.next(errorMessage);
         },
       });

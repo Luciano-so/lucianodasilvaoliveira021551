@@ -171,9 +171,6 @@ export class TutorFormComponent implements OnInit, OnDestroy {
           this.toastService.onShowOk('Tutor cadastrado com sucesso!');
           this.onBack();
         },
-        error: (error) => {
-          this.toastService.onShowError('Erro ao cadastrar tutor.', error);
-        },
       });
   }
 
@@ -188,9 +185,6 @@ export class TutorFormComponent implements OnInit, OnDestroy {
         next: () => {
           this.toastService.onShowOk('Tutor atualizado com sucesso!');
           this.onBack();
-        },
-        error: (error) => {
-          this.toastService.onShowError('Erro ao atualizar tutor.', error);
         },
       });
   }
@@ -230,9 +224,6 @@ export class TutorFormComponent implements OnInit, OnDestroy {
                 this.tutoresFacade.deleteTutor(tutorId);
                 this.toastService.onShowOk('Tutor excluído com sucesso!');
                 this.onBack();
-              },
-              error: (error) => {
-                this.toastService.onShowError('Erro ao excluir tutor.', error);
               },
             });
         }

@@ -105,9 +105,6 @@ describe('TutoresFacade', () => {
     facade.error$.subscribe((error) => {
       if (error) {
         expect(error).toBe('Erro ao carregar tutores');
-        expect(mockToastService.onShowError).toHaveBeenCalledWith(
-          'Erro ao carregar tutores. Tente novamente.',
-        );
         done();
       }
     });
@@ -167,9 +164,6 @@ describe('TutoresFacade', () => {
     setTimeout(() => {
       facade.error$.subscribe((error) => {
         expect(error).toBe('Erro ao remover tutor');
-        expect(mockToastService.onShowError).toHaveBeenCalledWith(
-          'Erro ao remover Tutor. Tente novamente.',
-        );
         done();
       });
     }, 0);
@@ -236,9 +230,6 @@ describe('TutoresFacade', () => {
     facade.error$.subscribe((error) => {
       if (error) {
         expect(error).toBe('Tutor não encontrado');
-        expect(mockToastService.onShowError).toHaveBeenCalledWith(
-          'Erro ao carregar tutor. Tente novamente.',
-        );
         done();
       }
     });

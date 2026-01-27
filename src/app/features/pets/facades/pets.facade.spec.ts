@@ -94,10 +94,6 @@ describe('PetsFacade', () => {
     setTimeout(() => {
       facade.error$.subscribe((error) => {
         expect(error).toBe('Erro ao carregar pets');
-        expect(mockToastService.onShowError).toHaveBeenCalledWith(
-          'Erro ao carregar pets. Tente novamente.',
-        );
-
         done();
       });
     }, 0);
@@ -159,10 +155,6 @@ describe('PetsFacade', () => {
     setTimeout(() => {
       facade.error$.subscribe((error) => {
         expect(error).toBe('Erro ao remover pet');
-        expect(mockToastService.onShowError).toHaveBeenCalledWith(
-          'Erro ao remover Pet. Tente novamente.',
-        );
-
         done();
       });
     }, 0);
@@ -220,10 +212,6 @@ describe('PetsFacade', () => {
     facade.error$.subscribe((error) => {
       if (error) {
         expect(error).toBe('Pet não encontrado');
-        expect(mockToastService.onShowError).toHaveBeenCalledWith(
-          'Erro ao carregar pet. Tente novamente.',
-        );
-
         done();
       }
     });
