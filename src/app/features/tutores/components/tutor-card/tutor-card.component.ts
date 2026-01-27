@@ -3,12 +3,19 @@ import { Component, Input, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { CardImageComponent } from '../../../../shared/components/card-image/card-image.component';
+import { PhoneFormatPipe } from '../../../../shared/pipes/phone-format.pipe';
 import { Tutor } from '../../models/tutor.model';
 
 @Component({
   selector: 'app-tutor-card',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, CardImageComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatIconModule,
+    CardImageComponent,
+    PhoneFormatPipe,
+  ],
   templateUrl: './tutor-card.component.html',
   styleUrls: ['./tutor-card.component.scss'],
 })

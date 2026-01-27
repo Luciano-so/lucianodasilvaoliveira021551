@@ -50,7 +50,7 @@ export class MaskDirective implements ControlValueAccessor {
     const formattedValue = this.applyMask(rawValue);
 
     input.value = formattedValue;
-    this.onChange(rawValue);
+    this.onChange(rawValue.length > 11 ? rawValue.slice(0, 11) : rawValue);
   }
 
   @HostListener('blur')

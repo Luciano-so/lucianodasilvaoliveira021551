@@ -13,7 +13,16 @@
       @if (tutor.telefone) {
         <div class="tutor-card__detail">
           <mat-icon class="tutor-card__detail-icon">phone</mat-icon>
-          <span class="tutor-card__detail-text">{{ tutor.telefone }}</span>
+          <span class="tutor-card__detail-text">{{
+            tutor.telefone | phoneFormat
+          }}</span>
+        </div>
+      }
+
+      @if (tutor.email) {
+        <div class="tutor-card__detail">
+          <mat-icon class="tutor-card__detail-icon">email</mat-icon>
+          <span class="tutor-card__detail-text">{{ tutor.email }}</span>
         </div>
       }
 

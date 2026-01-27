@@ -45,7 +45,8 @@ describe('TutorCardComponent', () => {
   it('should display tutor information', () => {
     const compiled = fixture.nativeElement;
     expect(compiled.textContent).toContain('João Silva');
-    expect(compiled.textContent).toContain('11999999999');
+    expect(compiled.textContent).toContain('(11) 99999-9999');
+    expect(compiled.textContent).toContain('joao@email.com');
     expect(compiled.textContent).toContain('Rua A, 123');
   });
 
