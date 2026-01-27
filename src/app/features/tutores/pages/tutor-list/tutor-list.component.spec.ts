@@ -156,7 +156,7 @@ describe('TutorListComponent', () => {
       },
     ];
 
-    mockTutoresFacade.tutores$.next(newTutores);
+    (mockTutoresFacade.tutores$ as BehaviorSubject<Tutor[]>).next(newTutores);
 
     component.ngOnInit();
 

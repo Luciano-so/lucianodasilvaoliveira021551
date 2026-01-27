@@ -132,10 +132,12 @@ describe('PetLinkComponent', () => {
   it('should link pet when selected', () => {
     component.ngOnInit();
     component.selectedPetControl.setValue(2);
+    confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     tutoresFacadeSpy.linkPet.and.returnValue(of(undefined));
 
     component.onLinkPet();
 
+    expect(confirmDialogServiceSpy.openConfirm).toHaveBeenCalled();
     expect(tutoresFacadeSpy.linkPet).toHaveBeenCalledWith(1, 2);
     expect(component.selectedPetControl.value).toBeNull();
   });

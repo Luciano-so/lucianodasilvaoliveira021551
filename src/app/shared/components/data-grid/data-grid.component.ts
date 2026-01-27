@@ -55,6 +55,7 @@ export class DataGridComponent<T> {
   @Input() searchPlaceholder = 'Buscar...';
   @Input() emptyMessage = 'Nenhum item encontrado';
   @Input() addFirstItemText = 'Adicionar Primeiro Item';
+  @Input() trackByFn?: (index: number, item: T) => any;
 
   @Output() retry = new EventEmitter<void>();
   @Output() addClick = new EventEmitter<void>();
@@ -107,5 +108,12 @@ export class DataGridComponent<T> {
 
   getPageDisplay(page: number): number {
     return page + 1;
+  }
+
+  trackByItem(index: number, item: any): any {
+    if (this.trackByFn) {
+      return this.trackByFn(index, item);
+    }
+    return item?.id ?? index;
   }
 }

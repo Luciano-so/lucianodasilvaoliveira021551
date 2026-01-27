@@ -131,7 +131,7 @@ describe('PetListComponent', () => {
   it('should update pets when facade emits new data', (done) => {
     const newPets: Pet[] = [{ id: 3, nome: 'Bob', raca: 'Golden', idade: 1 }];
 
-    mockPetsFacade.pets$.next(newPets);
+    (mockPetsFacade.pets$ as BehaviorSubject<Pet[]>).next(newPets);
 
     component.ngOnInit();
 

@@ -78,7 +78,7 @@
   <!-- Grid Content -->
   @if (!error && items.length > 0) {
     <div class="data-grid__grid">
-      @for (item of items; track $index) {
+      @for (item of items; track trackByItem($index, item)) {
         <ng-container
           *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"
         ></ng-container>
