@@ -1,5 +1,12 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .login__container {
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   display: flex;
   align-items: center;
@@ -25,7 +32,7 @@
   display: flex;
   width: 100%;
   max-width: 1200px;
-  height: 100%;
+  max-height: 90vh;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 24px;
@@ -86,6 +93,26 @@
   color: white;
   z-index: 1;
   position: relative;
+}
+
+.login__government-info {
+  margin-bottom: 20px;
+
+  .login__government-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.95;
+  }
+
+  .login__divider {
+    width: 60px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.5);
+    margin: 10px auto;
+  }
 }
 
 .login__logo {
@@ -162,6 +189,8 @@
   flex-direction: column;
   justify-content: center;
   background: white;
+  overflow-y: auto;
+  max-height: 100%;
 }
 
 .login__form-header {
@@ -332,74 +361,220 @@
 }
 
 // Responsive Design
-@media (max-width: 768px) {
+@media (max-width: 968px) {
   .login__wrapper {
-    flex-direction: column;
-    height: auto;
-    min-height: 100vh;
+    max-width: 900px;
   }
 
   .login__branding {
     padding: 40px 30px;
   }
 
-  .login__logo .login__logo-icon {
-    font-size: 60px;
-    width: 60px;
-    height: 60px;
+  .login__brand-title {
+    font-size: 32px;
+  }
+
+  .login__form-section {
+    padding: 50px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login__container {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .login__wrapper {
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .login__branding {
+    padding: 25px 20px 20px;
+    flex: 0 0 auto;
+    min-height: auto;
+  }
+
+  .login__logo {
+    margin-bottom: 15px;
+
+    .login__logo-icon {
+      font-size: 50px;
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  .login__government-info {
+    margin-bottom: 12px;
+
+    .login__government-name {
+      font-size: 13px;
+    }
+
+    .login__divider {
+      margin: 6px auto;
+      width: 50px;
+    }
   }
 
   .login__brand-title {
-    font-size: 28px;
+    font-size: 22px;
+    margin-bottom: 8px;
+    line-height: 1.2;
   }
 
   .login__brand-subtitle {
-    font-size: 16px;
+    font-size: 13px;
+    margin-bottom: 0;
+    line-height: 1.4;
   }
 
   .login__features {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
+    display: none;
+  }
 
-    .login__feature {
+  .login__form-section {
+    padding: 25px 20px 20px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .login__form-header {
+    margin-bottom: 25px;
+
+    .login__form-title {
+      font-size: 24px;
+    }
+
+    .login__form-subtitle {
       font-size: 14px;
     }
   }
 
-  .login__form-section {
-    padding: 40px 30px;
+  .login__input-group {
+    margin-bottom: 18px;
+  }
+
+  .login__submit-btn {
+    height: 48px;
+    font-size: 16px;
+    margin-top: 8px;
+  }
+
+  .login__footer {
+    margin-top: 20px;
+
+    p {
+      font-size: 12px;
+    }
   }
 }
 
 @media (max-width: 480px) {
-  .login__container {
-    padding: 10px;
-  }
-
-  .login__wrapper {
-    border-radius: 16px;
-  }
-
   .login__branding {
-    padding: 30px 20px;
+    padding: 20px 15px 15px;
   }
 
-  .login__features {
-    .login__feature {
-      font-size: 12px;
-      gap: 8px;
+  .login__logo {
+    margin-bottom: 12px;
 
-      mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
+    .login__logo-icon {
+      font-size: 38px;
+      width: 38px;
+      height: 38px;
+    }
+  }
+
+  .login__government-info {
+    margin-bottom: 10px;
+
+    .login__government-name {
+      font-size: 11px;
+    }
+
+    .login__divider {
+      width: 40px;
+      margin: 5px auto;
+    }
+  }
+
+  .login__brand-title {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .login__brand-subtitle {
+    font-size: 12px;
+  }
+
+  .login__form-section {
+    padding: 20px 15px 15px;
+  }
+
+  .login__form-header {
+    margin-bottom: 20px;
+
+    .login__form-title {
+      font-size: 19px;
+    }
+
+    .login__form-subtitle {
+      font-size: 12px;
+    }
+
+    .login__form-header-decoration {
+      margin-bottom: 12px;
+
+      .login__form-header-line {
+        max-width: 40px;
+      }
+
+      .login__form-header-dot {
+        width: 6px;
+        height: 6px;
+        margin: 0 10px;
       }
     }
   }
 
+  .login__input-group {
+    margin-bottom: 14px;
+  }
+
+  .login__form-field {
+    ::ng-deep {
+      .mat-mdc-input-element {
+        padding: 11px 10px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .login__submit-btn {
+    height: 46px;
+    font-size: 15px;
+    margin-top: 6px;
+  }
+
+  .login__footer {
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 360px) {
   .login__form-section {
-    padding: 30px 20px;
+    padding: 15px 10px;
+  }
+
+  .login__brand-title {
+    font-size: 18px;
+  }
+
+  .login__form-header .login__form-title {
+    font-size: 18px;
   }
 }

@@ -1,7 +1,6 @@
 @use "@angular/material" as mat;
 
 html {
-  height: 100%;
   @include mat.theme(
     (
       color: (
@@ -22,7 +21,10 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   height: 100%;
-  overflow: hidden;
+}
+
+.no-scroll {
+  overflow: hidden !important;
 }
 
 :root {
