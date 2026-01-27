@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { ToastService } from './toast.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ToastService } from './toast.service';
 
 describe('ToastService', () => {
   let service: ToastService;
@@ -26,11 +26,11 @@ describe('ToastService', () => {
       'Procedimento realizado com sucesso!',
       'Ok',
       jasmine.objectContaining({
-        duration: 3000,
+        duration: 5000,
         horizontalPosition: 'right',
         verticalPosition: 'top',
         panelClass: ['accentSnackBar'],
-      })
+      }),
     );
   });
 
@@ -45,7 +45,7 @@ describe('ToastService', () => {
       'Ok',
       jasmine.objectContaining({
         panelClass: ['accentSnackBar'],
-      })
+      }),
     );
   });
 
@@ -58,11 +58,11 @@ describe('ToastService', () => {
       'Ocorreu um erro ao efetuar o procedimento!',
       'Ok',
       jasmine.objectContaining({
-        duration: 3000,
+        duration: 5000,
         horizontalPosition: 'right',
         verticalPosition: 'top',
         panelClass: ['warnSnackBar'],
-      })
+      }),
     );
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
@@ -79,7 +79,7 @@ describe('ToastService', () => {
       'Ok',
       jasmine.objectContaining({
         panelClass: ['warnSnackBar'],
-      })
+      }),
     );
     expect(consoleErrorSpy).toHaveBeenCalledWith('Error: ', error);
   });

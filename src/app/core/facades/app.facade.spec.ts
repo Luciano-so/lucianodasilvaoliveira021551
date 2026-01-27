@@ -183,10 +183,14 @@ describe('AppFacade', () => {
 
   it('should call loadingService.show', () => {
     facade.showLoading();
+
+    expect(loadingServiceSpy.show).toHaveBeenCalled();
   });
 
   it('should call loadingService.close', () => {
     facade.closeLoading();
+
+    expect(loadingServiceSpy.close).toHaveBeenCalled();
   });
 
   it('should call menuService.setActiveMenuItem', () => {

@@ -39,6 +39,26 @@ body {
       button-color: white,
     )
   );
+
+  .mdc-snackbar__surface {
+    min-height: 60px !important;
+    padding: 16px 20px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+  }
+
+  .mdc-snackbar__label {
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+  }
+
+  .mdc-snackbar__actions {
+    .mdc-button {
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      padding: 8px 16px !important;
+    }
+  }
 }
 
 .mat-mdc-snack-bar-container.accentSnackBar {
@@ -48,4 +68,24 @@ body {
       button-color: white,
     )
   );
+
+  .mdc-snackbar__surface {
+    min-height: 60px !important;
+    padding: 16px 20px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+  }
+
+  .mdc-snackbar__label {
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+  }
+
+  .mdc-snackbar__actions {
+    .mdc-button {
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      padding: 8px 16px !important;
+    }
+  }
 }

@@ -169,6 +169,7 @@ describe('HttpBaseService', () => {
       service.testGet(endpoint).subscribe();
 
       const req = httpMock.expectOne(expectedUrl);
+      expect(req.request.url).toBe(expectedUrl);
       req.flush({});
     });
   });

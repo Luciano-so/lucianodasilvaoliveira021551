@@ -313,6 +313,7 @@ describe('TutoresFacade', () => {
 
       facade.createTutorWithPhoto(mockTutorData).subscribe({
         error: (err) => {
+          expect(err.message).toBe('Erro ao criar tutor');
           done();
         },
       });
@@ -473,6 +474,7 @@ describe('TutoresFacade', () => {
 
       facade.linkPet(1, 10).subscribe({
         error: (err) => {
+          expect(err.message).toBe('Erro ao vincular pet');
           done();
         },
       });
@@ -508,6 +510,7 @@ describe('TutoresFacade', () => {
 
       facade.unlinkPet(1, 10).subscribe({
         error: (err) => {
+          expect(err.message).toBe('Erro ao remover vínculo');
           done();
         },
       });

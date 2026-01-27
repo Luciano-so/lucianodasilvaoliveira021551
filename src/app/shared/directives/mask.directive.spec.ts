@@ -107,6 +107,8 @@ describe('MaskDirective', () => {
 
       input.dispatchEvent(new Event('blur'));
       fixture.detectChanges();
+
+      expect(component.control.markAsTouched).toHaveBeenCalled();
     });
   });
 });

@@ -163,9 +163,8 @@ describe('AuthService', () => {
       service.refreshToken().subscribe({
         next: () => fail('Should have failed'),
         error: (error) => {
-          setTimeout(() => {
-            done();
-          }, 0);
+          expect(error.status).toBe(401);
+          done();
         },
       });
 
@@ -262,6 +261,7 @@ describe('AuthService', () => {
       service.currentUser$.subscribe((user) => {
         if (user?.username === 'testuser') {
           userEmitted = true;
+          expect(user.username).toBe('testuser');
           if (userEmitted && authEmitted) done();
         }
       });
@@ -269,6 +269,7 @@ describe('AuthService', () => {
       service.isAuthenticated$.subscribe((isAuth) => {
         if (isAuth === true) {
           authEmitted = true;
+          expect(isAuth).toBe(true);
           if (userEmitted && authEmitted) done();
         }
       });
