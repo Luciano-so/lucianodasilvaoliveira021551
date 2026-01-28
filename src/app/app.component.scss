@@ -10,12 +10,3 @@
     margin-left: 70px;
   }
 }
-
-@media (max-width: 768px) {
-  .main-content {
-    &.main-content--with-menu,
-    &.main-content--collapsed {
-      margin-left: 0;
-    }
-  }
-}

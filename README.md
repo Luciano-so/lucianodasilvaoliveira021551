@@ -109,7 +109,6 @@ src/
 │       ├── directives/# Diretivas customizadas
 │       ├── pipes/     # Pipes para transformação de dados
 │       ├── services/  # Serviços compartilhados
-│       ├── styles/    # Estilos globais
 │       └── validations/# Validações customizadas
 ├── environments/      # Configurações de ambiente
 └── styles.scss        # Estilos globais

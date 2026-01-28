@@ -32,7 +32,7 @@
   display: flex;
   width: 100%;
   max-width: 1200px;
-  max-height: 90vh;
+  max-height: 70vh;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 24px;
@@ -52,14 +52,13 @@
   }
 }
 
-// Branding Section
 .login__branding {
   flex: 1;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px 40px;
+  padding: 40px 30px;
   position: relative;
 
   &::before {
@@ -181,10 +180,9 @@
   }
 }
 
-// Form Section
 .login__form-section {
   flex: 1;
-  padding: 60px 50px;
+  padding: 40px 35px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -195,7 +193,7 @@
 
 .login__form-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   position: relative;
 
   .login__form-header-decoration {
@@ -348,8 +346,34 @@
   }
 }
 
+.login__mock-toggle {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+
+  ::ng-deep {
+    .mat-mdc-checkbox {
+      .mdc-checkbox__native-control:enabled:checked
+        ~ .mdc-checkbox__background {
+        background-color: #667eea;
+        border-color: #667eea;
+      }
+
+      .mdc-checkbox__checkmark {
+        color: white;
+      }
+
+      .mdc-form-field {
+        color: #6b7280;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
 .login__footer {
-  margin-top: 40px;
+  margin-top: 30px;
   text-align: center;
 
   p {
@@ -364,10 +388,11 @@
 @media (max-width: 968px) {
   .login__wrapper {
     max-width: 900px;
+    max-height: 75vh;
   }
 
   .login__branding {
-    padding: 40px 30px;
+    padding: 30px 25px;
   }
 
   .login__brand-title {
@@ -375,7 +400,7 @@
   }
 
   .login__form-section {
-    padding: 50px 40px;
+    padding: 40px 30px;
   }
 }
 
@@ -393,7 +418,7 @@
   }
 
   .login__branding {
-    padding: 25px 20px 20px;
+    padding: 20px 15px 15px;
     flex: 0 0 auto;
     min-height: auto;
   }
@@ -438,13 +463,13 @@
   }
 
   .login__form-section {
-    padding: 25px 20px 20px;
+    padding: 20px 15px 15px;
     flex: 1;
     overflow-y: auto;
   }
 
   .login__form-header {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 
     .login__form-title {
       font-size: 24px;
@@ -466,7 +491,7 @@
   }
 
   .login__footer {
-    margin-top: 20px;
+    margin-top: 15px;
 
     p {
       font-size: 12px;
@@ -476,7 +501,7 @@
 
 @media (max-width: 480px) {
   .login__branding {
-    padding: 20px 15px 15px;
+    padding: 15px 10px 10px;
   }
 
   .login__logo {
@@ -512,11 +537,11 @@
   }
 
   .login__form-section {
-    padding: 20px 15px 15px;
+    padding: 15px 10px 10px;
   }
 
   .login__form-header {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 
     .login__form-title {
       font-size: 19px;
@@ -561,13 +586,13 @@
   }
 
   .login__footer {
-    margin-top: 16px;
+    margin-top: 12px;
   }
 }
 
 @media (max-width: 360px) {
   .login__form-section {
-    padding: 15px 10px;
+    padding: 12px 8px;
   }
 
   .login__brand-title {

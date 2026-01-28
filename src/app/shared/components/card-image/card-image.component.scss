@@ -1,22 +1,38 @@
 .card-image {
   width: 100%;
-  height: 200px;
+  max-height: 250px;
   overflow: hidden;
   border-radius: 8px 8px 0 0;
   position: relative;
 
   img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    max-height: 250px;
+    object-fit: contain;
+    display: block;
+  }
+
+  &--preserve-ratio {
+    height: auto;
+    max-height: none;
+
+    img {
+      height: auto;
+      max-height: 400px;
+      object-fit: contain;
+    }
   }
 
   &--no-photo {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: #64748b;
+    border: 2px dashed #cbd5e1;
+    height: 250px;
+    min-height: 200px;
   }
 
   &__placeholder {
@@ -25,17 +41,20 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    padding: 16px;
 
     mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      margin-bottom: 8px;
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 12px;
+      opacity: 0.7;
     }
 
     span {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 500;
+      letter-spacing: 0.5px;
     }
   }
 }

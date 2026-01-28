@@ -1,4 +1,8 @@
-<div class="card-image" [ngClass]="!hasPhoto() ? 'card-image--no-photo' : ''">
+<div
+  class="card-image"
+  [ngClass]="!hasPhoto() ? 'card-image--no-photo' : ''"
+  [class.card-image--preserve-ratio]="preserveAspectRatio"
+>
   @if (hasPhoto()) {
     <img [src]="photoUrl!" [alt]="alt" (error)="onImageError()" />
   }

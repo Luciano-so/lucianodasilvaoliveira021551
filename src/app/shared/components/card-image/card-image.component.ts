@@ -13,6 +13,7 @@ export class CardImageComponent {
   @Input() alt: string = '';
   @Input() icon: string = 'person';
   @Input() photoUrl: string | null | undefined = null;
+  @Input() preserveAspectRatio: boolean = false;
 
   hasError = false;
 

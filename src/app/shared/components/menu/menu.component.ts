@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
-    Component,
-    HostListener,
-    inject,
-    OnDestroy,
-    OnInit,
+  Component,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -54,7 +54,8 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   private checkScreenSize(): void {
-    const isSmallScreen = window.innerWidth < 768;
+    const screenWidth = window.innerWidth;
+    const isSmallScreen = screenWidth < 768;
     this.menuService.setCollapsed(isSmallScreen);
   }
 
