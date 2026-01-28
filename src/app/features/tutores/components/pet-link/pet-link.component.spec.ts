@@ -59,9 +59,14 @@ describe('PetLinkComponent', () => {
   };
 
   beforeEach(async () => {
-    const petsFacadeMock = jasmine.createSpyObj('PetsFacade', ['loadPets'], {
-      pets$: new BehaviorSubject<Pet[]>([mockPet]),
-    });
+    const petsFacadeMock = jasmine.createSpyObj(
+      'PetsFacade',
+      ['loadPets', 'loadAllPets'],
+      {
+        pets$: new BehaviorSubject<Pet[]>([mockPet]),
+      },
+    );
+    petsFacadeMock.loadAllPets.and.returnValue(of([mockPet]));
 
     const tutoresFacadeMock = jasmine.createSpyObj(
       'TutoresFacade',

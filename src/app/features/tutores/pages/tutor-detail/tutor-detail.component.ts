@@ -10,8 +10,8 @@ import { CardImageComponent } from '../../../../shared/components/card-image/car
 import { DetailActionsComponent } from '../../../../shared/components/detail-actions/detail-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { RelationSectionComponent } from '../../../../shared/components/relation-section/relation-section.component';
-import { PhoneFormatPipe } from '../../../../shared/pipes/phone-format.pipe';
 import { CpfFormatPipe } from '../../../../shared/pipes/cpf-format.pipe';
+import { PhoneFormatPipe } from '../../../../shared/pipes/phone-format.pipe';
 import { PetLinkComponent } from '../../components/pet-link/pet-link.component';
 import { TutoresFacade } from '../../facades/tutores.facade';
 import { Tutor } from '../../models/tutor.model';

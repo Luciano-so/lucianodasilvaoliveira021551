@@ -278,9 +278,28 @@ ng test --browsers=Chrome --watch
 - Evite redundancia
 - Componentize oque for comum
 
+## ⚠️ Limitações da API
+
+### Paginação Limitada
+
+A API de listagem de pets utiliza paginação com limite padrão de 10 registros por página. Para funcionalidades que necessitam carregar todos os pets disponíveis (como o vínculo de pets a tutores), foi implementada uma solução que força o carregamento de até 1000 registros através do parâmetro `size=1000`.
+
+**Nota Importante**: Não existe um endpoint específico para "listar todos os pets" na API. A solução atual utiliza o endpoint paginado com um limite alto, o que pode impactar a performance em bases de dados muito grandes.
+
+**Implementação**: No componente `pet-link.component.ts`, o método `loadAllPets()` do facade é utilizado para carregar todos os pets disponíveis para vínculo.
+
+## 🎨 Decisões de Design
+
+### Dropdown de Seleção de Pets
+
+No componente de vínculo de pets com tutores (`pet-link.component.ts`), foi optado por não exibir as imagens dos pets no dropdown de seleção para evitar problemas de performance. Quando há muitos pets cadastrados, renderizar todas as imagens simultaneamente poderia causar lentidão significativa na interface.
+
+**Decisão**: O dropdown exibe apenas o nome do pet para manter a performance e responsividade da interface, mesmo com listas grandes de pets.
+
 ## 🚀 Melhorias Futuras
 
 Aqui estão algumas sugestões de melhorias no código que poderiam ser implementadas no futuro para aumentar a qualidade, performance e manutenibilidade:
 
 - **Gerenciamento de Estado**: Se o app ficar maior e mais complexo (com mais telas e dados sendo compartilhados), podemos usar ferramentas como NgRx ou Akita para organizar melhor os dados e ações do sistema. Isso ajuda a evitar erros, facilita encontrar problemas e deixa o código mais fácil de crescer. Por exemplo, informações de login, listas de pets e tutores, e filtros de busca ficariam em um lugar central, evitando que dados se percam ou sejam alterados por engano entre as telas.
+- **Autocomplete no Vínculo de Pets**: Implementar um campo de autocomplete na tela de vínculo de pets com tutores, permitindo buscar e selecionar pets por nome de forma mais intuitiva e eficiente, especialmente quando houver muitos pets cadastrados.
 - **Cobertura de Testes**: Aumentar cobertura para 95%+ com testes de integração e mocks para APIs.

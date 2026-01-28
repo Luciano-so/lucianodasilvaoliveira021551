@@ -60,16 +60,23 @@ export class PetLinkComponent implements OnInit, OnDestroy {
       .subscribe((tutor) => {
         if (tutor && tutor.id === this.tutorId) {
           this.linkedPets = tutor.pets || [];
-          this.loadAvailablePets();
+          if (!this.readOnly) {
+            this.loadAvailablePets();
+          }
         }
       });
   }
 
   private loadAvailablePets(): void {
-    this.petsFacade.pets$.pipe(takeUntil(this.destroy$)).subscribe((pets) => {
-      const linkedPetIds = this.linkedPets.map((p) => p.id);
-      this.availablePets = pets.filter((p) => !linkedPetIds.includes(p.id));
-    });
+    this.petsFacade
+      .loadAllPets()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((allPets) => {
+        const linkedPetIds = this.linkedPets.map((p) => p.id);
+        this.availablePets = allPets.filter(
+          (p) => !linkedPetIds.includes(p.id),
+        );
+      });
   }
 
   onLinkPet(): void {

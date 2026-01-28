@@ -40,6 +40,12 @@ export class PetsFacade extends BaseFacade<Pet, PetFilters> {
     this.loadItems(this.getServiceLoadMethod(), filters, 'pets');
   }
 
+  loadAllPets(): Observable<Pet[]> {
+    return this.petsService
+      .getPets({ size: 1000 })
+      .pipe(concatMap((response) => of(response.content)));
+  }
+
   searchPets(nome: string): void {
     this.search(nome);
   }
