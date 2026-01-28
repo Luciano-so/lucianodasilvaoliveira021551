@@ -159,21 +159,10 @@
 
 @media (max-width: 768px) {
   .menu {
-    width: 280px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    width: 70px; // Default collapsed width
 
-    &.menu--open {
-      transform: translateX(0);
-    }
-
-    &.menu--collapsed {
-      width: 70px;
-      transform: translateX(-100%);
-
-      &.menu--open {
-        transform: translateX(0);
-      }
+    &:not(.menu--collapsed) {
+      width: 250px; // Expanded when not collapsed
     }
   }
 }

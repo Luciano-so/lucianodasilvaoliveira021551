@@ -10,21 +10,22 @@
 ## 📋 Sumário
 
 - [🏗️ Arquitetura](#-arquitetura)
-- [📊 O que foi implementado / Não implementado e Priorização](#-o-que-foi-implementado--não-implementado-e-priorização)
-- [✨ Funcionalidades](#-funcionalidades)
+- [📊 O que foi implementado / Não implementado e Priorização](#-o-que-foi-implementado-e-priorização)
 - [📝 Dados de Inscrição](#-dados-de-inscrição)
 - [🚀 Como Executar](#-como-executar)
 - [🧪 Como Testar](#-como-testar)
 - [📦 Empacotamento em Container](#-empacotamento-em-container)
+- [🔧 Troubleshooting](#-troubleshooting)
 - [📚 Recursos Adicionais](#-recursos-adicionais)
+- [🚀 Melhorias Futuras](#-melhorias-futuras)
 
-## 📊 O que foi implementado / Não implementado e Priorização
+## 📊 O que foi implementado e Priorização
 
 ### ✅ O que foi implementado
 
 - **Funcionalidades Core**: CRUD completo para pets e tutores (criar, ler, atualizar, deletar), com validações de formulário e upload de fotos.
 - **Autenticação**: Sistema de login com guard para proteger rotas, interceptor para adicionar tokens às requisições.
-- **Interface Responsiva**: UI moderna usando Angular Material, componentes compartilhados (data-grid, formulários, loading, etc.), design responsivo.
+- **Interface Responsiva**: UI moderna usando Angular Material, componentes compartilhados (data-grid, formulários, loading, etc.), design responsivo com efeitos glassmorphism e animações.
 - **Gerenciamento de Estado**: Facades para centralizar lógica de negócio e estado, usando BehaviorSubjects para reatividade.
 - **Testes**: 573 testes unitários com cobertura alta (92%+ statements e lines), incluindo testes para componentes, serviços, facades, diretivas e pipes.
 - **Empacotamento**: Docker com Nginx, docker-compose para facilitar execução.
@@ -64,6 +65,12 @@ A aplicação é construída com Angular 19 e segue uma estrutura modular organi
 - **Interceptors**: Interceptam requisições HTTP. `auth.interceptor` adiciona tokens de autenticação às requisições, e `loading.interceptor` gerencia estados de carregamento.
 - **Serviços**: `auth.service` para lógica de autenticação e `http-base.service` para comunicação HTTP base.
 
+### Componentes Compartilhados (Shared)
+
+- **data-grid**: Componente para exibição de listas com paginação, busca e ações.
+- **form-header**: Cabeçalho de formulários com design glassmorphism.
+- **Outros componentes**: card-image, confirm-dialog, loading, toast, etc.
+
 ### Validações
 
 No módulo Shared, há validações customizadas para formulários, incluindo regras para campos obrigatórios, formatos de email, CPF e outros dados específicos de pets e tutores.
@@ -96,6 +103,9 @@ src/
 │   │   └── tutores/   # Gerenciamento de tutores
 │   └── shared/        # Componentes e utilitários compartilhados
 │       ├── components/# Componentes reutilizáveis
+│       │   ├── data-grid/        # Grid de dados com paginação
+│       │   ├── form-header/      # Cabeçalho de formulários
+│       │   └── ...               # Outros componentes
 │       ├── directives/# Diretivas customizadas
 │       ├── pipes/     # Pipes para transformação de dados
 │       ├── services/  # Serviços compartilhados
@@ -112,13 +122,6 @@ src/
 3. **Features Layer**: Módulos independentes para cada funcionalidade, com seus próprios serviços, facades e componentes.
 4. **Shared Layer**: Utilitários comuns, como validações, componentes e pipes, para evitar duplicação.
 5. **Backend Integration**: Comunicação via HTTP com APIs REST, utilizando interceptors para autenticação e loading.
-
-## ✨ Funcionalidades
-
-- 🔐 **Autenticação**: Login e controle de acesso.
-- 🐶 **Gerenciamento de Pets**: Cadastro, edição e visualização de pets.
-- 👤 **Gerenciamento de Tutores**: Cadastro e associação de tutores aos pets.
-- 📱 **Interface Responsiva**: Componentes compartilhados para uma experiência consistente.
 
 ## 📝 Dados de Inscrição
 
@@ -168,8 +171,6 @@ src/
 
 ### Produção com Docker
 
-O artefato é empacotado em um container Docker isolado com todas as dependências. O Dockerfile constrói a aplicação Angular e a serve com Nginx em um contêiner Alpine Linux, garantindo isolamento e portabilidade.
-
 1. 🐳 Construa e execute com Docker Compose:
 
    ```bash
@@ -215,15 +216,72 @@ Após a execução, o relatório de cobertura será gerado na pasta `coverage/pe
 - Functions: 87.84%
 - Lines: 92.77%
 
+## 📦 Empacotamento em Container
+
+O artefato é empacotado em um container Docker isolado com todas as dependências. O Dockerfile constrói a aplicação Angular e a serve com Nginx em um contêiner Alpine Linux, garantindo isolamento e portabilidade.
+
+### API Backend
+
+A aplicação se comunica com uma API REST backend. Os endpoints principais incluem:
+
+- `POST /api/auth/login` - Autenticação
+- `GET /api/pets` - Listar pets
+- `POST /api/pets` - Criar pet
+- `PUT /api/pets/:id` - Atualizar pet
+- `DELETE /api/pets/:id` - Deletar pet
+- `POST /api/pets/:id/upload` - Upload de foto do pet
+- `GET /api/tutores` - Listar tutores
+- `POST /api/tutores` - Criar tutor
+- `PUT /api/tutores/:id` - Atualizar tutor
+- `DELETE /api/tutores/:id` - Deletar tutor
+- `POST /api/tutores/:id/upload` - Upload de foto do tutor
+- `POST /api/pets/:petId/tutores/:tutorId` - Vincular tutor a pet
+- `DELETE /api/pets/:petId/tutores/:tutorId` - Desvincular tutor de pet
+- `GET /api/pets/:id/tutores` - Listar tutores de um pet
+- `GET /api/tutores/:id/pets` - Listar pets de um tutor
+
+**Nota**: Os endpoints de upload aceitam arquivos de imagem (JPEG, PNG) com tamanho máximo de 3MB.
+
 ## 📚 Recursos Adicionais
 
 - [Documentação Angular](https://angular.dev/)
 - [Angular CLI](https://angular.dev/tools/cli)
+
+## 🔧 Troubleshooting
+
+### Problemas Comuns
+
+- **Erro de CORS**: Se encontrar erros de CORS, verifique se o backend está configurado para aceitar requisições do frontend.
+- **Login não funciona**: Certifique-se de que as credenciais estão corretas (usuário: `admin`, senha: `admin`).
+- **Imagens não carregam**: Verifique se o diretório de uploads tem permissões adequadas.
+- **Testes falham**: Execute `npm install` para garantir que todas as dependências estejam instaladas.
+
+### Logs e Debug
+
+Para visualizar logs detalhados durante o desenvolvimento:
+
+```bash
+ng serve --verbose
+```
+
+Para debug de testes:
+
+```bash
+ng test --browsers=Chrome --watch
+```
+
+### Padrões de Código
+
+- Use TypeScript strict mode
+- Mantenha cobertura de testes acima de 90%
+- Siga as convenções de nomenclatura do Angular
+- Documente novos componentes e serviços
+- Evite redundancia
+- Componentize oque for comum
 
 ## 🚀 Melhorias Futuras
 
 Aqui estão algumas sugestões de melhorias no código que poderiam ser implementadas no futuro para aumentar a qualidade, performance e manutenibilidade:
 
 - **Gerenciamento de Estado**: Se o app ficar maior e mais complexo (com mais telas e dados sendo compartilhados), podemos usar ferramentas como NgRx ou Akita para organizar melhor os dados e ações do sistema. Isso ajuda a evitar erros, facilita encontrar problemas e deixa o código mais fácil de crescer. Por exemplo, informações de login, listas de pets e tutores, e filtros de busca ficariam em um lugar central, evitando que dados se percam ou sejam alterados por engano entre as telas.
-- **Acessibilidade (a11y)**: Melhorar suporte a leitores de tela, navegação por teclado e conformidade com WCAG.
 - **Cobertura de Testes**: Aumentar cobertura para 95%+ com testes de integração e mocks para APIs.

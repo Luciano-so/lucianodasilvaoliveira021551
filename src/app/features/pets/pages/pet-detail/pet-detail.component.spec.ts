@@ -195,6 +195,6 @@ describe('PetDetailComponent', () => {
       'https://example.com/foto-rex.jpg',
     );
     expect(cardImage.componentInstance.alt).toBe('Rex');
-    expect(cardImage.componentInstance.icon).toBe('pets');
+    expect(cardImage.componentInstance.icon).toBe('photo_camera');
   });
 });

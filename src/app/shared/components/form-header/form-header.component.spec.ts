@@ -135,13 +135,10 @@ describe('FormHeaderComponent', () => {
         fixture.debugElement.query(By.css('.form-header__content')),
       ).toBeTruthy();
       expect(
-        fixture.debugElement.query(By.css('.form-header__main')),
+        fixture.debugElement.query(By.css('.form-header__title')),
       ).toBeTruthy();
       expect(
-        fixture.debugElement.query(By.css('.form-header__text')),
-      ).toBeTruthy();
-      expect(
-        fixture.debugElement.query(By.css('.form-header__divider')),
+        fixture.debugElement.query(By.css('.form-header__subtitle')),
       ).toBeTruthy();
     });
   });
