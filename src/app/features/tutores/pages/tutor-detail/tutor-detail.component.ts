@@ -11,6 +11,7 @@ import { DetailActionsComponent } from '../../../../shared/components/detail-act
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { RelationSectionComponent } from '../../../../shared/components/relation-section/relation-section.component';
 import { PhoneFormatPipe } from '../../../../shared/pipes/phone-format.pipe';
+import { CpfFormatPipe } from '../../../../shared/pipes/cpf-format.pipe';
 import { PetLinkComponent } from '../../components/pet-link/pet-link.component';
 import { TutoresFacade } from '../../facades/tutores.facade';
 import { Tutor } from '../../models/tutor.model';
@@ -29,6 +30,7 @@ import { Tutor } from '../../models/tutor.model';
     RelationSectionComponent,
     PetLinkComponent,
     PhoneFormatPipe,
+    CpfFormatPipe,
   ],
   templateUrl: './tutor-detail.component.html',
   styleUrls: ['./tutor-detail.component.scss'],
