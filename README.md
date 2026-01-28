@@ -178,6 +178,12 @@ src/
 
 2. 🌐 A aplicação estará disponível em `http://localhost:4200`.
 
+Para parar os containers:
+
+```bash
+docker-compose down
+```
+
 Para construir a imagem manualmente:
 
 ```bash
