@@ -46,7 +46,7 @@
 
     @if (!readOnly) {
       <div class="pet-link__add">
-        <mat-form-field appearance="outline" class="pet-link__add-field">
+        <mat-form-field appearance="fill" class="pet-link__add-field">
           <mat-label>Vincular novo pet</mat-label>
           <mat-select [formControl]="selectedPetControl">
             @for (pet of availablePets; track pet.id) {
