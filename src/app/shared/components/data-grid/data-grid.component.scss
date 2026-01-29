@@ -20,7 +20,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     transition: all 0.4s ease;
 
-    &__bg {
+    &-bg {
       position: absolute;
       top: 0;
       left: 0;
@@ -35,7 +35,7 @@
       z-index: -1;
     }
 
-    &__shape {
+    &-shape {
       position: absolute;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.1);

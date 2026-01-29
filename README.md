@@ -16,15 +16,15 @@
 - [🧪 Como Testar](#-como-testar)
 - [📦 Empacotamento em Container](#-empacotamento-em-container)
 - [🔧 Troubleshooting](#-troubleshooting)
-- [📚 Recursos Adicionais](#-recursos-adicionais)
 - [🚀 Melhorias Futuras](#-melhorias-futuras)
+- [📚 Recursos Adicionais](#-recursos-adicionais)
 
 ## 📊 O que foi implementado e Priorização
 
 ### ✅ O que foi implementado
 
 - **Funcionalidades Core**: CRUD completo para pets e tutores (criar, ler, atualizar, deletar), com validações de formulário e upload de fotos.
-- **Autenticação**: Sistema de login com guard para proteger rotas, interceptor para adicionar tokens às requisições.
+- **Autenticação**: Sistema de login com guard para proteger rotas, interceptors para adicionar tokens às requisições.
 - **Interface Responsiva**: UI moderna usando Angular Material, componentes compartilhados (data-grid, formulários, loading, etc.), design responsivo com efeitos glassmorphism e animações.
 - **Gerenciamento de Estado**: Facades para centralizar lógica de negócio e estado, usando BehaviorSubjects para reatividade.
 - **Testes**: 573 testes unitários com cobertura alta (92%+ statements e lines), incluindo testes para componentes, serviços, facades, diretivas e pipes.
@@ -39,12 +39,10 @@ O desenvolvimento seguiu uma abordagem incremental e priorizada:
    - CRUD básico para pets e tutores.
    - Autenticação simples.
    - Interface funcional com Angular Material.
-
 2. **Segunda Prioridade: Qualidade e Robustez**
    - Validações customizadas e tratamento de erros via facades.
    - Testes unitários abrangentes para alcançar cobertura alta.
-   - Interceptors para loading e auth.
-
+   - Interceptors para loading, auth e tratamento de erros.
 3. **Terceira Prioridade: Implantação e Documentação**
    - Docker para produção.
    - README detalhado com instruções e arquitetura.
@@ -54,15 +52,15 @@ O desenvolvimento seguiu uma abordagem incremental e priorizada:
 
 A aplicação é construída com Angular 19 e segue uma estrutura modular organizada em camadas:
 
-- **Core**: Contém facades, guards, interceptors e serviços base para autenticação e comunicação HTTP.
+- **Core**: Facades, guards, interceptors e serviços base para autenticação e comunicação HTTP.
 - **Features**: Módulos específicos para autenticação (auth), página inicial (home), gerenciamento de pets e tutores.
 - **Shared**: Componentes reutilizáveis, diretivas, pipes, validações e estilos compartilhados.
 
 ### Componentes do Core
 
-- **Facades**: Fornecem uma interface simplificada para subsistemas complexos. Inclui `app.facade` para gerenciamento geral da aplicação e `base.facade` como classe base para facades específicas.
+- **Facades**: Interface simplificada para subsistemas complexos. Inclui `app.facade` para gerenciamento geral da aplicação e `base.facade` como classe base para facades específicas.
 - **Guards**: Controlam o acesso às rotas, como `auth.guard` para proteger rotas autenticadas.
-- **Interceptors**: Interceptam requisições HTTP. `auth.interceptor` adiciona tokens de autenticação às requisições, e `loading.interceptor` gerencia estados de carregamento.
+- **Interceptors**: Interceptam requisições HTTP. `auth.interceptor` adiciona tokens de autenticação às requisições, `loading.interceptor` gerencia estados de carregamento, e `error.interceptor` trata erros de requisições HTTP.
 - **Serviços**: `auth.service` para lógica de autenticação e `http-base.service` para comunicação HTTP base.
 
 ### Componentes Compartilhados (Shared)
@@ -84,6 +82,14 @@ No módulo Shared, há validações customizadas para formulários, incluindo re
 | SCSS       | -      | Pré-processador CSS                |
 | Docker     | -      | Containerização                    |
 | Nginx      | Alpine | Servidor web para produção         |
+
+#### ℹ️ Observação sobre CSS, SCSS, Angular Material e Tailwind
+
+**Este projeto utiliza [Angular Material](https://material.angular.io/) como biblioteca principal de componentes de interface, com customizações via SCSS.**
+
+- **Angular Material** fornece componentes prontos (inputs, botões, cards, etc.) e um sistema de temas, não sendo um framework de utilitários CSS como Tailwind ou Bootstrap.
+- **SCSS** é utilizado para customizar temas, variáveis e estilos específicos do Material, aproveitando o poder do pré-processador.
+- **Tailwind CSS** é um framework de utilitários CSS. A recomendação de “priorizar Tailwind” se aplica apenas quando for necessário adotar um framework de utilitários CSS para layout e estilização rápida.
 
 ### Estrutura de Diretórios
 
@@ -247,11 +253,6 @@ A aplicação se comunica com uma API REST backend. Os endpoints principais incl
 
 **Nota**: Os endpoints de upload aceitam arquivos de imagem (JPEG, PNG) com tamanho máximo de 3MB.
 
-## 📚 Recursos Adicionais
-
-- [Documentação Angular](https://angular.dev/)
-- [Angular CLI](https://angular.dev/tools/cli)
-
 ## 🔧 Troubleshooting
 
 ### Problemas Comuns
@@ -281,20 +282,20 @@ ng test --browsers=Chrome --watch
 - Mantenha cobertura de testes acima de 90%
 - Siga as convenções de nomenclatura do Angular
 - Documente novos componentes e serviços
-- Evite redundancia
-- Componentize oque for comum
+- Evite redundância
+- Componentize o que for comum
 
-## ⚠️ Limitações da API
+## ⚠️Limitação de Listagem de Pets
 
-### Paginação Limitada
+### Falta de endpoint
 
-A API de listagem de pets utiliza paginação com limite padrão de 10 registros por página. Para funcionalidades que necessitam carregar todos os pets disponíveis (como o vínculo de pets a tutores), foi implementada uma solução que força o carregamento de até 1000 registros através do parâmetro `size=1000`.
+Como não existe um endpoint específico para retornar todos os pets de uma só vez, a aplicação utiliza o endpoint `GET /api/pets` da API. Para contornar essa limitação, o parâmetro size é configurado com um valor elevado (por exemplo, `size=1000`), permitindo que o maior número possível de registros seja obtido em uma única requisição.
 
-**Nota Importante**: Não existe um endpoint específico para "listar todos os pets" na API. A solução atual utiliza o endpoint paginado com um limite alto, o que pode impactar a performance em bases de dados muito grandes.
+**Nota Importante**: Essa abordagem pode impactar a performance em bases de dados muito grandes, já que a API retorna muitos registros de uma só vez.
 
 **Implementação**: No componente `pet-link.component.ts`, o método `loadAllPets()` do facade é utilizado para carregar todos os pets disponíveis para vínculo.
 
-## 🎨 Decisões de Design
+## 🎨 Decisões Técnicas
 
 ### Dropdown de Seleção de Pets
 
@@ -304,9 +305,14 @@ No componente de vínculo de pets com tutores (`pet-link.component.ts`), foi opt
 
 ## 🚀 Melhorias Futuras
 
-Aqui estão algumas sugestões de melhorias no código que poderiam ser implementadas no futuro para aumentar a qualidade, performance e manutenibilidade:
-
-- **Gerenciamento de Estado**: Se o app ficar maior e mais complexo (com mais telas e dados sendo compartilhados), podemos usar ferramentas como NgRx ou Akita para organizar melhor os dados e ações do sistema. Isso ajuda a evitar erros, facilita encontrar problemas e deixa o código mais fácil de crescer. Por exemplo, informações de login, listas de pets e tutores, e filtros de busca ficariam em um lugar central, evitando que dados se percam ou sejam alterados por engano entre as telas.
-- **Autocomplete no Vínculo de Pets**: Implementar um campo de autocomplete na tela de vínculo de pets com tutores, permitindo buscar e selecionar pets por nome de forma mais intuitiva e eficiente, especialmente quando houver muitos pets cadastrados.
+- **Gerenciamento de Estado**:Se o app crescer, considerar ferramentas como NgRx ou Akita para organizar melhor os dados e ações do sistema.
+- **Autocomplete no Vínculo de Pets**: Implementar um campo de autocomplete na tela de vínculo de pets com tutores, permitindo buscar e selecionar pets por nome de forma mais intuitiva e eficiente.
 - **Cobertura de Testes**: Aumentar cobertura para 95%+ com testes de integração e mocks para APIs.
-- **Atualização do Angular**: Manter o framework atualizado com as últimas versões para benefícios de performance, segurança e novos recursos. Seguir as melhores práticas de migração e executar testes completos após cada atualização.
+- **Atualização do Angular**: Manter o framework atualizado com as últimas versões para benefícios de performance, segurança e novos recursos.
+
+---
+
+## Recursos Adicionais
+
+- Documentação Angular: https://angular.dev/
+- Angular CLI: https://angular.dev/tools/cli
