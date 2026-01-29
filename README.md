@@ -285,6 +285,8 @@ ng test --browsers=Chrome --watch
 - Evite redundância
 - Componentize o que for comum
 
+---
+
 ## ⚠️Limitação de Listagem de Pets
 
 ### Falta de endpoint
@@ -312,7 +314,7 @@ No componente de vínculo de pets com tutores (`pet-link.component.ts`), foi opt
 
 ---
 
-## Recursos Adicionais
+## 📚 Recursos Adicionais
 
 - Documentação Angular: https://angular.dev/
 - Angular CLI: https://angular.dev/tools/cli
