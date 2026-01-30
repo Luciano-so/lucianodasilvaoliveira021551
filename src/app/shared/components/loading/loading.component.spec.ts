@@ -39,9 +39,7 @@ describe('LoadingComponent', () => {
     loadingState$.next({ show: true });
     fixture.detectChanges();
 
-    const loaderElement = fixture.debugElement.query(
-      By.css('.page-preloading'),
-    );
+    const loaderElement = fixture.debugElement.query(By.css('.loading'));
     expect(loaderElement).toBeTruthy();
   });
 

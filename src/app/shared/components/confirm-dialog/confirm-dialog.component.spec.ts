@@ -37,23 +37,23 @@ describe('ConfirmDialogComponent com ícone', () => {
   });
 
   it('deve exibir o título correto', () => {
-    const title = fixture.nativeElement.querySelector('.confirm-dialog-title');
+    const title = fixture.nativeElement.querySelector('.confirm-dialog__title');
     expect(title.textContent).toContain(dialogDataWithIcon.title);
   });
 
   it('deve exibir a mensagem correta', () => {
     const message = fixture.nativeElement.querySelector(
-      '.confirm-dialog-content span',
+      '.confirm-dialog__content span',
     );
     expect(message.textContent).toContain(dialogDataWithIcon.message);
   });
 
   it('deve exibir os textos dos botões de confirmação e cancelamento', () => {
     const cancelBtn = fixture.nativeElement.querySelector(
-      '.confirm-dialog-back-btn',
+      '.confirm-dialog__back-btn',
     );
     const confirmBtn = fixture.nativeElement.querySelector(
-      '.confirm-dialog-confirm-btn',
+      '.confirm-dialog__confirm-btn',
     );
 
     expect(cancelBtn.textContent).toContain(dialogDataWithIcon.cancelText);
@@ -62,7 +62,7 @@ describe('ConfirmDialogComponent com ícone', () => {
 
   it('deve chamar close(false) ao clicar no botão de cancelar', () => {
     const cancelBtn = fixture.debugElement.query(
-      By.css('.confirm-dialog-back-btn'),
+      By.css('.confirm-dialog__back-btn'),
     );
     cancelBtn.triggerEventHandler('click', null);
 
@@ -71,7 +71,7 @@ describe('ConfirmDialogComponent com ícone', () => {
 
   it('deve chamar close(true) ao clicar no botão de confirmar', () => {
     const confirmBtn = fixture.debugElement.query(
-      By.css('.confirm-dialog-confirm-btn'),
+      By.css('.confirm-dialog__confirm-btn'),
     );
     confirmBtn.triggerEventHandler('click', null);
 
@@ -79,7 +79,9 @@ describe('ConfirmDialogComponent com ícone', () => {
   });
 
   it('deve fechar ao clicar no botão de fechar (ícone)', () => {
-    const closeBtn = fixture.debugElement.query(By.css('.close-button'));
+    const closeBtn = fixture.debugElement.query(
+      By.css('.confirm-dialog__close-button'),
+    );
     closeBtn.triggerEventHandler('click', null);
 
     expect(dialogRefSpy.close).toHaveBeenCalledWith(false);
@@ -106,7 +108,7 @@ describe('ConfirmDialogComponent com ícone', () => {
     newFixture.detectChanges();
 
     const message = newFixture.nativeElement.querySelector(
-      '.confirm-dialog-content span',
+      '.confirm-dialog__content span',
     );
     expect(message.innerHTML).toContain('<strong>Mensagem</strong>');
     expect(message.innerHTML).toContain('<em>HTML</em>');
@@ -133,10 +135,10 @@ describe('ConfirmDialogComponent com ícone', () => {
     newFixture.detectChanges();
 
     const title = newFixture.nativeElement.querySelector(
-      '.confirm-dialog-title',
+      '.confirm-dialog__title',
     );
     const message = newFixture.nativeElement.querySelector(
-      '.confirm-dialog-content span',
+      '.confirm-dialog__content span',
     );
 
     expect(title.textContent.trim()).toBe('');
