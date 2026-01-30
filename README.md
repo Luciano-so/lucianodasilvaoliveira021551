@@ -132,12 +132,12 @@ src/
 
 ### Cadastro de Pets
 
-| Campo       | Tipo   | Obrigatório | Descrição                  |
-| ----------- | ------ | ----------- | -------------------------- |
-| Nome do pet | string | Sim         | Nome do animal             |
-| Raça        | string | Não         | Raça específica (opcional) |
-| Idade       | number | Não         | Idade em anos (opcional)   |
-| Foto        | string | Não         | Imagem opcional            |
+| Campo | Tipo   | Obrigatório | Descrição                  |
+| ----- | ------ | ----------- | -------------------------- |
+| Nome  | string | Sim         | Nome do animal             |
+| Raça  | string | Não         | Raça específica (opcional) |
+| Idade | number | Não         | Idade em anos (opcional)   |
+| Foto  | object | Não         | Imagem opcional            |
 
 ### Cadastro de Tutores
 
@@ -146,9 +146,9 @@ src/
 | Nome     | string | Sim         | Nome completo                   |
 | Email    | string | Não         | Endereço de email (opcional)    |
 | Telefone | string | Sim         | Número de telefone              |
-| CPF      | string | Não         | Número do CPF (opcional)        |
+| CPF      | number | Não         | Número do CPF (opcional)        |
 | Endereço | string | Não         | Endereço residencial (opcional) |
-| Foto     | string | Não         | Imagem opcional                 |
+| Foto     | object | Não         | Imagem opcional                 |
 
 ## 🚀 Como Executar
 
