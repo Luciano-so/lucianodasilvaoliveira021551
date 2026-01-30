@@ -76,7 +76,7 @@ describe('TutorListComponent', () => {
   });
 
   it('should initialize and load tutores', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
 
     expect(mockTutoresFacade.loadTutores).toHaveBeenCalled();
     expect(component.tutores).toEqual(mockTutores);
@@ -118,7 +118,7 @@ describe('TutorListComponent', () => {
     const newFixture = TestBed.createComponent(TutorListComponent);
     const newComponent = newFixture.componentInstance;
 
-    newComponent.ngOnInit();
+    TestBed.runInInjectionContext(() => newComponent.ngOnInit());
     newComponent.onSearchChange('João');
 
     tick(300);
@@ -158,7 +158,7 @@ describe('TutorListComponent', () => {
 
     (mockTutoresFacade.tutores$ as BehaviorSubject<Tutor[]>).next(newTutores);
 
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
 
     setTimeout(() => {
       expect(component.tutores).toEqual(newTutores);
@@ -170,7 +170,7 @@ describe('TutorListComponent', () => {
     spyOn(component, 'ngOnInit');
     spyOn(component, 'ngOnDestroy');
 
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.ngOnInit).toHaveBeenCalled();
 
     component.ngOnDestroy();
@@ -228,7 +228,7 @@ describe('TutorListComponent', () => {
     const newFixture = TestBed.createComponent(TutorListComponent);
     const newComponent = newFixture.componentInstance;
 
-    newComponent.ngOnInit();
+    TestBed.runInInjectionContext(() => newComponent.ngOnInit());
     newComponent.onSearchChange('João');
 
     tick(300);

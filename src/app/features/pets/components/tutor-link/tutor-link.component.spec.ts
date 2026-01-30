@@ -71,18 +71,30 @@ describe('TutorLinkComponent', () => {
     petsFacadeSpy = TestBed.inject(PetsFacade) as jasmine.SpyObj<PetsFacade>;
 
     component.petId = 1;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
     expect(component).toBeTruthy();
   });
 
   it('should load linked tutors on init', () => {
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
     expect(component.linkedTutors).toEqual(mockTutors);
   });
 
   it('should display tutor list when tutors exist', () => {
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
+
     const compiled = fixture.nativeElement as HTMLElement;
     const tutorItems = compiled.querySelectorAll('.tutor-link__item');
     expect(tutorItems.length).toBe(2);
@@ -96,7 +108,10 @@ describe('TutorLinkComponent', () => {
       ...mockPet,
       tutores: [],
     });
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
 
     const compiled = fixture.nativeElement as HTMLElement;
     const emptyState = compiled.querySelector('.tutor-link__empty');
@@ -108,13 +123,20 @@ describe('TutorLinkComponent', () => {
 
   it('should not display tutors when pet id does not match', () => {
     component.petId = 999;
-    component.ngOnInit();
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
 
     expect(component.linkedTutors).toEqual([]);
   });
 
   it('should display tutor phone with formatting', () => {
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
+
     const compiled = fixture.nativeElement as HTMLElement;
     const phoneElements = compiled.querySelectorAll('.tutor-link__item-phone');
     expect(phoneElements.length).toBeGreaterThan(0);
@@ -122,6 +144,11 @@ describe('TutorLinkComponent', () => {
   });
 
   it('should display tutor email when available', () => {
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
+
     const compiled = fixture.nativeElement as HTMLElement;
     const emailElements = compiled.querySelectorAll('.tutor-link__item-email');
     expect(emailElements.length).toBeGreaterThan(0);
@@ -134,7 +161,10 @@ describe('TutorLinkComponent', () => {
       ...mockPet,
       tutores: [tutorWithoutEmail],
     });
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
 
     const compiled = fixture.nativeElement as HTMLElement;
     const emailElements = compiled.querySelectorAll('.tutor-link__item-email');
@@ -142,6 +172,11 @@ describe('TutorLinkComponent', () => {
   });
 
   it('should pass correct props to EntityPhotoComponent', () => {
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
+
     const tutorLinkElement = fixture.debugElement.query(
       By.css('mat-card.tutor-link'),
     );
@@ -165,16 +200,10 @@ describe('TutorLinkComponent', () => {
 
   it('should handle readOnly input', () => {
     component.readOnly = true;
+    TestBed.runInInjectionContext(() => {
+      (component as any).loadData();
+      fixture.detectChanges();
+    });
     expect(component.readOnly).toBe(true);
-  });
-
-  it('should unsubscribe on destroy', () => {
-    spyOn(component['destroy$'], 'next');
-    spyOn(component['destroy$'], 'complete');
-
-    component.ngOnDestroy();
-
-    expect(component['destroy$'].next).toHaveBeenCalled();
-    expect(component['destroy$'].complete).toHaveBeenCalled();
   });
 });

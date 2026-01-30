@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
@@ -12,8 +13,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, of, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 import { FormActionsComponent } from '../../../../shared/components/form-actions/form-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
@@ -42,16 +43,15 @@ import { PetsFacade } from '../../facades/pets.facade';
     TutorLinkComponent,
     RelationSectionComponent,
   ],
-
   templateUrl: './pet-form.component.html',
   styleUrls: ['./pet-form.component.scss'],
 })
-export class PetFormComponent implements OnInit, OnDestroy {
+export class PetFormComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
-  private destroy$ = new Subject<void>();
   private route = inject(ActivatedRoute);
   private petsFacade = inject(PetsFacade);
+  private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
   private confirmDialogService = inject(ConfirmDialogService);
 
@@ -68,11 +68,6 @@ export class PetFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm();
     this.checkEditMode();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private initForm(): void {
@@ -109,7 +104,7 @@ export class PetFormComponent implements OnInit, OnDestroy {
     this.petsFacade.selectedPet$
       .pipe(
         filter((pet) => pet !== null && pet.id === id),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((pet) => {
         if (pet) {
@@ -138,8 +133,8 @@ export class PetFormComponent implements OnInit, OnDestroy {
 
     const petData = this.petForm.value;
     const message = this.isEditMode
-      ? `Deseja salvar as alterações feitas em <strong>"${petData.nome}</strong>"?`
-      : `Deseja cadastrar o pet <strong>"${petData.nome}</strong>"?`;
+      ? `Deseja salvar as alterações feitas em <strong>${petData.nome}</strong>?`
+      : `Deseja cadastrar o pet <strong>${petData.nome}</strong>?`;
 
     this.confirmDialogService
       .openConfirm({
@@ -148,7 +143,7 @@ export class PetFormComponent implements OnInit, OnDestroy {
       })
       .pipe(
         filter((confirmed): confirmed is boolean => confirmed === true),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         if (this.isEditMode && this.petId) {
@@ -160,12 +155,15 @@ export class PetFormComponent implements OnInit, OnDestroy {
   }
 
   private handleCreate(petData: any): void {
-    this.petsFacade.createPetWithPhoto(petData, this.selectedFile).subscribe({
-      next: () => {
-        this.toastService.onShowOk('Pet cadastrado com sucesso!');
-        this.onBack();
-      },
-    });
+    this.petsFacade
+      .createPetWithPhoto(petData, this.selectedFile)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.toastService.onShowOk('Pet cadastrado com sucesso!');
+          this.onBack();
+        },
+      });
   }
 
   private handleUpdate(petData: any): void {
@@ -175,6 +173,7 @@ export class PetFormComponent implements OnInit, OnDestroy {
         currentPhotoId: this.currentPhotoId,
         photoRemoved: this.photoRemoved,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.toastService.onShowOk('Pet atualizado com sucesso!');
@@ -247,7 +246,7 @@ export class PetFormComponent implements OnInit, OnDestroy {
           }
           return of(true);
         }),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => {

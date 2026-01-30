@@ -131,7 +131,7 @@ describe('TutorFormComponent', () => {
   });
 
   it('should initialize form on init', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.tutorForm).toBeDefined();
     expect(component.tutorForm.get('nome')).toBeDefined();
     expect(component.tutorForm.get('email')).toBeDefined();
@@ -144,7 +144,7 @@ describe('TutorFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       null,
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.isEditMode).toBe(false);
     expect(component.tutorId).toBeUndefined();
   });
@@ -153,7 +153,7 @@ describe('TutorFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       '1',
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.isEditMode).toBe(true);
     expect(component.tutorId).toBe(1);
   });
@@ -162,7 +162,7 @@ describe('TutorFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       '1',
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
 
     (tutoresFacadeSpy.selectedTutor$ as BehaviorSubject<Tutor | null>).next(
       mockTutor,
@@ -177,7 +177,7 @@ describe('TutorFormComponent', () => {
   });
 
   it('should not submit when form is invalid', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.tutorForm.get('nome')?.setValue('');
 
     component.onSubmit();
@@ -189,13 +189,13 @@ describe('TutorFormComponent', () => {
   });
 
   it('should open confirm dialog on valid submit', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.tutorForm.get('nome')?.setValue('João Silva');
     component.tutorForm.get('telefone')?.setValue('11999999999');
 
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
 
-    component.onSubmit();
+    TestBed.runInInjectionContext(() => component.onSubmit());
 
     expect(confirmDialogServiceSpy.openConfirm).toHaveBeenCalled();
   });
@@ -204,14 +204,14 @@ describe('TutorFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       null,
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.tutorForm.get('nome')?.setValue('João Silva');
     component.tutorForm.get('telefone')?.setValue('11999999999');
 
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     tutoresFacadeSpy.createTutorWithPhoto.and.callFake(() => of(undefined));
 
-    component.onSubmit();
+    TestBed.runInInjectionContext(() => component.onSubmit());
 
     expect(tutoresFacadeSpy.createTutorWithPhoto).toHaveBeenCalled();
     expect(toastServiceSpy.onShowOk).toHaveBeenCalledWith(
@@ -224,14 +224,14 @@ describe('TutorFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       '1',
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.tutorForm.get('nome')?.setValue('João Silva Updated');
     component.tutorForm.get('telefone')?.setValue('11999999999');
 
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     tutoresFacadeSpy.updateTutorWithPhoto.and.callFake(() => of(undefined));
 
-    component.onSubmit();
+    TestBed.runInInjectionContext(() => component.onSubmit());
 
     expect(tutoresFacadeSpy.updateTutorWithPhoto).toHaveBeenCalledWith(
       1,
@@ -281,7 +281,7 @@ describe('TutorFormComponent', () => {
 
   it('should delete tutor without pets', () => {
     component.tutorId = 1;
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.tutorForm.get('nome')?.setValue('João Silva');
     (tutoresFacadeSpy.selectedTutor$ as BehaviorSubject<Tutor | null>).next({
       ...mockTutor,
@@ -290,7 +290,7 @@ describe('TutorFormComponent', () => {
 
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
 
-    component.onDelete();
+    TestBed.runInInjectionContext(() => component.onDelete());
 
     expect(tutoresFacadeSpy.deleteTutor).toHaveBeenCalledWith(1);
     expect(toastServiceSpy.onShowOk).toHaveBeenCalledWith(
@@ -300,7 +300,7 @@ describe('TutorFormComponent', () => {
 
   it('should delete tutor with pets and unlink them', () => {
     component.tutorId = 1;
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.tutorForm.get('nome')?.setValue('João Silva');
     (tutoresFacadeSpy.selectedTutor$ as BehaviorSubject<Tutor | null>).next(
       mockTutor,
@@ -309,24 +309,14 @@ describe('TutorFormComponent', () => {
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     tutoresFacadeSpy.unlinkPet.and.returnValue(of(undefined));
 
-    component.onDelete();
+    TestBed.runInInjectionContext(() => component.onDelete());
 
     expect(tutoresFacadeSpy.unlinkPet).toHaveBeenCalledTimes(0);
     expect(tutoresFacadeSpy.deleteTutor).toHaveBeenCalledWith(1);
   });
 
-  it('should unsubscribe on destroy', () => {
-    spyOn(component['destroy$'], 'next');
-    spyOn(component['destroy$'], 'complete');
-
-    component.ngOnDestroy();
-
-    expect(component['destroy$'].next).toHaveBeenCalled();
-    expect(component['destroy$'].complete).toHaveBeenCalled();
-  });
-
   it('should mark form group as touched', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     const spy = spyOn(component.tutorForm.get('nome')!, 'markAsTouched');
 
     component['markFormGroupTouched'](component.tutorForm);

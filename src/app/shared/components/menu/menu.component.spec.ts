@@ -52,7 +52,7 @@ describe('MenuComponent', () => {
   });
 
   it('should initialize with correct state', () => {
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
 
     expect(component.isAuthenticated).toBe(true);
     expect(component.menuItems).toEqual(mockMenuItems);
@@ -61,8 +61,6 @@ describe('MenuComponent', () => {
   });
 
   it('should navigate to correct route on menu item click', () => {
-    fixture.detectChanges();
-
     component.onMenuItemClick('/pets');
 
     expect(mockFacade.setActiveMenuItem).toHaveBeenCalledWith('/pets');
@@ -76,7 +74,10 @@ describe('MenuComponent', () => {
   });
 
   it('should render menu items', () => {
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
 
     const compiled = fixture.nativeElement as HTMLElement;
     const menuItems = compiled.querySelectorAll('.menu__item');
@@ -141,7 +142,7 @@ describe('MenuComponent', () => {
     const newFixture = TestBed.createComponent(MenuComponent);
     const newComponent = newFixture.componentInstance;
 
-    newFixture.detectChanges();
+    TestBed.runInInjectionContext(() => newComponent.ngOnInit());
 
     expect(newComponent.isAuthenticated).toBe(false);
     expect(newComponent.menuItems).toEqual([]);
@@ -173,7 +174,7 @@ describe('MenuComponent', () => {
     const newFixture = TestBed.createComponent(MenuComponent);
     const newComponent = newFixture.componentInstance;
 
-    newFixture.detectChanges();
+    TestBed.runInInjectionContext(() => newComponent.ngOnInit());
 
     expect(newComponent.activeMenuItem).toBe('/pets');
     expect(newComponent.isCollapsed).toBe(true);

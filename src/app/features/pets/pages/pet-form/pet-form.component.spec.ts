@@ -128,7 +128,7 @@ describe('PetFormComponent', () => {
   });
 
   it('should initialize form on init', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.petForm).toBeDefined();
     expect(component.petForm.get('nome')).toBeDefined();
     expect(component.petForm.get('raca')).toBeDefined();
@@ -139,7 +139,7 @@ describe('PetFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       null,
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.isEditMode).toBe(false);
     expect(component.petId).toBeUndefined();
   });
@@ -148,7 +148,7 @@ describe('PetFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       '1',
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.isEditMode).toBe(true);
     expect(component.petId).toBe(1);
   });
@@ -157,7 +157,7 @@ describe('PetFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       '1',
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
 
     (petsFacadeSpy.selectedPet$ as BehaviorSubject<Pet | null>).next(mockPet);
 
@@ -169,10 +169,10 @@ describe('PetFormComponent', () => {
   });
 
   it('should not submit when form is invalid', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.petForm.get('nome')?.setValue('');
 
-    component.onSubmit();
+    TestBed.runInInjectionContext(() => component.onSubmit());
 
     expect(toastServiceSpy.onShowError).toHaveBeenCalledWith(
       'Por favor, corrija os erros no formulário.',
@@ -181,14 +181,14 @@ describe('PetFormComponent', () => {
   });
 
   it('should open confirm dialog on valid submit', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.petForm.get('nome')?.setValue('Test Pet');
     component.petForm.get('raca')?.setValue('Test Breed');
     component.petForm.get('idade')?.setValue(2);
 
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
 
-    component.onSubmit();
+    TestBed.runInInjectionContext(() => component.onSubmit());
 
     expect(confirmDialogServiceSpy.openConfirm).toHaveBeenCalled();
   });
@@ -197,7 +197,7 @@ describe('PetFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       null,
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.petForm.get('nome')?.setValue('Test Pet');
     component.petForm.get('raca')?.setValue('Test Breed');
     component.petForm.get('idade')?.setValue(2);
@@ -205,7 +205,7 @@ describe('PetFormComponent', () => {
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     petsFacadeSpy.createPetWithPhoto.and.callFake(() => of(undefined));
 
-    component.onSubmit();
+    TestBed.runInInjectionContext(() => component.onSubmit());
     flush();
 
     expect(petsFacadeSpy.createPetWithPhoto).toHaveBeenCalled();
@@ -219,7 +219,7 @@ describe('PetFormComponent', () => {
     (activatedRouteSpy.snapshot.paramMap.get as jasmine.Spy).and.returnValue(
       '1',
     );
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.petForm.get('nome')?.setValue('Updated Pet');
     component.petForm.get('raca')?.setValue('Updated Breed');
     component.petForm.get('idade')?.setValue(4);
@@ -227,7 +227,7 @@ describe('PetFormComponent', () => {
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     petsFacadeSpy.updatePetWithPhoto.and.callFake(() => of(undefined));
 
-    component.onSubmit();
+    TestBed.runInInjectionContext(() => component.onSubmit());
     flush();
 
     expect(petsFacadeSpy.updatePetWithPhoto).toHaveBeenCalledWith(
@@ -276,13 +276,13 @@ describe('PetFormComponent', () => {
 
   it('should delete pet without tutors', () => {
     component.petId = 1;
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.petForm.get('nome')?.setValue('Test Pet');
     component.linkedTutorIds = [];
 
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
 
-    component.onDelete();
+    TestBed.runInInjectionContext(() => component.onDelete());
 
     expect(petsFacadeSpy.deletePet).toHaveBeenCalledWith(1);
     expect(toastServiceSpy.onShowOk).toHaveBeenCalledWith(
@@ -292,32 +292,22 @@ describe('PetFormComponent', () => {
 
   it('should delete pet with tutors and unlink them', fakeAsync(() => {
     component.petId = 1;
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     component.petForm.get('nome')?.setValue('Test Pet');
     component.linkedTutorIds = [1, 2];
 
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     petsFacadeSpy.unlinkTutor.and.callFake(() => of(undefined));
 
-    component.onDelete();
+    TestBed.runInInjectionContext(() => component.onDelete());
     flush();
 
     expect(petsFacadeSpy.unlinkTutor).toHaveBeenCalledTimes(2);
     expect(petsFacadeSpy.deletePet).toHaveBeenCalledWith(1);
   }));
 
-  it('should unsubscribe on destroy', () => {
-    spyOn(component['destroy$'], 'next');
-    spyOn(component['destroy$'], 'complete');
-
-    component.ngOnDestroy();
-
-    expect(component['destroy$'].next).toHaveBeenCalled();
-    expect(component['destroy$'].complete).toHaveBeenCalled();
-  });
-
   it('should mark form group as touched', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     const spy = spyOn(component.petForm.get('nome')!, 'markAsTouched');
 
     component['markFormGroupTouched'](component.petForm);

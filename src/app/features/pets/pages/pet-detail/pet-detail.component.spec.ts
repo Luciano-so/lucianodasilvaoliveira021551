@@ -89,18 +89,18 @@ describe('PetDetailComponent', () => {
   });
 
   it('should load pet on init', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(petsFacadeSpy.loadPetById).toHaveBeenCalledWith(1);
   });
 
   it('should set petId from route params', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.petId).toBe(1);
   });
 
   it('should update pet when selectedPet$ emits matching pet', () => {
     component.petId = 1;
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
 
     (petsFacadeSpy.selectedPet$ as BehaviorSubject<Pet | null>).next(mockPet);
 
@@ -109,7 +109,7 @@ describe('PetDetailComponent', () => {
 
   it('should not update pet when selectedPet$ emits non-matching pet', () => {
     component.petId = 1;
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
 
     const differentPet = { ...mockPet, id: 2 };
     (petsFacadeSpy.selectedPet$ as BehaviorSubject<Pet | null>).next(
@@ -121,7 +121,9 @@ describe('PetDetailComponent', () => {
 
   it('should display pet information when pet is loaded', () => {
     component.pet = mockPet;
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      fixture.detectChanges();
+    });
 
     const compiled = fixture.nativeElement as HTMLElement;
     const petName = compiled.querySelector('.pet-detail__field-value');
@@ -129,7 +131,9 @@ describe('PetDetailComponent', () => {
   });
 
   it('should display default title when pet is not loaded', () => {
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      fixture.detectChanges();
+    });
 
     const compiled = fixture.nativeElement as HTMLElement;
     const title = compiled.querySelector('app-form-header');
@@ -147,20 +151,12 @@ describe('PetDetailComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/pets', 1, 'edit']);
   });
 
-  it('should unsubscribe on destroy', () => {
-    spyOn(component['destroy$'], 'next');
-    spyOn(component['destroy$'], 'complete');
-
-    component.ngOnDestroy();
-
-    expect(component['destroy$'].next).toHaveBeenCalled();
-    expect(component['destroy$'].complete).toHaveBeenCalled();
-  });
-
   it('should handle pet without photo', () => {
     const petWithoutPhoto = { ...mockPet, foto: undefined };
     component.pet = petWithoutPhoto;
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      fixture.detectChanges();
+    });
 
     expect(component.pet).toBeTruthy();
   });
@@ -169,7 +165,9 @@ describe('PetDetailComponent', () => {
     const petWithoutRace = { ...mockPet };
     delete petWithoutRace.raca;
     component.pet = petWithoutRace;
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      fixture.detectChanges();
+    });
 
     const compiled = fixture.nativeElement as HTMLElement;
     const raceValue = compiled.querySelectorAll('.pet-detail__field-value')[1];
@@ -179,7 +177,9 @@ describe('PetDetailComponent', () => {
   it('should pass correct props to child components', () => {
     component.pet = mockPet;
     component.petId = 1;
-    fixture.detectChanges();
+    TestBed.runInInjectionContext(() => {
+      fixture.detectChanges();
+    });
 
     const formHeader = fixture.debugElement.queryAll(
       (de) => de.componentInstance instanceof FormHeaderComponent,

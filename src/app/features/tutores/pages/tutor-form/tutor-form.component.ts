@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
@@ -12,8 +13,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, of, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 import { FormActionsComponent } from '../../../../shared/components/form-actions/form-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
 import { PhotoUploadComponent } from '../../../../shared/components/photo-upload/photo-upload.component';
@@ -48,11 +49,11 @@ import { TutoresFacade } from '../../facades/tutores.facade';
   templateUrl: './tutor-form.component.html',
   styleUrls: ['./tutor-form.component.scss'],
 })
-export class TutorFormComponent implements OnInit, OnDestroy {
+export class TutorFormComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
-  private destroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
   private tutoresFacade = inject(TutoresFacade);
   private confirmService = inject(ConfirmDialogService);
@@ -69,11 +70,6 @@ export class TutorFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm();
     this.checkEditMode();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private initForm(): void {
@@ -112,7 +108,7 @@ export class TutorFormComponent implements OnInit, OnDestroy {
     this.tutoresFacade.selectedTutor$
       .pipe(
         filter((tutor) => tutor !== null && tutor.id === id),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((tutor) => {
         if (tutor) {
@@ -142,8 +138,8 @@ export class TutorFormComponent implements OnInit, OnDestroy {
 
     const tutorData = this.tutorForm.value;
     const message = this.isEditMode
-      ? `Deseja salvar as alterações feitas em <strong>"${tutorData.nome}</strong>"?`
-      : `Deseja cadastrar o tutor <strong>"${tutorData.nome}</strong>"?`;
+      ? `Deseja salvar as alterações feitas em <strong>${tutorData.nome}</strong>?`
+      : `Deseja cadastrar o tutor <strong>${tutorData.nome}</strong>?`;
 
     this.confirmService
       .openConfirm({
@@ -152,7 +148,7 @@ export class TutorFormComponent implements OnInit, OnDestroy {
       })
       .pipe(
         filter((confirmed): confirmed is boolean => confirmed === true),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         if (this.isEditMode && this.tutorId) {
@@ -166,6 +162,7 @@ export class TutorFormComponent implements OnInit, OnDestroy {
   private handleCreate(tutorData: any): void {
     this.tutoresFacade
       .createTutorWithPhoto(tutorData, this.selectedFile)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.toastService.onShowOk('Tutor cadastrado com sucesso!');
@@ -181,6 +178,7 @@ export class TutorFormComponent implements OnInit, OnDestroy {
         currentPhotoId: this.currentPhotoId,
         photoRemoved: this.photoRemoved,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.toastService.onShowOk('Tutor atualizado com sucesso!');
@@ -217,7 +215,7 @@ export class TutorFormComponent implements OnInit, OnDestroy {
                 }
                 return of(this.tutorId!);
               }),
-              takeUntil(this.destroy$),
+              takeUntilDestroyed(this.destroyRef),
             )
             .subscribe({
               next: (tutorId) => {

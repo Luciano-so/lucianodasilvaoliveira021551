@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
   DataGridComponent,
   PaginationInfo,
@@ -28,10 +35,10 @@ export class PetListComponent implements OnInit, OnDestroy {
     pageCount: 0,
   };
 
-  private destroy$ = new Subject<void>();
-  private searchSubject$ = new Subject<string>();
-  private petsFacade = inject(PetsFacade);
   private router = inject(Router);
+  private petsFacade = inject(PetsFacade);
+  private destroyRef = inject(DestroyRef);
+  private searchSubject$ = new Subject<string>();
 
   constructor() {}
 
@@ -43,21 +50,23 @@ export class PetListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.petsFacade.clearFilters();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private setupSubscriptions(): void {
-    this.petsFacade.pets$.pipe(takeUntil(this.destroy$)).subscribe((pets) => {
-      this.pets = pets;
-    });
+    this.petsFacade.pets$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((pets) => {
+        this.pets = pets;
+      });
 
-    this.petsFacade.error$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
-      this.error = error;
-    });
+    this.petsFacade.error$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((error) => {
+        this.error = error;
+      });
 
     this.petsFacade.pagination$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((pagination) => {
         this.pagination = pagination;
       });
@@ -65,7 +74,11 @@ export class PetListComponent implements OnInit, OnDestroy {
 
   private setupSearch(): void {
     this.searchSubject$
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((searchTerm) => {
         this.petsFacade.searchPets(searchTerm);
       });

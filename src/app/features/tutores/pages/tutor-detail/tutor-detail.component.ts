@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { CardImageComponent } from '../../../../shared/components/card-image/card-image.component';
 import { DetailActionsComponent } from '../../../../shared/components/detail-actions/detail-actions.component';
 import { FormHeaderComponent } from '../../../../shared/components/form-header/form-header.component';
@@ -35,10 +35,10 @@ import { Tutor } from '../../models/tutor.model';
   templateUrl: './tutor-detail.component.html',
   styleUrls: ['./tutor-detail.component.scss'],
 })
-export class TutorDetailComponent implements OnInit, OnDestroy {
+export class TutorDetailComponent implements OnInit {
   private router = inject(Router);
-  private destroy$ = new Subject<void>();
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
   private tutoresFacade = inject(TutoresFacade);
 
   tutorId: number = 0;
@@ -52,17 +52,12 @@ export class TutorDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   private loadTutor(id: number): void {
     this.tutoresFacade.loadTutorById(id);
     this.tutoresFacade.selectedTutor$
       .pipe(
         filter((tutor) => tutor !== null && tutor.id === id),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((tutor) => {
         this.tutor = tutor;

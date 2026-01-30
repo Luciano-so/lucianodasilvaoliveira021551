@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -63,6 +71,7 @@ export class AutocompleteComponent implements OnInit {
     [],
   );
   filteredOptions$ = this.filteredOptionsSubject.asObservable();
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.searchControl.valueChanges
@@ -72,7 +81,7 @@ export class AutocompleteComponent implements OnInit {
         filter((value) => value != null),
         filter((value) => value.length >= this.minSearchLength),
         switchMap((query) => this.searchFn(query)),
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((options) => {
         this.filteredOptionsSubject.next(options);

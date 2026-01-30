@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -42,14 +49,15 @@ import { TutoresFacade } from '../../facades/tutores.facade';
 export class PetLinkComponent implements OnInit {
   @Input() tutorId!: number;
   @Input() readOnly = false;
+  @ViewChild('autocomplete') autocomplete!: AutocompleteComponent;
 
   linkedPets: Pet[] = [];
   availablePets: Pet[] = [];
-  selectedPet: Pet | null = null;
   searchResults: Pet[] = [];
+  selectedPet: Pet | null = null;
 
-  @ViewChild('autocomplete') autocomplete!: AutocompleteComponent;
   private petsFacade = inject(PetsFacade);
+  private destroyRef = inject(DestroyRef);
   private petsService = inject(PetsService);
   private tutoresFacade = inject(TutoresFacade);
   private confirmService = inject(ConfirmDialogService);
@@ -60,7 +68,7 @@ export class PetLinkComponent implements OnInit {
 
   private loadData(): void {
     this.tutoresFacade.selectedTutor$
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((tutor) => {
         if (tutor && tutor.id === this.tutorId) {
           this.linkedPets = tutor.pets || [];
@@ -74,7 +82,7 @@ export class PetLinkComponent implements OnInit {
   private loadAvailablePets(): void {
     this.petsFacade
       .loadAllPets()
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (allPets) => {
           const linkedPetIds = this.linkedPets.map((p) => p.id);
@@ -92,12 +100,12 @@ export class PetLinkComponent implements OnInit {
           title: 'Confirmar Vinculação',
           message: `Tem certeza que deseja vincular o pet <strong>"${this.selectedPet.nome}"</strong> a este tutor?`,
         })
-        .pipe(takeUntilDestroyed())
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((result) => {
           if (result) {
             this.tutoresFacade
               .linkPet(this.tutorId, this.selectedPet!.id)
-              .pipe(takeUntilDestroyed())
+              .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe({
                 next: () => {
                   this.selectedPet = null;
@@ -144,12 +152,12 @@ export class PetLinkComponent implements OnInit {
         .openConfirm({
           message: `Tem certeza que deseja desvincular o pet <strong>"${pet.nome}"</strong> do tutor?`,
         })
-        .pipe(takeUntilDestroyed())
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((result) => {
           if (result) {
             this.tutoresFacade
               .unlinkPet(this.tutorId, petId)
-              .pipe(takeUntilDestroyed())
+              .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe();
           }
         });

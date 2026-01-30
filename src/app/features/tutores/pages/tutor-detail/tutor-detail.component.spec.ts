@@ -84,13 +84,13 @@ describe('TutorDetailComponent', () => {
   });
 
   it('should load tutor on init', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.tutorId).toBe(1);
     expect(tutoresFacadeSpy.loadTutorById).toHaveBeenCalledWith(1);
   });
 
   it('should set tutor when selectedTutor$ emits', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     (tutoresFacadeSpy.selectedTutor$ as BehaviorSubject<Tutor | null>).next(
       mockTutor,
     );
@@ -108,15 +108,5 @@ describe('TutorDetailComponent', () => {
     component.tutorId = 1;
     component.onEdit();
     expect(router.navigate).toHaveBeenCalledWith(['/tutores', 1, 'edit']);
-  });
-
-  it('should unsubscribe on destroy', () => {
-    spyOn(component['destroy$'], 'next');
-    spyOn(component['destroy$'], 'complete');
-
-    component.ngOnDestroy();
-
-    expect(component['destroy$'].next).toHaveBeenCalled();
-    expect(component['destroy$'].complete).toHaveBeenCalled();
   });
 });

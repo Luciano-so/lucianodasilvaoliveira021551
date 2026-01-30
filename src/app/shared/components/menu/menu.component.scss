@@ -159,10 +159,10 @@
 
 @media (max-width: 768px) {
   .menu {
-    width: 70px; // Default collapsed width
+    width: 70px;
 
     &:not(.menu--collapsed) {
-      width: 250px; // Expanded when not collapsed
+      width: 250px;
     }
   }
 }

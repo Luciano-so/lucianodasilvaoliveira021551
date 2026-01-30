@@ -1,6 +1,7 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { DestroyRef, inject, Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { LoadingService } from '../../shared/services/loading/loading.service';
 import { MenuService } from '../../shared/services/menu.service';
 import { AuthService } from '../services/auth.service';
@@ -17,7 +18,7 @@ export interface AppState {
 @Injectable({
   providedIn: 'root',
 })
-export class AppFacade implements OnDestroy {
+export class AppFacade {
   private _appState$ = new BehaviorSubject<AppState>({
     isAuthenticated: false,
     currentUser: null,
@@ -27,18 +28,13 @@ export class AppFacade implements OnDestroy {
     isCollapsed: false,
   });
 
-  private destroy$ = new Subject<void>();
   private authService = inject(AuthService);
   private menuService = inject(MenuService);
   private loadingService = inject(LoadingService);
+  private destroyRef = inject(DestroyRef);
 
   constructor() {
     this.initializeState();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   initializeState(): void {
@@ -68,7 +64,7 @@ export class AppFacade implements OnDestroy {
             isCollapsed,
           }),
         ),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((state) => {
         this._appState$.next(state);
@@ -103,7 +99,6 @@ export class AppFacade implements OnDestroy {
     return this._appState$.pipe(map((state) => state.isCollapsed));
   }
 
-  // === AUTHENTICATION ===
   login(credentials: { username: string; password: string }): Observable<any> {
     return this.authService.login(credentials);
   }
@@ -116,7 +111,6 @@ export class AppFacade implements OnDestroy {
     return this.authService.isAuthenticated();
   }
 
-  // === LOADING ===
   showLoading(): void {
     this.loadingService.show();
   }
@@ -125,7 +119,6 @@ export class AppFacade implements OnDestroy {
     this.loadingService.close();
   }
 
-  // === MENU ===
   setActiveMenuItem(item: string): void {
     this.menuService.setActiveMenuItem(item);
   }

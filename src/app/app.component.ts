@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   inject,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { AppFacade } from './core/facades/app.facade';
 import { LoadingComponent } from './shared/components/loading/loading.component';
 import { MenuComponent } from './shared/components/menu/menu.component';
@@ -20,26 +19,23 @@ import { MenuComponent } from './shared/components/menu/menu.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   showPreload = false;
-  isAuthenticated = false;
   isCollapsed = false;
+  isAuthenticated = false;
 
   private readonly facade = inject(AppFacade);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    this.facade.appState$.pipe(takeUntil(this.destroy$)).subscribe((state) => {
-      this.isAuthenticated = state.isAuthenticated;
-      this.showPreload = state.isLoading;
-      this.isCollapsed = state.isCollapsed;
-      this.cdr.detectChanges();
-    });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.facade.appState$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((state) => {
+        this.showPreload = state.isLoading;
+        this.isCollapsed = state.isCollapsed;
+        this.isAuthenticated = state.isAuthenticated;
+        this.cdr.detectChanges();
+      });
   }
 }

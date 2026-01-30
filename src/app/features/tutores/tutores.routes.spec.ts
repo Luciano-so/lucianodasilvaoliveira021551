@@ -18,4 +18,13 @@ describe('TUTORES_ROUTES', () => {
       expect(typeof route.loadComponent).toBe('function');
     });
   });
+
+  it('should execute loadComponent functions', async () => {
+    for (const route of TUTORES_ROUTES) {
+      if (route.loadComponent) {
+        const mod = await (route.loadComponent() as Promise<any>);
+        expect(mod).toBeTruthy();
+      }
+    }
+  }, 20000);
 });

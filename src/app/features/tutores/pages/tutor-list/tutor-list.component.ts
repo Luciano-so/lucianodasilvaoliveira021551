@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
   DataGridComponent,
   PaginationInfo,
@@ -29,7 +36,7 @@ export class TutorListComponent implements OnInit, OnDestroy {
   };
 
   private router = inject(Router);
-  private destroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
   private tutoresFacade = inject(TutoresFacade);
   private searchSubject$ = new Subject<string>();
 
@@ -41,25 +48,23 @@ export class TutorListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.tutoresFacade.clearFilters();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private setupSubscriptions(): void {
     this.tutoresFacade.tutores$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((tutores) => {
         this.tutores = tutores;
       });
 
     this.tutoresFacade.error$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((error) => {
         this.error = error;
       });
 
     this.tutoresFacade.pagination$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((pagination) => {
         this.pagination = pagination;
       });
@@ -67,7 +72,11 @@ export class TutorListComponent implements OnInit, OnDestroy {
 
   private setupSearch(): void {
     this.searchSubject$
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((searchTerm) => {
         this.tutoresFacade.searchTutores(searchTerm);
       });
