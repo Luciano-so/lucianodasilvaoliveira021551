@@ -1,0 +1,69 @@
+<mat-form-field appearance="fill" class="autocomplete-field">
+  <mat-label>{{ label }}</mat-label>
+  <input
+    type="text"
+    matInput
+    [formControl]="searchControl"
+    [matAutocomplete]="auto"
+    [placeholder]="placeholder"
+    [required]="required"
+  />
+  @if (icon) {
+    <mat-icon matPrefix>{{ icon }}</mat-icon>
+  }
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    [displayWith]="displayFn"
+    (optionSelected)="onOptionSelected($event)"
+  >
+    @for (option of filteredOptions$ | async; track option.id) {
+      <mat-option [value]="option">
+        <div class="autocomplete-field__option-content">
+          @if (option.foto?.url) {
+            <div class="autocomplete-field__option-with-image">
+              <app-entity-photo
+                [photoUrl]="option.foto?.url"
+                [alt]="option.label"
+                [icon]="'pets'"
+                [entityId]="option.id"
+                class="autocomplete-field__option-photo"
+              ></app-entity-photo>
+              <div class="autocomplete-field__option-text">
+                <span class="autocomplete-field__option-label">{{
+                  displayFn(option)
+                }}</span>
+                @if (option.raca?.trim()) {
+                  <span class="autocomplete-field__option-raca">{{
+                    option.raca?.trim()
+                  }}</span>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="autocomplete-field__option-no-image">
+              <mat-icon class="autocomplete-field__option-icon">pets</mat-icon>
+              <div class="autocomplete-field__option-text">
+                <span class="autocomplete-field__option-label">{{
+                  displayFn(option)
+                }}</span>
+                @if (option.raca?.trim()) {
+                  <span class="autocomplete-field__option-raca">{{
+                    option.raca?.trim()
+                  }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </mat-option>
+    }
+    @if (!(filteredOptions$ | async)?.length && searchControl.value) {
+      <mat-option disabled>
+        <div class="autocomplete-field__no-results">
+          <mat-icon>search_off</mat-icon>
+          <span>Nenhum resultado encontrado</span>
+        </div>
+      </mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>

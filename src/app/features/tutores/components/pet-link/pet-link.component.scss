@@ -15,7 +15,7 @@
       color: #333;
 
       mat-icon {
-        color: #667eea;
+        color: #1976d2;
       }
     }
   }
@@ -99,43 +99,100 @@
     align-items: flex-start;
     padding-top: 1.5rem;
     border-top: 1px solid #e0e0e0;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
   }
 
-  &__add-field {
+  &__autocomplete {
     flex: 1;
+    min-width: 250px;
+    max-width: none;
+    height: 44px;
 
-    mat-icon {
-      color: #667eea;
+    ::ng-deep .mat-mdc-form-field {
+      height: 44px !important;
+      min-height: 44px !important;
+      max-height: 44px !important;
+
+      .mat-mdc-form-field-outline {
+        height: 44px !important;
+      }
+
+      .mat-mdc-input-element {
+        height: auto !important;
+        padding: 0px 14px !important;
+        box-sizing: border-box !important;
+        line-height: normal !important;
+      }
+
+      .mat-mdc-form-field-flex {
+        height: 44px !important;
+        min-height: 44px !important;
+        align-items: center !important;
+      }
+
+      .mdc-text-field {
+        height: 44px !important;
+        min-height: 44px !important;
+      }
+
+      .mat-icon {
+        color: #1976d2 !important;
+      }
+    }
+
+    @media (min-width: 769px) {
+      flex: 2;
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
     }
   }
 
   &__add-btn {
-    min-width: 140px;
-    height: 56px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    min-width: 140px !important;
+    height: 44px !important;
+    background: #2196f3 !important;
     color: white !important;
-    border-radius: 8px;
-    font-weight: 600;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
 
     mat-icon {
-      margin-right: 0.5rem;
+      margin-right: 8px;
+    }
+
+    &:hover:not(:disabled) {
+      background: #1976d2 !important;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background: #86b8eb !important;
+      cursor: not-allowed;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      min-width: unset;
     }
   }
 }
 
 @media (max-width: 600px) {
   .pet-link {
-    &__add {
-      flex-direction: column;
-
-      &-field,
-      &-btn {
-        width: 100%;
-      }
-    }
-
     &__item {
       padding: 0.75rem;
+      flex: 0 0 100%;
     }
 
     &__item-photo {

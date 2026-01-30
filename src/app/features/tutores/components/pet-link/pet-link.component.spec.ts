@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -80,6 +81,10 @@ describe('PetLinkComponent', () => {
       'openConfirm',
     ]);
 
+    const autocompleteMock = jasmine.createSpyObj('AutocompleteComponent', [
+      'clear',
+    ]);
+
     await TestBed.configureTestingModule({
       imports: [
         PetLinkComponent,
@@ -90,6 +95,7 @@ describe('PetLinkComponent', () => {
         MatCardModule,
         MatIconModule,
         MatTooltipModule,
+        HttpClientTestingModule,
         EntityPhotoComponent,
       ],
       providers: [
@@ -110,6 +116,7 @@ describe('PetLinkComponent', () => {
     ) as jasmine.SpyObj<ConfirmDialogService>;
 
     component.tutorId = 1;
+    component.autocomplete = autocompleteMock;
   });
 
   it('should create', () => {
@@ -118,37 +125,37 @@ describe('PetLinkComponent', () => {
 
   it('should initialize with inputs', () => {
     component.readOnly = true;
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.tutorId).toBe(1);
     expect(component.readOnly).toBe(true);
   });
 
   it('should load linked pets on init', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.linkedPets).toEqual(mockTutor.pets!);
   });
 
   it('should load available pets excluding linked ones', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     expect(component.availablePets!).toEqual([mockPet]);
   });
 
   it('should link pet when selected', () => {
-    component.ngOnInit();
-    component.selectedPetControl.setValue(2);
+    TestBed.runInInjectionContext(() => component.ngOnInit());
+    component.selectedPet = mockPet;
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     tutoresFacadeSpy.linkPet.and.returnValue(of(undefined));
 
-    component.onLinkPet();
+    TestBed.runInInjectionContext(() => component.onLinkPet());
 
     expect(confirmDialogServiceSpy.openConfirm).toHaveBeenCalled();
     expect(tutoresFacadeSpy.linkPet).toHaveBeenCalledWith(1, 2);
-    expect(component.selectedPetControl.value).toBeNull();
+    expect(component.selectedPet).toBeNull();
   });
 
   it('should not link pet when none selected', () => {
-    component.ngOnInit();
-    component.selectedPetControl.setValue(null);
+    TestBed.runInInjectionContext(() => component.ngOnInit());
+    component.selectedPet = null;
 
     component.onLinkPet();
 
@@ -156,32 +163,22 @@ describe('PetLinkComponent', () => {
   });
 
   it('should unlink pet after confirmation', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(true));
     tutoresFacadeSpy.unlinkPet.and.returnValue(of(undefined));
 
-    component.onUnlinkPet(1);
+    TestBed.runInInjectionContext(() => component.onUnlinkPet(1));
 
     expect(confirmDialogServiceSpy.openConfirm).toHaveBeenCalled();
     expect(tutoresFacadeSpy.unlinkPet).toHaveBeenCalledWith(1, 1);
   });
 
   it('should not unlink pet when not confirmed', () => {
-    component.ngOnInit();
+    TestBed.runInInjectionContext(() => component.ngOnInit());
     confirmDialogServiceSpy.openConfirm.and.returnValue(of(false));
 
-    component.onUnlinkPet(1);
+    TestBed.runInInjectionContext(() => component.onUnlinkPet(1));
 
     expect(tutoresFacadeSpy.unlinkPet).not.toHaveBeenCalled();
-  });
-
-  it('should unsubscribe on destroy', () => {
-    spyOn(component['destroy$'], 'next');
-    spyOn(component['destroy$'], 'complete');
-
-    component.ngOnDestroy();
-
-    expect(component['destroy$'].next).toHaveBeenCalled();
-    expect(component['destroy$'].complete).toHaveBeenCalled();
   });
 });
