@@ -123,34 +123,32 @@ src/
 ### Fluxo Arquitetural
 
 1. **Frontend (Angular)**: Interface do usuário com componentes standalone e formulários reativos.
-2. **Core Layer**: Gerencia autenticação, interceptação de requisições e estado da aplicação via facades.
-3. **Features Layer**: Módulos independentes para cada funcionalidade, com seus próprios serviços, facades e componentes.
-4. **Shared Layer**: Utilitários comuns, como validações, componentes e pipes, para evitar duplicação.
+2. **Core**: Gerencia autenticação, interceptação de requisições e estado da aplicação via facades.
+3. **Features**: Módulos independentes para cada funcionalidade, com seus próprios serviços, facades e componentes.
+4. **Shared**: Utilitários comuns, como validações, componentes e pipes, para evitar duplicação.
 5. **Backend Integration**: Comunicação via HTTP com APIs REST, utilizando interceptors para autenticação e loading.
 
 ## 📝 Dados de Inscrição
 
 ### Cadastro de Pets
 
-| Campo           | Obrigatório | Descrição                    |
-| --------------- | ----------- | ---------------------------- |
-| Nome do pet     | Sim         | Nome do animal               |
-| Raça            | Não         | Raça específica (opcional)   |
-| Idade           | Não         | Idade em anos (opcional)     |
-| Foto            | Não         | Imagem opcional              |
-| Tutor associado | Não         | Tutor responsável (opcional) |
+| Campo       | Tipo   | Obrigatório | Descrição                  |
+| ----------- | ------ | ----------- | -------------------------- |
+| Nome do pet | string | Sim         | Nome do animal             |
+| Raça        | string | Não         | Raça específica (opcional) |
+| Idade       | number | Não         | Idade em anos (opcional)   |
+| Foto        | string | Não         | Imagem opcional            |
 
 ### Cadastro de Tutores
 
-| Campo           | Obrigatório | Descrição                       |
-| --------------- | ----------- | ------------------------------- |
-| Nome            | Sim         | Nome completo                   |
-| Email           | Não         | Endereço de email (opcional)    |
-| Telefone        | Sim         | Número de telefone              |
-| CPF             | Não         | Número do CPF (opcional)        |
-| Endereço        | Não         | Endereço residencial (opcional) |
-| Foto            | Não         | Imagem opcional                 |
-| Pets associados | Não         | Lista de pets (opcional)        |
+| Campo    | Tipo   | Obrigatório | Descrição                       |
+| -------- | ------ | ----------- | ------------------------------- |
+| Nome     | string | Sim         | Nome completo                   |
+| Email    | string | Não         | Endereço de email (opcional)    |
+| Telefone | string | Sim         | Número de telefone              |
+| CPF      | string | Não         | Número do CPF (opcional)        |
+| Endereço | string | Não         | Endereço residencial (opcional) |
+| Foto     | string | Não         | Imagem opcional                 |
 
 ## 🚀 Como Executar
 
@@ -277,27 +275,6 @@ Para debug de testes:
 ```bash
 ng test --browsers=Chrome --watch
 ```
-
-### Padrões de Código
-
-- Use TypeScript strict mode
-- Mantenha cobertura de testes acima de 90%
-- Siga as convenções de nomenclatura do Angular
-- Documente novos componentes e serviços
-- Evite redundância
-- Componentize o que for comum
-
----
-
-**Implementação**: No componente `pet-link.component.ts`, o método `loadAllPets()` do facade é utilizado para carregar todos os pets disponíveis para vínculo.
-
-## 🎨 Decisões Técnicas
-
-### Dropdown de Seleção de Pets
-
-No componente de vínculo de pets com tutores (`pet-link.component.ts`), foi optado por não exibir as imagens dos pets no dropdown de seleção para evitar problemas de performance. Quando há muitos pets cadastrados, renderizar todas as imagens simultaneamente poderia causar lentidão significativa na interface.
-
-**Decisão**: O dropdown exibe apenas o nome do pet para manter a performance e responsividade da interface, mesmo com listas grandes de pets.
 
 ## 🚀 Melhorias Futuras
 
