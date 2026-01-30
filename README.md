@@ -27,7 +27,7 @@
 - **Autenticação**: Sistema de login com guard para proteger rotas, interceptors para adicionar tokens às requisições.
 - **Interface Responsiva**: UI moderna usando Angular Material, componentes compartilhados (data-grid, formulários, loading, etc.), design responsivo com efeitos glassmorphism e animações.
 - **Gerenciamento de Estado**: Facades para centralizar lógica de negócio e estado, usando BehaviorSubjects para reatividade.
-- **Testes**: 573 testes unitários com cobertura alta (92%+ statements e lines), incluindo testes para componentes, serviços, facades, diretivas e pipes.
+- **Testes**: 588 testes unitários com cobertura alta (Statements: 95.72%, Lines: 96.12%, Functions: 95.18%, Branches: 85.4%), incluindo testes para componentes, serviços, facades, diretivas e pipes.
 - **Empacotamento**: Docker com Nginx, docker-compose para facilitar execução.
 - **Documentação**: README completo com instruções de execução, testes, arquitetura e dados de inscrição.
 
@@ -220,12 +220,14 @@ ng test --code-coverage --watch=false
 
 Após a execução, o relatório de cobertura será gerado na pasta `coverage/pet-manage/`. Abra o arquivo `index.html` em um navegador para visualizar as porcentagens de cobertura de código.
 
-**Cobertura Atual:**
+**Cobertura Atual (última execução em 30/01/2026):**
 
-- Statements: 92.63%
-- Branches: 83.41%
-- Functions: 87.84%
-- Lines: 92.77%
+- Statements: 95.72% (964/1007)
+- Branches: 85.4% (199/233)
+- Functions: 95.18% (356/374)
+- Lines: 96.12% (918/955)
+
+**Testes:** 588/588 SUCCESS
 
 ## 📦 Empacotamento em Container
 
@@ -287,14 +289,6 @@ ng test --browsers=Chrome --watch
 
 ---
 
-## ⚠️Limitação de Listagem de Pets
-
-### Falta de endpoint
-
-Como não existe um endpoint específico para retornar todos os pets de uma só vez, a aplicação utiliza o endpoint `GET /api/pets` da API. Para contornar essa limitação, o parâmetro size é configurado com um valor elevado (por exemplo, `size=1000`), permitindo que o maior número possível de registros seja obtido em uma única requisição.
-
-**Nota Importante**: Essa abordagem pode impactar a performance em bases de dados muito grandes, já que a API retorna muitos registros de uma só vez.
-
 **Implementação**: No componente `pet-link.component.ts`, o método `loadAllPets()` do facade é utilizado para carregar todos os pets disponíveis para vínculo.
 
 ## 🎨 Decisões Técnicas
@@ -308,7 +302,6 @@ No componente de vínculo de pets com tutores (`pet-link.component.ts`), foi opt
 ## 🚀 Melhorias Futuras
 
 - **Gerenciamento de Estado**:Se o app crescer, considerar ferramentas como NgRx ou Akita para organizar melhor os dados e ações do sistema.
-- **Autocomplete no Vínculo de Pets**: Implementar um campo de autocomplete na tela de vínculo de pets com tutores, permitindo buscar e selecionar pets por nome de forma mais intuitiva e eficiente.
 - **Cobertura de Testes**: Aumentar cobertura para 95%+ com testes de integração e mocks para APIs.
 - **Atualização do Angular**: Manter o framework atualizado com as últimas versões para benefícios de performance, segurança e novos recursos.
 

@@ -225,4 +225,133 @@ describe('PetsFacade', () => {
       expect(error).toBeNull();
     });
   });
+
+  describe('photo and create/update operations', () => {
+    let facade2: PetsFacade;
+    let petsServiceSpy2: jasmine.SpyObj<PetsService>;
+    let tutoresServiceSpy2: jasmine.SpyObj<TutoresService>;
+
+    beforeEach(() => {
+      petsServiceSpy2 = jasmine.createSpyObj('PetsService', [
+        'createPet',
+        'uploadPhoto',
+        'deletePhoto',
+        'updatePet',
+      ]);
+      tutoresServiceSpy2 = jasmine.createSpyObj('TutoresService', [
+        'unlinkPet',
+      ]);
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          PetsFacade,
+          { provide: PetsService, useValue: petsServiceSpy2 },
+          { provide: TutoresService, useValue: tutoresServiceSpy2 },
+        ],
+      });
+
+      facade2 = TestBed.inject(PetsFacade);
+    });
+
+    it('should upload and delete photo through facade', (done) => {
+      const fakePhoto = new File([''], 'photo.png', { type: 'image/png' });
+      const photoResp: any = { id: 5 };
+      petsServiceSpy2.uploadPhoto.and.returnValue(of(photoResp));
+      petsServiceSpy2.deletePhoto.and.returnValue(of(void 0));
+
+      facade2.uploadPhoto(1, fakePhoto).subscribe((res) => {
+        expect(res).toEqual(photoResp);
+        expect(petsServiceSpy2.uploadPhoto).toHaveBeenCalledWith(1, fakePhoto);
+
+        facade2.deletePhoto(1, 5).subscribe(() => {
+          expect(petsServiceSpy2.deletePhoto).toHaveBeenCalledWith(1, 5);
+          done();
+        });
+      });
+    });
+
+    it('should unlink tutor via tutores service', (done) => {
+      tutoresServiceSpy2.unlinkPet.and.returnValue(of(void 0));
+
+      facade2.unlinkTutor(2, 3).subscribe(() => {
+        expect(tutoresServiceSpy2.unlinkPet).toHaveBeenCalledWith(2, 3);
+        done();
+      });
+    });
+
+    it('should create pet and upload photo when provided', (done) => {
+      const savedPet = { id: 42 } as any;
+      petsServiceSpy2.createPet.and.returnValue(of(savedPet));
+      petsServiceSpy2.uploadPhoto.and.returnValue(of({ id: 9 } as any));
+
+      const dto: any = { nome: 'Novo' };
+      const file = new File([''], 'a.jpg');
+
+      facade2.createPetWithPhoto(dto, file).subscribe(() => {
+        expect(petsServiceSpy2.createPet).toHaveBeenCalledWith(dto);
+        expect(petsServiceSpy2.uploadPhoto).toHaveBeenCalledWith(42, file);
+        done();
+      });
+    });
+
+    it('should handle update with new photo + currentPhotoId', (done) => {
+      const savedPet = { id: 7 } as any;
+      petsServiceSpy2.updatePet.and.returnValue(of(savedPet));
+      petsServiceSpy2.deletePhoto.and.returnValue(of(void 0));
+      petsServiceSpy2.uploadPhoto.and.returnValue(of({ id: 11 } as any));
+
+      const options = {
+        newPhoto: new File([''], 'b.jpg'),
+        currentPhotoId: 2,
+      } as any;
+
+      facade2
+        .updatePetWithPhoto(7, { nome: 'X' } as any, options)
+        .subscribe(() => {
+          expect(petsServiceSpy2.updatePet).toHaveBeenCalledWith(7, {
+            nome: 'X',
+          } as any);
+          expect(petsServiceSpy2.deletePhoto).toHaveBeenCalledWith(7, 2);
+          expect(petsServiceSpy2.uploadPhoto).toHaveBeenCalledWith(
+            7,
+            options.newPhoto,
+          );
+          done();
+        });
+    });
+
+    it('should handle update with photoRemoved and currentPhotoId', (done) => {
+      const savedPet = { id: 8 } as any;
+      petsServiceSpy2.updatePet.and.returnValue(of(savedPet));
+      petsServiceSpy2.deletePhoto.and.returnValue(of(void 0));
+
+      const options = { photoRemoved: true, currentPhotoId: 3 } as any;
+
+      facade2
+        .updatePetWithPhoto(8, { nome: 'Y' } as any, options)
+        .subscribe(() => {
+          expect(petsServiceSpy2.deletePhoto).toHaveBeenCalledWith(8, 3);
+          done();
+        });
+    });
+
+    it('should handle update with only newPhoto', (done) => {
+      const savedPet = { id: 9 } as any;
+      petsServiceSpy2.updatePet.and.returnValue(of(savedPet));
+      petsServiceSpy2.uploadPhoto.and.returnValue(of({ id: 12 } as any));
+
+      const options = { newPhoto: new File([''], 'c.jpg') } as any;
+
+      facade2
+        .updatePetWithPhoto(9, { nome: 'Z' } as any, options)
+        .subscribe(() => {
+          expect(petsServiceSpy2.uploadPhoto).toHaveBeenCalledWith(
+            9,
+            options.newPhoto,
+          );
+          done();
+        });
+    });
+  });
 });

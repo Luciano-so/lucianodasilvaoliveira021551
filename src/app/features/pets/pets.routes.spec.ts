@@ -18,4 +18,13 @@ describe('PETS_ROUTES', () => {
       expect(typeof route.loadComponent).toBe('function');
     });
   });
+
+  it('should execute loadComponent functions', async () => {
+    for (const route of PETS_ROUTES) {
+      if (route.loadComponent) {
+        const mod = await (route.loadComponent() as Promise<any>);
+        expect(mod).toBeTruthy();
+      }
+    }
+  }, 20000);
 });

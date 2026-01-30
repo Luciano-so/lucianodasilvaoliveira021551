@@ -1,19 +1,9 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  DestroyRef,
-  inject,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import {
-  DataGridComponent,
-  PaginationInfo,
-} from '../../../../shared/components/data-grid/data-grid.component';
+import { DataGridComponent } from '../../../../shared/components/data-grid/data-grid.component';
+import { ListBase } from '../../../../shared/components/list-base/list-base';
 import { PetCardComponent } from '../../components/pet-card/pet-card.component';
 import { PetsFacade } from '../../facades/pets.facade';
 import { Pet } from '../../models/pet.model';
@@ -25,26 +15,18 @@ import { Pet } from '../../models/pet.model';
   templateUrl: './pet-list.component.html',
   styleUrls: ['./pet-list.component.scss'],
 })
-export class PetListComponent implements OnInit, OnDestroy {
-  pets: Pet[] = [];
-  error: string | null = null;
-  pagination: PaginationInfo = {
-    page: 0,
-    size: 10,
-    total: 0,
-    pageCount: 0,
-  };
+export class PetListComponent
+  extends ListBase<Pet>
+  implements OnInit, OnDestroy
+{
+  pets: Pet[] = this.items;
 
   private router = inject(Router);
   private petsFacade = inject(PetsFacade);
-  private destroyRef = inject(DestroyRef);
-  private searchSubject$ = new Subject<string>();
-
-  constructor() {}
 
   ngOnInit(): void {
     this.setupSubscriptions();
-    this.setupSearch();
+    this.setupSearch((term) => this.petsFacade.searchPets(term));
     this.loadPets();
   }
 
@@ -72,18 +54,6 @@ export class PetListComponent implements OnInit, OnDestroy {
       });
   }
 
-  private setupSearch(): void {
-    this.searchSubject$
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((searchTerm) => {
-        this.petsFacade.searchPets(searchTerm);
-      });
-  }
-
   loadPets(): void {
     this.petsFacade.loadPets();
   }
@@ -92,16 +62,15 @@ export class PetListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/pets/new']);
   }
 
-  onSearchChange(searchTerm: string): void {
-    if (!searchTerm || searchTerm.trim() === '') {
-      this.petsFacade.clearFilters();
-      this.loadPets();
-    } else {
-      this.searchSubject$.next(searchTerm);
-    }
+  override onSearchChange(searchTerm: string): void {
+    super.onSearchChange(
+      searchTerm,
+      () => this.petsFacade.clearFilters(),
+      () => this.loadPets(),
+    );
   }
 
-  onPageChange(page: number): void {
+  override onPageChange(page: number): void {
     this.petsFacade.goToPage(page);
   }
 }

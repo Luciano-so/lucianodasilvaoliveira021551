@@ -1,19 +1,9 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  DestroyRef,
-  inject,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import {
-  DataGridComponent,
-  PaginationInfo,
-} from '../../../../shared/components/data-grid/data-grid.component';
+import { DataGridComponent } from '../../../../shared/components/data-grid/data-grid.component';
+import { ListBase } from '../../../../shared/components/list-base/list-base';
 import { TutorCardComponent } from '../../components/tutor-card/tutor-card.component';
 import { TutoresFacade } from '../../facades/tutores.facade';
 import { Tutor } from '../../models/tutor.model';
@@ -25,24 +15,18 @@ import { Tutor } from '../../models/tutor.model';
   templateUrl: './tutor-list.component.html',
   styleUrls: ['./tutor-list.component.scss'],
 })
-export class TutorListComponent implements OnInit, OnDestroy {
-  tutores: Tutor[] = [];
-  error: string | null = null;
-  pagination: PaginationInfo = {
-    page: 0,
-    size: 10,
-    total: 0,
-    pageCount: 0,
-  };
+export class TutorListComponent
+  extends ListBase<Tutor>
+  implements OnInit, OnDestroy
+{
+  tutores: Tutor[] = this.items;
 
   private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
   private tutoresFacade = inject(TutoresFacade);
-  private searchSubject$ = new Subject<string>();
 
   ngOnInit(): void {
     this.setupSubscriptions();
-    this.setupSearch();
+    this.setupSearch((term) => this.tutoresFacade.searchTutores(term));
     this.loadTutores();
   }
 
@@ -70,18 +54,6 @@ export class TutorListComponent implements OnInit, OnDestroy {
       });
   }
 
-  private setupSearch(): void {
-    this.searchSubject$
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((searchTerm) => {
-        this.tutoresFacade.searchTutores(searchTerm);
-      });
-  }
-
   loadTutores(): void {
     this.tutoresFacade.loadTutores();
   }
@@ -90,16 +62,15 @@ export class TutorListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/tutores/new']);
   }
 
-  onSearchChange(searchTerm: string): void {
-    if (!searchTerm || searchTerm.trim() === '') {
-      this.tutoresFacade.clearFilters();
-      this.loadTutores();
-    } else {
-      this.searchSubject$.next(searchTerm);
-    }
+  override onSearchChange(searchTerm: string): void {
+    super.onSearchChange(
+      searchTerm,
+      () => this.tutoresFacade.clearFilters(),
+      () => this.loadTutores(),
+    );
   }
 
-  onPageChange(page: number): void {
+  override onPageChange(page: number): void {
     this.tutoresFacade.goToPage(page);
   }
 }

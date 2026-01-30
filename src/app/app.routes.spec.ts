@@ -118,4 +118,17 @@ describe('App Routes', () => {
       });
     });
   });
+
+  it('should execute lazy loaders to increase coverage', async () => {
+    for (const route of routes) {
+      if (route.loadComponent) {
+        const mod = await (route.loadComponent() as Promise<any>);
+        expect(mod).toBeTruthy();
+      }
+      if (route.loadChildren) {
+        const mod = await (route.loadChildren() as Promise<any>);
+        expect(mod).toBeTruthy();
+      }
+    }
+  }, 20000);
 });
