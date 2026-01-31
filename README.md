@@ -23,7 +23,7 @@
 
 ### ✅ O que foi implementado
 
-- **Funcionalidades Core**: CRUD completo para pets e tutores (criar, ler, atualizar, deletar), com validações de formulário e upload de fotos.
+- **Funcionalidades Core**: CRUD completo para pets e tutores (criar, ler, atualizar, deletar), com validações de formulário, upload de fotos e autocomplete para vinculação entre tutores e pets.
 - **Autenticação**: Sistema de login com guard para proteger rotas, interceptors para adicionar tokens às requisições.
 - **Interface Responsiva**: UI moderna usando Angular Material, componentes compartilhados (data-grid, formulários, loading, etc.), design responsivo com efeitos glassmorphism e animações.
 - **Gerenciamento de Estado**: Facades para centralizar lógica de negócio e estado, usando BehaviorSubjects para reatividade.
@@ -149,6 +149,15 @@ src/
 | CPF      | number | Não         | Número do CPF (opcional)        |
 | Endereço | string | Não         | Endereço residencial (opcional) |
 | Foto     | object | Não         | Imagem opcional                 |
+
+### Estrutura da Foto
+
+| Campo       | Tipo   | Descrição                   |
+| ----------- | ------ | --------------------------- |
+| id          | number | Identificador único da foto |
+| nome        | string | Nome do arquivo da imagem   |
+| contentType | string | Tipo MIME da imagem         |
+| url         | string | URL assinada para acesso    |
 
 ## 🚀 Como Executar
 
