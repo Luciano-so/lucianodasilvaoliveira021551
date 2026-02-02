@@ -139,6 +139,8 @@ src/
 | Idade | number | Não         | Idade em anos (opcional)   |
 | Foto  | object | Não         | Imagem opcional            |
 
+**Nota**: A informação de espécie não foi disponibilizada devido à ausência do campo no endpoint da API.
+
 ### Cadastro de Tutores
 
 | Campo    | Tipo   | Obrigatório | Descrição                       |
